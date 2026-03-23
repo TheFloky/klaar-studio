@@ -11,7 +11,7 @@ const translations = {
     advantage: {
       title: 'The Vanguard Advantage',
       items: [
-        { title: 'Native Communication', desc: 'Full German & French support — no language barriers, ever.' },
+        { title: 'Native Communication', desc: 'Full German, English and French support — no language barriers, ever.' },
         { title: 'Swiss Quality Standards', desc: 'High-performance, nDSG-compliant code built to the highest standards.' },
         { title: 'Optimized ROI', desc: 'High-end results powered by lean, modern operations.' },
       ],

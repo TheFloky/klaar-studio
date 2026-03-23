@@ -1,16 +1,26 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { Lang, getTranslations } from '@/lib/i18n';
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/Hero';
+import Advantages from '@/components/Advantages';
+import Services from '@/components/Services';
+import TrustBar from '@/components/TrustBar';
+import ContactForm from '@/components/ContactForm';
+import Footer from '@/components/Footer';
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+export default function Index() {
+  const [lang, setLang] = useState<Lang>('en');
+  const t = getTranslations(lang);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen bg-background">
+      <Navbar lang={lang} setLang={setLang} ctaText={t.nav.proposal} />
+      <Hero t={t} />
+      <Advantages t={t} />
+      <Services t={t} />
+      <TrustBar />
+      <ContactForm t={t} />
+      <Footer t={t} />
     </div>
   );
-};
-
-const Index = PlaceholderIndex;
-
-export default Index;
+}

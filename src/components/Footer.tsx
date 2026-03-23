@@ -4,17 +4,11 @@ export default function Footer({ t }: { t: Translations }) {
   return (
     <footer className="border-t border-border py-12">
       <div className="container">
-        <div className="grid sm:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 gap-8">
           <div>
             <p className="text-xl font-extrabold text-foreground mb-4">
               VANGUARD<span className="text-primary">.</span>
             </p>
-            <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
-              {t.footer.address}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-foreground mb-3">Contact</p>
             <p className="text-sm text-muted-foreground">{t.footer.phone}</p>
             <p className="text-sm text-muted-foreground">hello@vanguard.digital</p>
           </div>

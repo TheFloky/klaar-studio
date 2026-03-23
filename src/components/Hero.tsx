@@ -30,8 +30,10 @@ export default function Hero({ t }: HeroProps) {
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             Swiss Digital Agency
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight text-foreground whitespace-pre-line mb-6">
-            {t.hero.headline}
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl xl:text-8xl font-extrabold leading-[1] tracking-tight text-foreground mb-6">
+            {t.hero.headline.split('\n').map((line, i) => (
+              <span key={i} className="block">{line}</span>
+            ))}
           </h1>
         </motion.div>
         <motion.p

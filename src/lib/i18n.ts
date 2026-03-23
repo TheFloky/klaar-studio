@@ -120,5 +120,13 @@ const translations = {
   },
 } as const;
 
-export type Translations = typeof translations['en'];
-export const getTranslations = (lang: Lang): Translations => translations[lang];
+type TranslationMap = {
+  nav: { proposal: string };
+  hero: { headline: string; sub: string; cta: string };
+  advantage: { title: string; items: { title: string; desc: string }[] };
+  services: { title: string; items: { title: string; desc: string }[] };
+  contact: { title: string; steps: string[]; namePlaceholder: string; goalPlaceholder: string; budgets: string[]; next: string; back: string; submit: string; success: string };
+  footer: { address: string; phone: string };
+};
+export type Translations = TranslationMap;
+export const getTranslations = (lang: Lang): Translations => translations[lang] as unknown as Translations;

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Lang, getTranslations } from '@/lib/i18n';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -8,9 +9,18 @@ import TrustBar from '@/components/TrustBar';
 import ContactForm from '@/components/ContactForm';
 import Footer from '@/components/Footer';
 
+const validLangs: Lang[] = ['en', 'de', 'fr'];
+
 export default function Index() {
-  const [lang, setLang] = useState<Lang>('en');
+  const { lang: langParam } = useParams<{ lang: string }>();
+  const navigate = useNavigate();
+  
+  const lang: Lang = validLangs.includes(langParam as Lang) ? (langParam as Lang) : 'en';
   const t = getTranslations(lang);
+
+  const setLang = (newLang: Lang) => {
+    navigate(`/${newLang}`);
+  };
 
   return (
     <div className="min-h-screen bg-background">

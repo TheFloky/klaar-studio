@@ -36,7 +36,7 @@ const translations = {
       success: 'Thank you! We\'ll be in touch within 24 hours.',
     },
     footer: {
-      address: 'Vanguard Digital GmbH\nBahnhofstrasse 42\n8001 Zürich, Switzerland',
+      address: '',
       phone: '+41 44 000 00 00',
     },
   },

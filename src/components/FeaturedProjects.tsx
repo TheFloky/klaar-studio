@@ -49,25 +49,22 @@ export default function FeaturedProjects({ t }: { t: Translations }) {
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                {/* Default overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
-
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 p-6">
+                {/* Hover overlay — centered result + CTA */}
+                <div className="absolute inset-0 bg-foreground/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 p-6 z-20">
                   <p className="text-primary-foreground text-sm font-medium text-center">{project.result}</p>
                   <Button size="sm" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
                     {t.portfolio.viewCase} <ArrowUpRight size={14} />
                   </Button>
                 </div>
 
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
+                {/* Content bar — glass panel at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 z-10 bg-foreground/60 backdrop-blur-md border-t border-primary-foreground/10 transition-opacity duration-300 group-hover:opacity-0">
                   <div className="flex gap-2 mb-2 flex-wrap">
                     {project.tags.map((tag, ti) => (
                       <Badge
                         key={ti}
                         variant="secondary"
-                        className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/20 text-[10px] backdrop-blur-sm"
+                        className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/20 text-[10px]"
                       >
                         {tag}
                       </Badge>

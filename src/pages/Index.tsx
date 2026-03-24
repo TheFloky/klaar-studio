@@ -5,6 +5,8 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Advantages from '@/components/Advantages';
 import Services from '@/components/Services';
+import InvestmentTiers from '@/components/InvestmentTiers';
+import FeaturedProjects from '@/components/FeaturedProjects';
 import TrustBar from '@/components/TrustBar';
 import ContactForm from '@/components/ContactForm';
 import Footer from '@/components/Footer';

@@ -30,6 +30,8 @@ export default function Index() {
       <Hero t={t} />
       <Advantages t={t} />
       <Services t={t} />
+      <InvestmentTiers t={t} />
+      <FeaturedProjects t={t} />
       <TrustBar />
       <ContactForm t={t} />
       <Footer t={t} />

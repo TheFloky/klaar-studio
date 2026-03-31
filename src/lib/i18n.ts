@@ -55,11 +55,22 @@ const translations = {
           ],
         },
         {
-          name: 'Vanguard Elite',
-          price: 'CHF 6\'000',
-          monthly: 'CHF 400/mo maintenance',
+          name: 'E-commerce Launch',
+          price: 'CHF 5\'000',
+          monthly: 'CHF 200/mo maintenance',
           features: [
             'Everything in Engine',
+            'Shopify / WooCommerce Setup',
+            'TWINT & Swiss Payment Methods',
+            'Product Catalog & Inventory',
+          ],
+        },
+        {
+          name: 'Vanguard Elite',
+          price: 'CHF 7\'500+',
+          monthly: 'CHF 400/mo maintenance',
+          features: [
+            'Everything in E-commerce',
             'Custom AI Automation Tools',
             'Advanced Computer Vision/API Logic',
             'Heavy Initial SEO & Performance Audit',
@@ -167,11 +178,22 @@ const translations = {
           ],
         },
         {
-          name: 'Vanguard Elite',
-          price: 'CHF 6\'000',
-          monthly: 'CHF 400/Mt. Wartung',
+          name: 'E-commerce Launch',
+          price: 'CHF 5\'000',
+          monthly: 'CHF 200/Mt. Wartung',
           features: [
             'Alles aus Engine',
+            'Shopify / WooCommerce-Einrichtung',
+            'TWINT & Schweizer Zahlungsmethoden',
+            'Produktkatalog & Lagerverwaltung',
+          ],
+        },
+        {
+          name: 'Vanguard Elite',
+          price: 'CHF 7\'500+',
+          monthly: 'CHF 400/Mt. Wartung',
+          features: [
+            'Alles aus E-commerce',
             'Individuelle KI-Automatisierungstools',
             'Erweiterte Computer Vision/API-Logik',
             'Umfangreiches SEO & Performance-Audit',
@@ -279,11 +301,22 @@ const translations = {
           ],
         },
         {
-          name: 'Vanguard Elite',
-          price: 'CHF 6\'000',
-          monthly: 'CHF 400/mois maintenance',
+          name: 'E-commerce Launch',
+          price: 'CHF 5\'000',
+          monthly: 'CHF 200/mois maintenance',
           features: [
             'Tout dans Engine',
+            'Configuration Shopify / WooCommerce',
+            'TWINT & méthodes de paiement suisses',
+            'Catalogue produits & inventaire',
+          ],
+        },
+        {
+          name: 'Vanguard Elite',
+          price: 'CHF 7\'500+',
+          monthly: 'CHF 400/mois maintenance',
+          features: [
+            'Tout dans E-commerce',
             'Outils d\'automatisation IA personnalisés',
             'Logique avancée Computer Vision/API',
             'Audit SEO & Performance approfondi',

@@ -1,26 +1,8 @@
-import { Check, Star } from 'lucide-react';
+import { Check, Star, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Translations } from '@/lib/i18n';
-
-const tiers = [
-  {
-    key: 'essential',
-    features: 4,
-    highlighted: false,
-  },
-  {
-    key: 'engine',
-    features: 4,
-    highlighted: true,
-  },
-  {
-    key: 'elite',
-    features: 4,
-    highlighted: false,
-  },
-] as const;
 
 export default function InvestmentTiers({ t }: { t: Translations }) {
   const { ref, isVisible } = useScrollReveal();
@@ -35,9 +17,10 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
           {t.pricing.subtitle}
         </p>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {t.pricing.tiers.map((tier, i) => {
             const isPopular = i === 1;
+            const isEcommerce = i === 2;
             return (
               <div
                 key={i}
@@ -46,6 +29,8 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
                 } ${
                   isPopular
                     ? 'border-2 border-primary bg-card shadow-lg scale-[1.02]'
+                    : isEcommerce
+                    ? 'border border-dashed border-primary/40 bg-card'
                     : 'border border-border bg-card'
                 }`}
                 style={{ transitionDelay: `${i * 150}ms` }}
@@ -55,6 +40,10 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
                     <Star size={12} className="mr-1" />
                     {t.pricing.popular}
                   </Badge>
+                )}
+
+                {isEcommerce && (
+                  <ShoppingBag size={20} className="text-primary mb-3" />
                 )}
 
                 <h3 className="text-lg font-bold text-foreground mb-2">{tier.name}</h3>

@@ -38,6 +38,15 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
           {t.contact.title}
         </h2>
 
+        {selectedTier && (
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
+              <Check size={14} />
+              {selectedTier}
+            </span>
+          </div>
+        )}
+
         {/* Step indicators */}
         <div className="flex items-center justify-center gap-2 mb-12">
           {t.contact.steps.map((s, i) => (

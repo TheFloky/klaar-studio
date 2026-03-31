@@ -70,7 +70,10 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
                 <Button
                   className={`w-full ${isElite ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
                   variant={isPopular ? 'default' : isElite ? 'default' : 'outline'}
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => {
+                    onSelectTier?.(tier.name);
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                 >
                   {t.pricing.cta}
                 </Button>

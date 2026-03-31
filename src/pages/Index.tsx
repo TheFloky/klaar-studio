@@ -36,7 +36,7 @@ export default function Index() {
       <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       <FeaturedProjects t={t} />
       <TrustBar />
-      <ContactForm t={t} />
+      <ContactForm t={t} selectedTier={selectedTier} />
       <Footer t={t} />
     </div>
   );

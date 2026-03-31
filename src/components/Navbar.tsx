@@ -38,8 +38,8 @@ export default function Navbar({ lang, setLang, ctaText }: NavbarProps) {
           VANGUARD
           <svg width="16" height="16" viewBox="0 0 16 16" className="inline-block">
             <rect width="16" height="16" rx="2.5" fill="hsl(var(--primary))" />
-            <path d="M7 3h2v10H7z" fill="white" />
-            <path d="M3 7h10v2H3z" fill="white" />
+            <path d="M6.25 3h3.5v10h-3.5z" fill="white" />
+            <path d="M3 6.25h10v3.5H3z" fill="white" />
           </svg>
         </a>
 

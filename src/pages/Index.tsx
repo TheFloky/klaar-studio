@@ -33,7 +33,7 @@ export default function Index() {
       <Hero t={t} />
       <Advantages t={t} />
       <Services t={t} />
-      <InvestmentTiers t={t} />
+      <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       <FeaturedProjects t={t} />
       <TrustBar />
       <ContactForm t={t} />

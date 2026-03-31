@@ -13,11 +13,6 @@ export default function Hero({ t }: HeroProps) {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl animate-float" />
         <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-primary/3 blur-3xl animate-float" style={{ animationDelay: '3s' }} />
-        {/* Grid */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: 'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }} />
       </div>
 
       <div className="container relative z-10 text-center max-w-4xl">

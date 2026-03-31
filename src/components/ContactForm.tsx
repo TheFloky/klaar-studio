@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import type { Translations } from '@/lib/i18n';
 import { Check } from 'lucide-react';
 
-export default function ContactForm({ t }: { t: Translations }) {
+export default function ContactForm({ t, selectedTier }: { t: Translations; selectedTier?: string | null }) {
   const { ref, isVisible } = useScrollReveal();
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');

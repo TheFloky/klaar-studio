@@ -178,11 +178,22 @@ const translations = {
           ],
         },
         {
-          name: 'Vanguard Elite',
-          price: 'CHF 6\'000',
-          monthly: 'CHF 400/Mt. Wartung',
+          name: 'E-commerce Launch',
+          price: 'CHF 5\'000',
+          monthly: 'CHF 200/Mt. Wartung',
           features: [
             'Alles aus Engine',
+            'Shopify / WooCommerce-Einrichtung',
+            'TWINT & Schweizer Zahlungsmethoden',
+            'Produktkatalog & Lagerverwaltung',
+          ],
+        },
+        {
+          name: 'Vanguard Elite',
+          price: 'CHF 7\'500+',
+          monthly: 'CHF 400/Mt. Wartung',
+          features: [
+            'Alles aus E-commerce',
             'Individuelle KI-Automatisierungstools',
             'Erweiterte Computer Vision/API-Logik',
             'Umfangreiches SEO & Performance-Audit',

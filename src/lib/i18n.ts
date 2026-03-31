@@ -55,11 +55,22 @@ const translations = {
           ],
         },
         {
-          name: 'Vanguard Elite',
-          price: 'CHF 6\'000',
-          monthly: 'CHF 400/mo maintenance',
+          name: 'E-commerce Launch',
+          price: 'CHF 5\'000',
+          monthly: 'CHF 200/mo maintenance',
           features: [
             'Everything in Engine',
+            'Shopify / WooCommerce Setup',
+            'TWINT & Swiss Payment Methods',
+            'Product Catalog & Inventory',
+          ],
+        },
+        {
+          name: 'Vanguard Elite',
+          price: 'CHF 7\'500+',
+          monthly: 'CHF 400/mo maintenance',
+          features: [
+            'Everything in E-commerce',
             'Custom AI Automation Tools',
             'Advanced Computer Vision/API Logic',
             'Heavy Initial SEO & Performance Audit',

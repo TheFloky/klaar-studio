@@ -34,12 +34,12 @@ export default function Navbar({ lang, setLang, ctaText }: NavbarProps) {
       }`}
     >
       <div className="container flex items-center justify-between">
-        <a href="#" className="text-xl font-extrabold tracking-tight text-foreground inline-flex items-center gap-1">
+        <a href="#" className="text-xl font-extrabold tracking-tight text-foreground inline-flex items-center gap-1.5">
           VANGUARD
-          <svg width="14" height="14" viewBox="0 0 14 14" className="inline-block">
-            <rect width="14" height="14" rx="2" fill="hsl(var(--primary))" />
-            <rect x="4" y="2" width="6" height="10" rx="1" fill="white" />
-            <rect x="2" y="4" width="10" height="6" rx="1" fill="white" />
+          <svg width="16" height="16" viewBox="0 0 16 16" className="inline-block">
+            <rect width="16" height="16" rx="2.5" fill="hsl(var(--primary))" />
+            <path d="M7 3h2v10H7z" fill="white" />
+            <path d="M3 7h10v2H3z" fill="white" />
           </svg>
         </a>
 

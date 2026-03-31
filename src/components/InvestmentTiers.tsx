@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Translations } from '@/lib/i18n';
 
-export default function InvestmentTiers({ t }: { t: Translations }) {
+export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; onSelectTier?: (tier: string) => void }) {
   const { ref, isVisible } = useScrollReveal();
 
   return (

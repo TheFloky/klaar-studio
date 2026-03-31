@@ -27,10 +27,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background relative">
       {/* Blueprint grid — visible in both light & dark */}
-      <div className="fixed inset-0 pointer-events-none z-0" style={{
-        backgroundImage: 'linear-gradient(hsl(var(--foreground) / 0.028) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.028) 1px, transparent 1px)',
-        backgroundSize: '60px 60px',
-      }} />
+      <div className="fixed inset-0 pointer-events-none z-0 blueprint-grid" />
       <Navbar lang={lang} setLang={setLang} ctaText={t.nav.proposal} />
       <Hero t={t} />
       <Advantages t={t} />

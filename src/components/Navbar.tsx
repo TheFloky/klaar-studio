@@ -34,8 +34,13 @@ export default function Navbar({ lang, setLang, ctaText }: NavbarProps) {
       }`}
     >
       <div className="container flex items-center justify-between">
-        <a href="#" className="text-xl font-extrabold tracking-tight text-foreground">
-          VANGUARD<span className="text-primary">.</span>
+        <a href="#" className="text-xl font-extrabold tracking-tight text-foreground inline-flex items-center gap-1">
+          VANGUARD
+          <svg width="14" height="14" viewBox="0 0 14 14" className="inline-block">
+            <rect width="14" height="14" rx="2" fill="hsl(var(--primary))" />
+            <rect x="4" y="2" width="6" height="10" rx="1" fill="white" />
+            <rect x="2" y="4" width="10" height="6" rx="1" fill="white" />
+          </svg>
         </a>
 
         {/* Desktop */}

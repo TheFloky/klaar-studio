@@ -1,4 +1,4 @@
-import { Check, Star, ShoppingBag } from 'lucide-react';
+import { Check, Star, ShoppingBag, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
@@ -21,13 +21,16 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
           {t.pricing.tiers.map((tier, i) => {
             const isPopular = i === 1;
             const isEcommerce = i === 2;
+            const isElite = i === 3;
             return (
               <div
                 key={i}
                 className={`relative rounded-2xl p-8 transition-all duration-700 ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 } ${
-                  isPopular
+                  isElite
+                    ? 'border border-primary/30 bg-gradient-to-b from-card via-card to-primary/[0.04] shadow-[0_0_40px_-12px_hsl(var(--primary)/0.15)]'
+                    : isPopular
                     ? 'border-2 border-primary bg-card shadow-lg scale-[1.02]'
                     : isEcommerce
                     ? 'border border-dashed border-primary/40 bg-card'
@@ -40,6 +43,10 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
                     <Star size={12} className="mr-1" />
                     {t.pricing.popular}
                   </Badge>
+                )}
+
+                {isElite && (
+                  <Crown size={20} className="text-primary mb-3" />
                 )}
 
                 {isEcommerce && (
@@ -64,8 +71,8 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
                 </div>
 
                 <Button
-                  className="w-full"
-                  variant={isPopular ? 'default' : 'outline'}
+                  className={`w-full ${isElite ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
+                  variant={isPopular ? 'default' : isElite ? 'default' : 'outline'}
                   onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   {t.pricing.cta}

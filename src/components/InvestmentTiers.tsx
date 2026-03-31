@@ -1,4 +1,4 @@
-import { Check, Star, ShoppingBag, Crown } from 'lucide-react';
+import { Check, Star, ShoppingBag, Crown, Globe, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
@@ -25,7 +25,7 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
             return (
               <div
                 key={i}
-                className={`relative rounded-2xl p-8 transition-all duration-700 ${
+                className={`relative rounded-2xl p-8 transition-all duration-700 flex flex-col ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 } ${
                   isElite
@@ -45,13 +45,10 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
                   </Badge>
                 )}
 
-                {isElite && (
-                  <Crown size={20} className="text-primary mb-3" />
-                )}
-
-                {isEcommerce && (
-                  <ShoppingBag size={20} className="text-primary mb-3" />
-                )}
+                {[Globe, Zap, ShoppingBag, Crown][i] && (() => {
+                  const Icon = [Globe, Zap, ShoppingBag, Crown][i];
+                  return <Icon size={20} className="text-primary mb-3" />;
+                })()}
 
                 <h3 className="text-lg font-bold text-foreground mb-2">{tier.name}</h3>
                 <div className="mb-1">
@@ -59,7 +56,7 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
                 </div>
                 <p className="text-sm text-muted-foreground mb-6">{tier.monthly}</p>
 
-                <div className="border-t border-border pt-6 mb-8">
+                <div className="border-t border-border pt-6 mb-8 flex-1">
                   <ul className="space-y-3">
                     {tier.features.map((feature, fi) => (
                       <li key={fi} className="flex items-start gap-3 text-sm">

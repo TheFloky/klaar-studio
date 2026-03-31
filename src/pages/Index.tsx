@@ -16,6 +16,7 @@ const validLangs: Lang[] = ['en', 'de', 'fr'];
 export default function Index() {
   const { lang: langParam } = useParams<{ lang: string }>();
   const navigate = useNavigate();
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
   
   const lang: Lang = validLangs.includes(langParam as Lang) ? (langParam as Lang) : 'en';
   const t = getTranslations(lang);

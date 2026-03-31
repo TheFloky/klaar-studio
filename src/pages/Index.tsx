@@ -16,6 +16,7 @@ const validLangs: Lang[] = ['en', 'de', 'fr'];
 export default function Index() {
   const { lang: langParam } = useParams<{ lang: string }>();
   const navigate = useNavigate();
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
   
   const lang: Lang = validLangs.includes(langParam as Lang) ? (langParam as Lang) : 'en';
   const t = getTranslations(lang);
@@ -32,10 +33,10 @@ export default function Index() {
       <Hero t={t} />
       <Advantages t={t} />
       <Services t={t} />
-      <InvestmentTiers t={t} />
+      <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       <FeaturedProjects t={t} />
       <TrustBar />
-      <ContactForm t={t} />
+      <ContactForm t={t} selectedTier={selectedTier} />
       <Footer t={t} />
     </div>
   );

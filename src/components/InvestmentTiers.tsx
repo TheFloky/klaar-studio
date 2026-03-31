@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Translations } from '@/lib/i18n';
 
-export default function InvestmentTiers({ t }: { t: Translations }) {
+export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; onSelectTier?: (tier: string) => void }) {
   const { ref, isVisible } = useScrollReveal();
 
   return (
@@ -70,7 +70,10 @@ export default function InvestmentTiers({ t }: { t: Translations }) {
                 <Button
                   className={`w-full ${isElite ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
                   variant={isPopular ? 'default' : isElite ? 'default' : 'outline'}
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => {
+                    onSelectTier?.(tier.name);
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                 >
                   {t.pricing.cta}
                 </Button>

@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import type { Translations } from '@/lib/i18n';
 import { Check } from 'lucide-react';
 
-export default function ContactForm({ t }: { t: Translations }) {
+export default function ContactForm({ t, selectedTier }: { t: Translations; selectedTier?: string | null }) {
   const { ref, isVisible } = useScrollReveal();
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
@@ -37,6 +37,15 @@ export default function ContactForm({ t }: { t: Translations }) {
         <h2 className="text-3xl sm:text-5xl font-extrabold text-center text-foreground mb-4">
           {t.contact.title}
         </h2>
+
+        {selectedTier && (
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
+              <Check size={14} />
+              {selectedTier}
+            </span>
+          </div>
+        )}
 
         {/* Step indicators */}
         <div className="flex items-center justify-center gap-2 mb-12">

@@ -9,7 +9,7 @@ const translations = {
       cta: 'Start Your Project',
     },
     advantage: {
-      title: 'The Vanguard Advantage',
+      title: 'The klaar Advantage',
       items: [
         { title: 'Native Communication', desc: 'Full German, English and French support — no language barriers, ever.' },
         { title: 'Swiss Quality Standards', desc: 'High-performance, nDSG-compliant code built to the highest standards.' },
@@ -66,7 +66,7 @@ const translations = {
           ],
         },
         {
-          name: 'Vanguard Elite',
+          name: 'klaar Elite',
           price: 'CHF 7\'500+',
           monthly: 'CHF 400/mo maintenance',
           features: [
@@ -132,7 +132,7 @@ const translations = {
       cta: 'Projekt starten',
     },
     advantage: {
-      title: 'Der Vanguard-Vorteil',
+      title: 'Der klaar-Vorteil',
       items: [
         { title: 'Muttersprachliche Kommunikation', desc: 'Vollständiger Support auf Deutsch & Französisch — ohne Sprachbarrieren.' },
         { title: 'Schweizer Qualitätsstandards', desc: 'Hochleistungsfähiger, nDSG-konformer Code auf höchstem Niveau.' },
@@ -189,7 +189,7 @@ const translations = {
           ],
         },
         {
-          name: 'Vanguard Elite',
+          name: 'klaar Elite',
           price: 'CHF 7\'500+',
           monthly: 'CHF 400/Mt. Wartung',
           features: [
@@ -255,7 +255,7 @@ const translations = {
       cta: 'Lancer votre projet',
     },
     advantage: {
-      title: 'L\'Avantage Vanguard',
+      title: 'L\'Avantage klaar',
       items: [
         { title: 'Communication native', desc: 'Support complet en allemand et français — sans barrière linguistique.' },
         { title: 'Standards de qualité suisses', desc: 'Code haute performance, conforme à la nLPD, construit aux plus hauts standards.' },
@@ -312,7 +312,7 @@ const translations = {
           ],
         },
         {
-          name: 'Vanguard Elite',
+          name: 'klaar Elite',
           price: 'CHF 7\'500+',
           monthly: 'CHF 400/mois maintenance',
           features: [

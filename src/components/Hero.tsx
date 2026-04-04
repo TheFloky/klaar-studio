@@ -8,7 +8,7 @@ interface HeroProps {
 
 export default function Hero({ t }: HeroProps) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-screen overflow-hidden pt-20 items-center justify-center flex flex-row">
       {/* Abstract shapes */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl animate-float" />

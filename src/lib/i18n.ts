@@ -4,8 +4,8 @@ const translations = {
   en: {
     nav: { proposal: 'Get a Free Quote' },
     hero: {
-      headline: 'Beautiful Websites.\nPowered by AI.',
-      sub: 'We design stunning websites and online shops for Swiss businesses — with smart AI tools that save you time and make you money.',
+      headline: 'Swiss Precision.\nDigital Performance.',
+      sub: 'We design stunning websites and online shops for Swiss businesses — built to look great, work fast, and win customers.',
       cta: 'Get Your Free Quote',
     },
     advantage: {

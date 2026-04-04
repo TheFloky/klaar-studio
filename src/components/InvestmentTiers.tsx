@@ -8,7 +8,7 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
   const { ref, isVisible } = useScrollReveal();
 
   return (
-    <section ref={ref} id="pricing" className="py-24 sm:py-32">
+    <section ref={ref} id="pricing" className="py-24 sm:py-32" aria-label="Pricing packages">
       <div className="container">
         <h2 className="text-3xl sm:text-5xl font-extrabold text-center text-foreground mb-4">
           {t.pricing.title}

@@ -23,7 +23,7 @@ export default function Hero({ t }: HeroProps) {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            Swiss Digital Agency
+            Swiss Web Design & AI Studio
           </div>
           <h1 className="text-3xl sm:text-5xl lg:text-7xl xl:text-8xl font-extrabold leading-[1] tracking-tight text-foreground mb-6">
             {t.hero.headline.split('\n').map((line, i) => (

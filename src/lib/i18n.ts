@@ -146,6 +146,7 @@ const translations = {
         { title: 'Online-Shop — Sofort verkaufen', desc: 'Ein kompletter Online-Shop mit TWINT und Stripe — bereit, ab dem ersten Tag Bestellungen anzunehmen.' },
         { title: 'Websites, die Kunden gewinnen', desc: 'Schnelle, schöne Websites, die Besucher in zahlende Kunden verwandeln. Mit Sorgfalt gebaut, pünktlich geliefert.' },
         { title: 'Betreuung & Wachstum', desc: 'Wir verschwinden nicht nach dem Launch. Monatliche Updates, Optimierungen und Strategiegespräche.' },
+        { title: 'Smarte KI-Automatisierung', desc: 'Sparen Sie jede Woche Stunden mit individuellen KI-Tools — von automatisierten Menüs bis hin zu intelligenter Bildbearbeitung.' },
       ],
     },
     pricing: {

@@ -252,8 +252,8 @@ const translations = {
   fr: {
     nav: { proposal: 'Devis gratuit' },
     hero: {
-      headline: 'Beaux Sites Web.\nPropulsés par l\'IA.',
-      sub: 'Nous créons des sites web et boutiques en ligne magnifiques pour les entreprises suisses — avec des outils IA intelligents qui vous font gagner du temps et de l\'argent.',
+      headline: 'Précision Suisse.\nPerformance Digitale.',
+      sub: 'Nous créons des sites web et boutiques en ligne magnifiques pour les entreprises suisses — conçus pour impressionner, performer et convertir.',
       cta: 'Obtenir un devis gratuit',
     },
     advantage: {

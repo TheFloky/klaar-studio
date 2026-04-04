@@ -34,16 +34,18 @@ export default function Navbar({ lang, setLang, ctaText }: NavbarProps) {
       }`}
     >
       <div className="container flex items-center justify-between">
-        <a href="#" className="text-2xl font-extrabold tracking-tight text-foreground inline-flex items-center gap-2">
+        <a href="#" className="inline-flex items-center gap-0">
           <span className="flex flex-col items-center leading-none">
-            <span className="text-2xl font-extrabold tracking-tight">KLAAR</span>
-            <span className="text-[0.65rem] font-medium tracking-[0.45em] uppercase text-muted-foreground">Studio</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="text-2xl font-extrabold tracking-tight text-foreground">KLAAR</span>
+              <svg width="20" height="20" viewBox="0 0 16 16" className="inline-block -mt-px">
+                <rect width="16" height="16" rx="2.5" fill="hsl(var(--primary))" />
+                <path d="M6.25 3h3.5v10h-3.5z" fill="white" />
+                <path d="M3 6.25h10v3.5H3z" fill="white" />
+              </svg>
+            </span>
+            <span className="text-[0.6rem] font-semibold tracking-[0.35em] uppercase text-muted-foreground mt-0.5 mr-1">Studio</span>
           </span>
-          <svg width="18" height="18" viewBox="0 0 16 16" className="inline-block">
-            <rect width="16" height="16" rx="2.5" fill="hsl(var(--primary))" />
-            <path d="M6.25 3h3.5v10h-3.5z" fill="white" />
-            <path d="M3 6.25h10v3.5H3z" fill="white" />
-          </svg>
         </a>
 
         {/* Desktop */}

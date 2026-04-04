@@ -270,6 +270,7 @@ const translations = {
         { title: 'Boutique en ligne — Prête à vendre', desc: 'Une boutique complète avec TWINT et Stripe — prête à prendre des commandes dès le premier jour.' },
         { title: 'Sites qui convertissent', desc: 'Des sites rapides et beaux qui transforment les visiteurs en clients. Conçus avec soin, livrés à temps.' },
         { title: 'Support & Croissance', desc: 'On ne disparaît pas après le lancement. Mises à jour mensuelles, optimisations et appels stratégiques.' },
+        { title: 'Automatisation IA intelligente', desc: 'Gagnez des heures chaque semaine avec des outils IA sur mesure — menus automatisés, retouche photo intelligente et contenu auto-actualisé.' },
       ],
     },
     pricing: {

@@ -5,7 +5,7 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Translations } from '@/lib/i18n';
 import jabeerwockyImg from '@/assets/portfolio-jabeerwocky.png';
 import ckSolutionsImg from '@/assets/portfolio-ck-solutions.jpg';
-import alpineBoutiqueImg from '@/assets/portfolio-alpine-boutique.jpg';
+import gearflowImg from '@/assets/portfolio-gearflow.jpg';
 
 const images = [jabeerwockyImg, ckSolutionsImg, alpineBoutiqueImg];
 

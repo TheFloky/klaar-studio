@@ -7,7 +7,7 @@ import jabeerwockyImg from '@/assets/portfolio-jabeerwocky.png';
 import ckSolutionsImg from '@/assets/portfolio-ck-solutions.jpg';
 import gearflowImg from '@/assets/portfolio-gearflow.jpg';
 
-const images = [jabeerwockyImg, ckSolutionsImg, alpineBoutiqueImg];
+const images = [jabeerwockyImg, ckSolutionsImg, gearflowImg];
 
 export default function FeaturedProjects({ t }: { t: Translations }) {
   const { ref, isVisible } = useScrollReveal();

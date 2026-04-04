@@ -128,8 +128,8 @@ const translations = {
   de: {
     nav: { proposal: 'Kostenloses Angebot' },
     hero: {
-      headline: 'Schöne Websites.\nMit KI-Power.',
-      sub: 'Wir gestalten beeindruckende Websites und Online-Shops für Schweizer Unternehmen — mit smarten KI-Tools, die Ihnen Zeit und Geld sparen.',
+      headline: 'Schweizer Präzision.\nDigitale Performance.',
+      sub: 'Wir gestalten beeindruckende Websites und Online-Shops für Schweizer Unternehmen — gebaut um grossartig auszusehen, schnell zu laden und Kunden zu gewinnen.',
       cta: 'Kostenloses Angebot erhalten',
     },
     advantage: {

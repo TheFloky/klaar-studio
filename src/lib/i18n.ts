@@ -132,7 +132,7 @@ const translations = {
       cta: 'Projekt starten',
     },
     advantage: {
-      title: 'Der Vanguard-Vorteil',
+      title: 'Der klaar-Vorteil',
       items: [
         { title: 'Muttersprachliche Kommunikation', desc: 'Vollständiger Support auf Deutsch & Französisch — ohne Sprachbarrieren.' },
         { title: 'Schweizer Qualitätsstandards', desc: 'Hochleistungsfähiger, nDSG-konformer Code auf höchstem Niveau.' },

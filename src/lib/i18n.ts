@@ -312,7 +312,7 @@ const translations = {
           ],
         },
         {
-          name: 'Vanguard Elite',
+          name: 'klaar Elite',
           price: 'CHF 7\'500+',
           monthly: 'CHF 400/mois maintenance',
           features: [

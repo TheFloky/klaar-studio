@@ -35,7 +35,10 @@ export default function Navbar({ lang, setLang, ctaText }: NavbarProps) {
     >
       <div className="container flex items-center justify-between">
         <a href="#" className="text-xl font-extrabold tracking-tight text-foreground inline-flex items-center gap-1.5">
-          VANGUARD
+          <span className="flex flex-col leading-none">
+            <span className="text-xl font-extrabold tracking-tight">KLAAR</span>
+            <span className="text-[0.5rem] font-medium tracking-[0.25em] uppercase text-muted-foreground">Studio</span>
+          </span>
           <svg width="16" height="16" viewBox="0 0 16 16" className="inline-block">
             <rect width="16" height="16" rx="2.5" fill="hsl(var(--primary))" />
             <path d="M6.25 3h3.5v10h-3.5z" fill="white" />

@@ -43,7 +43,7 @@ export default function Navbar({ lang, setLang, ctaText }: NavbarProps) {
               <path d="M3 6.25h10v3.5H3z" fill="white" />
             </svg>
           </span>
-          <span className="font-semibold tracking-[0.38em] uppercase text-muted-foreground -mt-0.5 text-sm my-0 px-[2px] mx-0 text-center">Studio</span>
+          <span className="font-semibold tracking-[0.38em] uppercase text-muted-foreground -mt-0.5 text-sm my-0 px-[2px] mx-0 text-center -translate-x-[13px]">Studio</span>
         </a>
 
         {/* Desktop */}

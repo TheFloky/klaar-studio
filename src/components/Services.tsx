@@ -1,8 +1,8 @@
-import { ShoppingCart, Palette, Rocket } from 'lucide-react';
+import { ShoppingCart, Palette, Rocket, Bot } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Translations } from '@/lib/i18n';
 
-const icons = [ShoppingCart, Palette, Rocket];
+const icons = [ShoppingCart, Palette, Rocket, Bot];
 
 export default function Services({ t }: { t: Translations }) {
   const { ref, isVisible } = useScrollReveal();

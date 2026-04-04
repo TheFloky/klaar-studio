@@ -255,7 +255,7 @@ const translations = {
       cta: 'Lancer votre projet',
     },
     advantage: {
-      title: 'L\'Avantage Vanguard',
+      title: 'L\'Avantage klaar',
       items: [
         { title: 'Communication native', desc: 'Support complet en allemand et français — sans barrière linguistique.' },
         { title: 'Standards de qualité suisses', desc: 'Code haute performance, conforme à la nLPD, construit aux plus hauts standards.' },

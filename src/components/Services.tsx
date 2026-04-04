@@ -13,7 +13,7 @@ export default function Services({ t }: { t: Translations }) {
         <h2 className="text-3xl sm:text-5xl font-extrabold text-center text-foreground mb-16">
           {t.services.title}
         </h2>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {t.services.items.map((item, i) => {
             const Icon = icons[i];
             return (

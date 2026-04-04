@@ -4,8 +4,8 @@ const translations = {
   en: {
     nav: { proposal: 'Get a Free Quote' },
     hero: {
-      headline: 'Beautiful Websites.\nPowered by AI.',
-      sub: 'We design stunning websites and online shops for Swiss businesses — with smart AI tools that save you time and make you money.',
+      headline: 'Swiss Precision.\nDigital Performance.',
+      sub: 'We design stunning websites and online shops for Swiss businesses — built to look great, work fast, and win customers.',
       cta: 'Get Your Free Quote',
     },
     advantage: {
@@ -22,6 +22,7 @@ const translations = {
         { title: 'Online Shop — Ready to Sell', desc: 'A complete online store with Swiss payment methods like TWINT and Stripe — ready to take orders from day one.' },
         { title: 'Websites That Win Customers', desc: 'Fast, beautiful websites designed to turn visitors into paying customers. Built with care, delivered on time.' },
         { title: 'Ongoing Support & Growth', desc: 'We don\'t disappear after launch. Monthly updates, speed improvements, and strategy calls to keep you growing.' },
+        { title: 'Smart AI Automation', desc: 'Save hours every week with custom AI tools — from automated menus to smart image editing and self-updating content.' },
       ],
     },
     pricing: {
@@ -127,8 +128,8 @@ const translations = {
   de: {
     nav: { proposal: 'Kostenloses Angebot' },
     hero: {
-      headline: 'Schöne Websites.\nMit KI-Power.',
-      sub: 'Wir gestalten beeindruckende Websites und Online-Shops für Schweizer Unternehmen — mit smarten KI-Tools, die Ihnen Zeit und Geld sparen.',
+      headline: 'Schweizer Präzision.\nDigitale Performance.',
+      sub: 'Wir gestalten beeindruckende Websites und Online-Shops für Schweizer Unternehmen — gebaut um grossartig auszusehen, schnell zu laden und Kunden zu gewinnen.',
       cta: 'Kostenloses Angebot erhalten',
     },
     advantage: {
@@ -145,6 +146,7 @@ const translations = {
         { title: 'Online-Shop — Sofort verkaufen', desc: 'Ein kompletter Online-Shop mit TWINT und Stripe — bereit, ab dem ersten Tag Bestellungen anzunehmen.' },
         { title: 'Websites, die Kunden gewinnen', desc: 'Schnelle, schöne Websites, die Besucher in zahlende Kunden verwandeln. Mit Sorgfalt gebaut, pünktlich geliefert.' },
         { title: 'Betreuung & Wachstum', desc: 'Wir verschwinden nicht nach dem Launch. Monatliche Updates, Optimierungen und Strategiegespräche.' },
+        { title: 'Smarte KI-Automatisierung', desc: 'Sparen Sie jede Woche Stunden mit individuellen KI-Tools — von automatisierten Menüs bis hin zu intelligenter Bildbearbeitung.' },
       ],
     },
     pricing: {
@@ -250,8 +252,8 @@ const translations = {
   fr: {
     nav: { proposal: 'Devis gratuit' },
     hero: {
-      headline: 'Beaux Sites Web.\nPropulsés par l\'IA.',
-      sub: 'Nous créons des sites web et boutiques en ligne magnifiques pour les entreprises suisses — avec des outils IA intelligents qui vous font gagner du temps et de l\'argent.',
+      headline: 'Précision Suisse.\nPerformance Digitale.',
+      sub: 'Nous créons des sites web et boutiques en ligne magnifiques pour les entreprises suisses — conçus pour impressionner, performer et convertir.',
       cta: 'Obtenir un devis gratuit',
     },
     advantage: {
@@ -268,6 +270,7 @@ const translations = {
         { title: 'Boutique en ligne — Prête à vendre', desc: 'Une boutique complète avec TWINT et Stripe — prête à prendre des commandes dès le premier jour.' },
         { title: 'Sites qui convertissent', desc: 'Des sites rapides et beaux qui transforment les visiteurs en clients. Conçus avec soin, livrés à temps.' },
         { title: 'Support & Croissance', desc: 'On ne disparaît pas après le lancement. Mises à jour mensuelles, optimisations et appels stratégiques.' },
+        { title: 'Automatisation IA intelligente', desc: 'Gagnez des heures chaque semaine avec des outils IA sur mesure — menus automatisés, retouche photo intelligente et contenu auto-actualisé.' },
       ],
     },
     pricing: {

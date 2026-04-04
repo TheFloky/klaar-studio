@@ -9,7 +9,7 @@ const translations = {
       cta: 'Start Your Project',
     },
     advantage: {
-      title: 'The Vanguard Advantage',
+      title: 'The klaar Advantage',
       items: [
         { title: 'Native Communication', desc: 'Full German, English and French support — no language barriers, ever.' },
         { title: 'Swiss Quality Standards', desc: 'High-performance, nDSG-compliant code built to the highest standards.' },

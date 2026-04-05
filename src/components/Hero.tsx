@@ -9,7 +9,6 @@ interface HeroProps {
 export default function Hero({ t }: HeroProps) {
   return (
     <section className="relative min-h-screen overflow-hidden pt-20 items-center justify-center flex flex-row">
-      {/* Abstract shapes */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl animate-float" />
         <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-primary/3 blur-3xl animate-float" style={{ animationDelay: '3s' }} />
@@ -23,7 +22,7 @@ export default function Hero({ t }: HeroProps) {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            Swiss Digital Agency
+            {t.hero.badge}
           </div>
           <h1 className="text-3xl sm:text-5xl lg:text-7xl xl:text-8xl font-extrabold leading-[1] tracking-tight text-foreground mb-6">
             {t.hero.headline.split('\n').map((line, i) => (

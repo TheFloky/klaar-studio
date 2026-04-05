@@ -1,44 +1,24 @@
 import { Database, Globe, ShieldAlert, Brain } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import type { Translations } from '@/lib/i18n';
 
-const columns = [
-  {
-    icon: Database,
-    title: 'Data Residency (Geneva/Zurich)',
-    text: 'We host exclusively on TIER II+ Swiss servers. Your business data stays under Swiss jurisdiction, shielded from the US Cloud Act and foreign surveillance.',
-  },
-  {
-    icon: Globe,
-    title: 'IP-Leak Protection',
-    text: 'We eliminate silent data transfers. No external Google Fonts or US CDNs. We serve every asset locally to keep your visitors\' IP addresses private.',
-  },
-  {
-    icon: ShieldAlert,
-    title: 'CEO Liability Shield',
-    text: 'The revised nFADP places personal liability on directors. We build \'Privacy by Design\' so you can focus on growth, not legal risks.',
-  },
-  {
-    icon: Brain,
-    title: 'Sovereign AI (The OpenAI Alternative)',
-    text: 'Most AI tools send your company secrets to US servers for training. Our Sovereign AI runs exclusively on Infomaniak\'s Swiss-hosted infrastructure. Your data stays in the bunker, remains your property, and is never used to train third-party models.',
-  },
-];
+const icons = [Database, Globe, ShieldAlert, Brain];
 
-export default function SovereigntyAdvantage() {
+export default function SovereigntyAdvantage({ t }: { t: Translations }) {
   const { ref, isVisible } = useScrollReveal();
 
   return (
-    <section ref={ref} className="py-24 sm:py-32" aria-label="The Sovereignty Advantage">
+    <section ref={ref} className="py-24 sm:py-32" aria-label={t.sovereignty.title}>
       <div className="container">
         <h2 className="text-3xl sm:text-5xl font-extrabold text-center text-foreground mb-4">
-          The Sovereignty Advantage
+          {t.sovereignty.title}
         </h2>
         <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-16">
-          Your website should protect your business — not expose it. Here's how we keep your data under Swiss law.
+          {t.sovereignty.subtitle}
         </p>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {columns.map((col, i) => {
-            const Icon = col.icon;
+          {t.sovereignty.items.map((col, i) => {
+            const Icon = icons[i];
             return (
               <div
                 key={col.title}

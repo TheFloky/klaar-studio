@@ -1,4 +1,4 @@
-import { Check, Star, ShoppingBag, Crown, Globe, Zap } from 'lucide-react';
+import { Check, Star, ShoppingBag, Crown, Globe, Zap, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';

@@ -22,7 +22,7 @@ const translations = {
         { title: 'Online Shop — Ready to Sell', desc: 'A complete online store with Swiss payment methods like TWINT and Stripe — ready to take orders from day one.' },
         { title: 'Websites That Win Customers', desc: 'Fast, beautiful websites designed to turn visitors into paying customers. Built with care, delivered on time.' },
         { title: 'Ongoing Support & Growth', desc: 'We don\'t disappear after launch. Monthly updates, speed improvements, and strategy calls to keep you growing.' },
-        { title: 'Smart AI Automation', desc: 'Save hours every week with custom AI tools — from automated menus to smart image editing and self-updating content.' },
+        { title: 'AI Efficiency & Sovereign LLMs', desc: 'Private knowledge bases to chat with your company PDFs securely. Automated multilingual content in German, French & Italian. AI-driven workflows with Swiss banking-grade privacy.' },
       ],
     },
     pricing: {

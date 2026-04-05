@@ -25,13 +25,11 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Normalize URL
     let targetUrl = url.trim();
     if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
       targetUrl = `https://${targetUrl}`;
     }
 
-    // Extract hostname for DNS/IP lookup
     let hostname: string;
     try {
       hostname = new URL(targetUrl).hostname;
@@ -42,7 +40,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Run Firecrawl scrape and IP geolocation in parallel
     const [scrapeRes, ipRes] = await Promise.all([
       fetch("https://api.firecrawl.dev/v1/scrape", {
         method: "POST",
@@ -56,7 +53,6 @@ Deno.serve(async (req) => {
           onlyMainContent: false,
         }),
       }),
-      // Use ip-api.com to resolve hostname and get geolocation
       fetch(`http://ip-api.com/json/${hostname}?fields=status,country,countryCode,query`),
     ]);
 
@@ -83,11 +79,22 @@ Deno.serve(async (req) => {
     let legalPresence = false;
     let fontsFound: string[] = [];
     let trackersFound: string[] = [];
+    let siteTitle = "";
+    let siteDescription = "";
 
     try {
       const scrapeData = await scrapeRes.json();
       const html = scrapeData?.data?.html || scrapeData?.html || "";
       const htmlLower = html.toLowerCase();
+
+      // Extract title
+      const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+      if (titleMatch) siteTitle = titleMatch[1].trim();
+
+      // Extract meta description
+      const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i)
+        || html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["']/i);
+      if (descMatch) siteDescription = descMatch[1].trim();
 
       // Check for Google Fonts
       if (htmlLower.includes("fonts.googleapis.com") || htmlLower.includes("fonts.gstatic.com")) {
@@ -103,7 +110,7 @@ Deno.serve(async (req) => {
         if (htmlLower.includes("googletagmanager.com")) trackersFound.push("googletagmanager.com");
       }
 
-      // Check for Impressum link
+      // Check for Impressum
       if (htmlLower.includes("impressum")) {
         legalPresence = true;
       }
@@ -120,6 +127,8 @@ Deno.serve(async (req) => {
         ip: ipInfo,
         fontsFound,
         trackersFound,
+        siteTitle,
+        siteDescription,
       },
     };
 

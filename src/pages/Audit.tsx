@@ -58,16 +58,16 @@ function ScoreGauge({ score, scanning }: { score: number; scanning: boolean }) {
   const stroke = 12;
   const circumference = 2 * Math.PI * radius;
   const progress = scanning ? 0 : (score / 100) * circumference;
-  const color = score >= 75 ? "hsl(var(--chart-2))" : score >= 50 ? "hsl(var(--chart-4))" : "hsl(var(--destructive))";
+  const color = score >= 75 ? "#22c55e" : score >= 50 ? "#eab308" : "#ef4444";
 
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="relative w-56 h-56 flex items-center justify-center">
         <svg width="224" height="224" viewBox="0 0 224 224" className="-rotate-90">
-          <circle cx="112" cy="112" r={radius} fill="none" stroke="hsl(var(--border))" strokeWidth={stroke} />
+          <circle cx="112" cy="112" r={radius} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
           <circle
             cx="112" cy="112" r={radius} fill="none"
-            stroke={scanning ? "hsl(var(--muted-foreground))" : color}
+            stroke={scanning ? "#9ca3af" : color}
             strokeWidth={stroke}
             strokeDasharray={circumference}
             strokeDashoffset={circumference - progress}
@@ -76,7 +76,7 @@ function ScoreGauge({ score, scanning }: { score: number; scanning: boolean }) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-5xl font-bold tracking-tight" style={{ color: scanning ? "hsl(var(--muted-foreground))" : color }}>
+          <span className="text-5xl font-bold tracking-tight" style={{ color: scanning ? "#9ca3af" : color }}>
             {scanning ? "—" : `${score}%`}
           </span>
           <span className="text-xs uppercase tracking-widest text-muted-foreground mt-1">Compliance Score</span>

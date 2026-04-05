@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clients: {
+        Row: {
+          compliance_details: Json | null
+          compliance_score: number | null
+          created_at: string
+          id: string
+          name: string | null
+          niche: string | null
+          status: string | null
+          tier: string | null
+          todos: Json | null
+          updated_at: string
+          website: string
+        }
+        Insert: {
+          compliance_details?: Json | null
+          compliance_score?: number | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          niche?: string | null
+          status?: string | null
+          tier?: string | null
+          todos?: Json | null
+          updated_at?: string
+          website: string
+        }
+        Update: {
+          compliance_details?: Json | null
+          compliance_score?: number | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          niche?: string | null
+          status?: string | null
+          tier?: string | null
+          todos?: Json | null
+          updated_at?: string
+          website?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -162,7 +162,7 @@ const translations = {
     hero: {
       headline: 'Schweizer Präzision.\nDigitale Performance.',
       sub: 'Wir gestalten beeindruckende Websites und Online-Shops für Schweizer Unternehmen — gebaut um grossartig auszusehen, schnell zu laden und Kunden zu gewinnen.',
-      cta: 'Kostenloses Angebot erhalten',
+      cta: 'Kostenlose Beratung buchen',
       badge: 'Schweizer Digitalagentur',
     },
     badges: {

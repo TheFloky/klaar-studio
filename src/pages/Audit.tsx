@@ -364,6 +364,27 @@ export default function Audit() {
           </div>
         )}
 
+        {/* AI Privacy Toggle */}
+        <div className="bg-card rounded-xl border border-border shadow-sm p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-primary">
+                <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                <rect x="10" y="6" width="4" height="12" rx="0.5" fill="currentColor" />
+                <rect x="6" y="10" width="12" height="4" rx="0.5" fill="currentColor" />
+                <circle cx="19" cy="5" r="4" fill="currentColor" opacity="0.2" />
+                <path d="M17 5h4M19 3v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="font-bold text-foreground text-sm uppercase tracking-wider mb-2">Sovereign AI — Replace Non-Compliant AI Calls</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                We can bridge your existing workflows to <strong className="text-foreground">Infomaniak's Swiss-hosted LLM API</strong>, replacing non-compliant US-based AI calls with Sovereign Swiss alternatives. Your data stays in Switzerland, remains your property, and is never used to train third-party models.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* CEO Liability Warning */}
         <div className="bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-900 rounded-xl p-6">
           <div className="flex items-start gap-3">

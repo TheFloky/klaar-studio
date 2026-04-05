@@ -44,6 +44,11 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
                     {t.pricing.popular}
                   </Badge>
                 )}
+                {isElite && (
+                  <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg" title="Swiss Sovereign AI Included">
+                    <Brain size={18} className="text-primary-foreground" />
+                  </div>
+                )}
 
                 {[Globe, Zap, ShoppingBag, Crown][i] && (() => {
                   const Icon = [Globe, Zap, ShoppingBag, Crown][i];

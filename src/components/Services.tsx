@@ -1,4 +1,4 @@
-import { ShoppingCart, Palette, Rocket, Bot } from 'lucide-react';
+import { ShoppingCart, Palette, Rocket, Brain } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Translations } from '@/lib/i18n';
 

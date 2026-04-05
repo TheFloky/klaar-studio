@@ -58,7 +58,7 @@ function ScoreGauge({ score, scanning }: { score: number; scanning: boolean }) {
   const stroke = 12;
   const circumference = 2 * Math.PI * radius;
   const progress = scanning ? 0 : (score / 100) * circumference;
-  const color = score >= 75 ? "hsl(var(--chart-2))" : score >= 50 ? "hsl(var(--chart-4))" : "hsl(var(--destructive))";
+  const color = score >= 75 ? "#22c55e" : score >= 50 ? "#eab308" : "#ef4444";
 
   return (
     <div className="flex flex-col items-center gap-3">

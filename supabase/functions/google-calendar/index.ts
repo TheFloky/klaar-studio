@@ -1,5 +1,6 @@
 import { corsHeaders } from '@supabase/supabase-js/cors'
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 
 const GetSlotsSchema = z.object({ action: z.literal('get-slots') })
 
@@ -128,17 +129,35 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const serviceAccountJson = Deno.env.get('GOOGLE_SERVICE_ACCOUNT_KEY')
+    // Try env vars first, then fall back to DB settings
+    let serviceAccountJson = Deno.env.get('GOOGLE_SERVICE_ACCOUNT_KEY')
+    let calendarId = Deno.env.get('GOOGLE_CALENDAR_ID')
+
+    if (!serviceAccountJson || !calendarId) {
+      const sbClient = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      )
+      const { data: settings } = await sbClient
+        .from('settings')
+        .select('key, value')
+        .in('key', ['GOOGLE_SERVICE_ACCOUNT_KEY', 'GOOGLE_CALENDAR_ID'])
+
+      settings?.forEach((s: any) => {
+        if (s.key === 'GOOGLE_SERVICE_ACCOUNT_KEY' && !serviceAccountJson) serviceAccountJson = s.value
+        if (s.key === 'GOOGLE_CALENDAR_ID' && !calendarId) calendarId = s.value
+      })
+    }
+
     if (!serviceAccountJson) {
-      return new Response(JSON.stringify({ error: 'Google Calendar not configured' }), {
+      return new Response(JSON.stringify({ error: 'Google Calendar not configured. Add keys in Admin → Settings.' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
-    const calendarId = Deno.env.get('GOOGLE_CALENDAR_ID')
     if (!calendarId) {
-      return new Response(JSON.stringify({ error: 'Calendar ID not configured' }), {
+      return new Response(JSON.stringify({ error: 'Calendar ID not configured. Add it in Admin → Settings.' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })

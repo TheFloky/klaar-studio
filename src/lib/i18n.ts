@@ -513,7 +513,7 @@ type TranslationMap = {
     ctaButton: string;
     projects: Project[];
   };
-  contact: { title: string; steps: string[]; namePlaceholder: string; goalPlaceholder: string; budgets: string[]; next: string; back: string; submit: string; success: string };
+  contact: { title: string; steps: string[]; namePlaceholder: string; businessPlaceholder: string; needsPlaceholder: string; next: string; back: string; submit: string; success: string; pickDate: string; loading: string; noSlots: string };
   footer: { address: string; phone: string; impressum: string; privacy: string; rights: string };
 };
 export type Translations = TranslationMap;

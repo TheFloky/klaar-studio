@@ -6,7 +6,7 @@ const translations = {
     hero: {
       headline: 'Swiss Precision.\nDigital Performance.',
       sub: 'We design stunning websites and online shops for Swiss businesses — built to look great, work fast, and win customers.',
-      cta: 'Get Your Free Quote',
+      cta: 'Book a Free Consultation',
       badge: 'Swiss Digital Agency',
     },
     badges: {
@@ -162,7 +162,7 @@ const translations = {
     hero: {
       headline: 'Schweizer Präzision.\nDigitale Performance.',
       sub: 'Wir gestalten beeindruckende Websites und Online-Shops für Schweizer Unternehmen — gebaut um grossartig auszusehen, schnell zu laden und Kunden zu gewinnen.',
-      cta: 'Kostenloses Angebot erhalten',
+      cta: 'Kostenlose Beratung buchen',
       badge: 'Schweizer Digitalagentur',
     },
     badges: {
@@ -318,7 +318,7 @@ const translations = {
     hero: {
       headline: 'Précision Suisse.\nPerformance Digitale.',
       sub: 'Nous créons des sites web et boutiques en ligne magnifiques pour les entreprises suisses — conçus pour impressionner, performer et convertir.',
-      cta: 'Obtenir un devis gratuit',
+      cta: 'Réserver une consultation gratuite',
       badge: 'Agence Digitale Suisse',
     },
     badges: {

@@ -3,7 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Lang, getTranslations } from '@/lib/i18n';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import ComplianceBadgeStrip from '@/components/ComplianceBadgeStrip';
 import Advantages from '@/components/Advantages';
+import SovereigntyAdvantage from '@/components/SovereigntyAdvantage';
 import Services from '@/components/Services';
 import InvestmentTiers from '@/components/InvestmentTiers';
 import FeaturedProjects from '@/components/FeaturedProjects';
@@ -31,7 +33,9 @@ export default function Index() {
       <div className="fixed inset-0 pointer-events-none z-0 blueprint-grid" />
       <Navbar lang={lang} setLang={setLang} ctaText={t.nav.proposal} />
       <Hero t={t} />
+      <ComplianceBadgeStrip />
       <Advantages t={t} />
+      <SovereigntyAdvantage />
       <Services t={t} />
       <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       <FeaturedProjects t={t} />

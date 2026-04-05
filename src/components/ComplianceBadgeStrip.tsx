@@ -1,0 +1,40 @@
+import { Shield, Server, Eye, ShieldCheck } from 'lucide-react';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
+
+const badges = [
+  { icon: Server, label: '100% Swiss-Hosted Data' },
+  { icon: ShieldCheck, label: 'nFADP 2026 Compliant' },
+  { icon: Eye, label: 'Privacy-First Architecture' },
+  { icon: Shield, label: 'No US-Cloud Data Leaks' },
+];
+
+export default function ComplianceBadgeStrip() {
+  const { ref, isVisible } = useScrollReveal();
+
+  return (
+    <section
+      ref={ref}
+      className={`py-8 border-y border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-700 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}
+    >
+      <div className="container">
+        <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
+          {badges.map(({ icon: Icon, label }) => (
+            <div
+              key={label}
+              className="flex items-center gap-2.5 text-muted-foreground"
+            >
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Icon className="text-primary" size={16} />
+              </div>
+              <span className="text-sm font-semibold tracking-wide whitespace-nowrap">
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

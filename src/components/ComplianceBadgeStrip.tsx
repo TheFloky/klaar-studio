@@ -19,7 +19,7 @@ export default function ComplianceBadgeStrip() {
       }`}
     >
       <div className="container">
-        <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-4 sm:gap-10">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-10">
           {badges.map(({ icon: Icon, label }) => (
             <div
               key={label}

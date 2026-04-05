@@ -53,6 +53,7 @@ const translations = {
             'Admin dashboard to manage content',
             'Booking system or inventory tracker',
             'Available in multiple languages',
+            'Swiss server hosting included',
           ],
         },
         {
@@ -177,6 +178,7 @@ const translations = {
             'Admin-Bereich zur Verwaltung',
             'Buchungssystem oder Lagerverwaltung',
             'Mehrsprachig verfügbar',
+            'Schweizer Server-Hosting inklusive',
           ],
         },
         {
@@ -301,6 +303,7 @@ const translations = {
             'Tableau de bord pour gérer le contenu',
             'Système de réservation ou d\'inventaire',
             'Disponible en plusieurs langues',
+            'Hébergement sur serveurs suisses inclus',
           ],
         },
         {

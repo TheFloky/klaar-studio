@@ -37,9 +37,9 @@ export default function Index() {
       <Advantages t={t} />
       <SovereigntyAdvantage />
       <Services t={t} />
+      <ComplianceChecker />
       <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       <FeaturedProjects t={t} />
-      <ComplianceChecker />
       <TrustBar />
       <ContactForm t={t} selectedTier={selectedTier} />
       <Footer t={t} />

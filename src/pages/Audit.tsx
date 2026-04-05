@@ -64,7 +64,7 @@ function ScoreGauge({ score, scanning }: { score: number; scanning: boolean }) {
     <div className="flex flex-col items-center gap-3">
       <div className="relative w-56 h-56 flex items-center justify-center">
         <svg width="224" height="224" viewBox="0 0 224 224" className="-rotate-90">
-          <circle cx="112" cy="112" r={radius} fill="none" stroke="hsl(var(--border))" strokeWidth={stroke} />
+          <circle cx="112" cy="112" r={radius} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
           <circle
             cx="112" cy="112" r={radius} fill="none"
             stroke={scanning ? "#9ca3af" : color}

@@ -136,15 +136,18 @@ const translations = {
       ],
     },
     contact: {
-      title: 'Let\'s Get Started',
-      steps: ['Your Name', 'Your Project', 'Your Budget'],
-      namePlaceholder: 'Full name',
-      goalPlaceholder: 'Tell us what you need — a website, an online shop, or something else...',
-      budgets: ['CHF 2\'500 – 5\'000', 'CHF 5\'000 – 10\'000', 'CHF 10\'000 – 25\'000', 'CHF 25\'000+'],
+      title: 'Book a Free Consultation',
+      steps: ['Full Name', 'Business', 'Your Needs', 'Pick a Date'],
+      namePlaceholder: 'Your full name',
+      businessPlaceholder: 'Your business name',
+      needsPlaceholder: 'Tell us what you need — a website, an online shop, compliance audit, or something else...',
       next: 'Next',
       back: 'Back',
-      submit: 'Send My Request',
-      success: 'Thank you! We\'ll get back to you within 24 hours.',
+      submit: 'Book Consultation',
+      success: 'Your consultation is booked! We\'ll send you a confirmation email shortly.',
+      pickDate: 'Select a date & time for your free consultation',
+      loading: 'Loading available slots...',
+      noSlots: 'No available slots this week. Please try next week.',
     },
     footer: {
       address: '',
@@ -289,15 +292,18 @@ const translations = {
       ],
     },
     contact: {
-      title: 'Legen wir los',
-      steps: ['Ihr Name', 'Ihr Projekt', 'Ihr Budget'],
-      namePlaceholder: 'Vollständiger Name',
-      goalPlaceholder: 'Sagen Sie uns, was Sie brauchen — eine Website, einen Online-Shop oder etwas anderes...',
-      budgets: ['CHF 2\'500 – 5\'000', 'CHF 5\'000 – 10\'000', 'CHF 10\'000 – 25\'000', 'CHF 25\'000+'],
+      title: 'Kostenlose Beratung buchen',
+      steps: ['Vollständiger Name', 'Unternehmen', 'Ihr Bedarf', 'Termin wählen'],
+      namePlaceholder: 'Ihr vollständiger Name',
+      businessPlaceholder: 'Ihr Firmenname',
+      needsPlaceholder: 'Sagen Sie uns, was Sie brauchen — eine Website, einen Online-Shop, ein Compliance-Audit oder etwas anderes...',
       next: 'Weiter',
       back: 'Zurück',
-      submit: 'Anfrage senden',
-      success: 'Vielen Dank! Wir melden uns innerhalb von 24 Stunden.',
+      submit: 'Beratung buchen',
+      success: 'Ihre Beratung ist gebucht! Wir senden Ihnen eine Bestätigungsmail.',
+      pickDate: 'Wählen Sie ein Datum & Uhrzeit für Ihre kostenlose Beratung',
+      loading: 'Verfügbare Termine werden geladen...',
+      noSlots: 'Keine verfügbaren Termine diese Woche. Bitte versuchen Sie nächste Woche.',
     },
     footer: {
       address: '',
@@ -442,15 +448,18 @@ const translations = {
       ],
     },
     contact: {
-      title: 'C\'est parti !',
-      steps: ['Votre nom', 'Votre projet', 'Votre budget'],
-      namePlaceholder: 'Nom complet',
-      goalPlaceholder: 'Dites-nous ce qu\'il vous faut — un site, une boutique en ligne ou autre chose...',
-      budgets: ['CHF 2\'500 – 5\'000', 'CHF 5\'000 – 10\'000', 'CHF 10\'000 – 25\'000', 'CHF 25\'000+'],
+      title: 'Réservez une consultation gratuite',
+      steps: ['Nom complet', 'Entreprise', 'Vos besoins', 'Choisir une date'],
+      namePlaceholder: 'Votre nom complet',
+      businessPlaceholder: 'Le nom de votre entreprise',
+      needsPlaceholder: 'Dites-nous ce qu\'il vous faut — un site, une boutique en ligne, un audit de conformité ou autre chose...',
       next: 'Suivant',
       back: 'Retour',
-      submit: 'Envoyer ma demande',
-      success: 'Merci ! Nous vous répondrons dans les 24 heures.',
+      submit: 'Réserver la consultation',
+      success: 'Votre consultation est réservée ! Nous vous enverrons un e-mail de confirmation.',
+      pickDate: 'Choisissez une date et heure pour votre consultation gratuite',
+      loading: 'Chargement des créneaux disponibles...',
+      noSlots: 'Aucun créneau disponible cette semaine. Veuillez réessayer la semaine prochaine.',
     },
     footer: {
       address: '',
@@ -504,7 +513,7 @@ type TranslationMap = {
     ctaButton: string;
     projects: Project[];
   };
-  contact: { title: string; steps: string[]; namePlaceholder: string; goalPlaceholder: string; budgets: string[]; next: string; back: string; submit: string; success: string };
+  contact: { title: string; steps: string[]; namePlaceholder: string; businessPlaceholder: string; needsPlaceholder: string; next: string; back: string; submit: string; success: string; pickDate: string; loading: string; noSlots: string };
   footer: { address: string; phone: string; impressum: string; privacy: string; rights: string };
 };
 export type Translations = TranslationMap;

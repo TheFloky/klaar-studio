@@ -36,7 +36,7 @@ export default function SovereigntyAdvantage() {
         <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-16">
           Your website should protect your business — not expose it. Here's how we keep your data under Swiss law.
         </p>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {columns.map((col, i) => {
             const Icon = col.icon;
             return (

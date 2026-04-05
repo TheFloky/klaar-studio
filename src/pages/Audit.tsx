@@ -67,7 +67,7 @@ function ScoreGauge({ score, scanning }: { score: number; scanning: boolean }) {
           <circle cx="112" cy="112" r={radius} fill="none" stroke="hsl(var(--border))" strokeWidth={stroke} />
           <circle
             cx="112" cy="112" r={radius} fill="none"
-            stroke={scanning ? "hsl(var(--muted-foreground))" : color}
+            stroke={scanning ? "#9ca3af" : color}
             strokeWidth={stroke}
             strokeDasharray={circumference}
             strokeDashoffset={circumference - progress}

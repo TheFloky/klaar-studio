@@ -7,6 +7,7 @@ import ComplianceBadgeStrip from '@/components/ComplianceBadgeStrip';
 import Advantages from '@/components/Advantages';
 import SovereigntyAdvantage from '@/components/SovereigntyAdvantage';
 import Services from '@/components/Services';
+import SovereignAI from '@/components/SovereignAI';
 import InvestmentTiers from '@/components/InvestmentTiers';
 import FeaturedProjects from '@/components/FeaturedProjects';
 import TrustBar from '@/components/TrustBar';
@@ -37,6 +38,7 @@ export default function Index() {
       <Advantages t={t} />
       <SovereigntyAdvantage />
       <Services t={t} />
+      <SovereignAI />
       <ComplianceChecker />
       <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       <FeaturedProjects t={t} />

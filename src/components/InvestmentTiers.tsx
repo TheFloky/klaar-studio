@@ -1,4 +1,4 @@
-import { Check, Star, ShoppingBag, Crown, Globe, Zap } from 'lucide-react';
+import { Check, Star, ShoppingBag, Crown, Globe, Zap, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
@@ -43,6 +43,11 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
                     <Star size={12} className="mr-1" />
                     {t.pricing.popular}
                   </Badge>
+                )}
+                {isElite && (
+                  <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg" title="Swiss Sovereign AI Included">
+                    <Brain size={18} className="text-primary-foreground" />
+                  </div>
                 )}
 
                 {[Globe, Zap, ShoppingBag, Crown][i] && (() => {

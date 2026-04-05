@@ -22,7 +22,7 @@ const translations = {
         { title: 'Online Shop — Ready to Sell', desc: 'A complete online store with Swiss payment methods like TWINT and Stripe — ready to take orders from day one.' },
         { title: 'Websites That Win Customers', desc: 'Fast, beautiful websites designed to turn visitors into paying customers. Built with care, delivered on time.' },
         { title: 'Ongoing Support & Growth', desc: 'We don\'t disappear after launch. Monthly updates, speed improvements, and strategy calls to keep you growing.' },
-        { title: 'Smart AI Automation', desc: 'Save hours every week with custom AI tools — from automated menus to smart image editing and self-updating content.' },
+        { title: 'AI Efficiency & Sovereign LLMs', desc: 'Private knowledge bases to chat with your company PDFs securely. Automated multilingual content in German, French & Italian. AI-driven workflows with Swiss banking-grade privacy.' },
       ],
     },
     pricing: {
@@ -147,7 +147,7 @@ const translations = {
         { title: 'Online-Shop — Sofort verkaufen', desc: 'Ein kompletter Online-Shop mit TWINT und Stripe — bereit, ab dem ersten Tag Bestellungen anzunehmen.' },
         { title: 'Websites, die Kunden gewinnen', desc: 'Schnelle, schöne Websites, die Besucher in zahlende Kunden verwandeln. Mit Sorgfalt gebaut, pünktlich geliefert.' },
         { title: 'Betreuung & Wachstum', desc: 'Wir verschwinden nicht nach dem Launch. Monatliche Updates, Optimierungen und Strategiegespräche.' },
-        { title: 'Smarte KI-Automatisierung', desc: 'Sparen Sie jede Woche Stunden mit individuellen KI-Tools — von automatisierten Menüs bis hin zu intelligenter Bildbearbeitung.' },
+        { title: 'KI-Effizienz & Souveräne LLMs', desc: 'Private Wissensbasen, um Firmen-PDFs sicher zu durchsuchen. Automatisierte mehrsprachige Inhalte auf Deutsch, Französisch & Italienisch. KI-Workflows mit Schweizer Bankdatenschutz.' },
       ],
     },
     pricing: {
@@ -272,7 +272,7 @@ const translations = {
         { title: 'Boutique en ligne — Prête à vendre', desc: 'Une boutique complète avec TWINT et Stripe — prête à prendre des commandes dès le premier jour.' },
         { title: 'Sites qui convertissent', desc: 'Des sites rapides et beaux qui transforment les visiteurs en clients. Conçus avec soin, livrés à temps.' },
         { title: 'Support & Croissance', desc: 'On ne disparaît pas après le lancement. Mises à jour mensuelles, optimisations et appels stratégiques.' },
-        { title: 'Automatisation IA intelligente', desc: 'Gagnez des heures chaque semaine avec des outils IA sur mesure — menus automatisés, retouche photo intelligente et contenu auto-actualisé.' },
+        { title: 'Efficacité IA & LLMs Souverains', desc: 'Bases de connaissances privées pour interroger vos PDFs en toute sécurité. Contenu multilingue automatisé en allemand, français & italien. Workflows IA avec confidentialité bancaire suisse.' },
       ],
     },
     pricing: {

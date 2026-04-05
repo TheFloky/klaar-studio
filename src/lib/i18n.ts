@@ -7,6 +7,13 @@ const translations = {
       headline: 'Swiss Precision.\nDigital Performance.',
       sub: 'We design stunning websites and online shops for Swiss businesses — built to look great, work fast, and win customers.',
       cta: 'Get Your Free Quote',
+      badge: 'Swiss Digital Agency',
+    },
+    badges: {
+      swissHosted: '100% Swiss-Hosted Data',
+      nfadp: 'nFADP 2026 Compliant',
+      privacyFirst: 'Privacy-First Architecture',
+      noUsCloud: 'No US-Cloud Data Leaks',
     },
     advantage: {
       title: 'Why Choose klaar?',
@@ -15,6 +22,24 @@ const translations = {
         { title: 'Built to Swiss Standards', desc: 'Fast, secure, and fully compliant with Swiss data protection law (nDSG). Your customers\' data is safe.' },
         { title: 'Real Results, Fair Prices', desc: 'Premium quality without the agency markup. Smart workflows mean you get more value for every franc.' },
       ],
+    },
+    sovereignty: {
+      title: 'The Sovereignty Advantage',
+      subtitle: 'Your website should protect your business — not expose it. Here\'s how we keep your data under Swiss law.',
+      items: [
+        { title: 'Data Residency (Geneva/Zurich)', text: 'We host exclusively on TIER II+ Swiss servers. Your business data stays under Swiss jurisdiction, shielded from the US Cloud Act and foreign surveillance.' },
+        { title: 'IP-Leak Protection', text: 'We eliminate silent data transfers. No external Google Fonts or US CDNs. We serve every asset locally to keep your visitors\' IP addresses private.' },
+        { title: 'CEO Liability Shield', text: 'The revised nFADP places personal liability on directors. We build \'Privacy by Design\' so you can focus on growth, not legal risks.' },
+        { title: 'Sovereign AI (The OpenAI Alternative)', text: 'Most AI tools send your company secrets to US servers for training. Our Sovereign AI runs exclusively on Infomaniak\'s Swiss-hosted infrastructure. Your data stays in the bunker, remains your property, and is never used to train third-party models.' },
+      ],
+    },
+    compliance: {
+      badge: 'Free Compliance Check',
+      title: 'Is Your Website Legally Compliant?',
+      subtitle: 'Enter your website URL and we\'ll scan it for Swiss data protection issues — font leaks, US tracking scripts, hosting location, and more. Free, instant results.',
+      placeholder: 'yourwebsite.ch',
+      cta: 'Run Free Audit',
+      footnote: 'Checks hosting location, Google Fonts, tracking scripts & Impressum — based on nFADP / nDSG requirements.',
     },
     services: {
       title: 'What We Do',
@@ -124,6 +149,9 @@ const translations = {
     footer: {
       address: '',
       phone: '+41 44 000 00 00',
+      impressum: 'Impressum',
+      privacy: 'Privacy Policy',
+      rights: 'All rights reserved.',
     },
   },
   de: {
@@ -132,6 +160,13 @@ const translations = {
       headline: 'Schweizer Präzision.\nDigitale Performance.',
       sub: 'Wir gestalten beeindruckende Websites und Online-Shops für Schweizer Unternehmen — gebaut um grossartig auszusehen, schnell zu laden und Kunden zu gewinnen.',
       cta: 'Kostenloses Angebot erhalten',
+      badge: 'Schweizer Digitalagentur',
+    },
+    badges: {
+      swissHosted: '100 % Schweizer Hosting',
+      nfadp: 'nDSG 2026 konform',
+      privacyFirst: 'Privacy-First-Architektur',
+      noUsCloud: 'Keine US-Cloud-Datenlecks',
     },
     advantage: {
       title: 'Warum klaar?',
@@ -140,6 +175,24 @@ const translations = {
         { title: 'Schweizer Qualität', desc: 'Schnell, sicher und vollständig nDSG-konform. Die Daten Ihrer Kunden sind bei uns sicher.' },
         { title: 'Faire Preise, Top-Ergebnisse', desc: 'Premium-Qualität ohne Agentur-Aufschlag. Smarte Arbeitsweisen bringen Ihnen mehr Wert für jeden Franken.' },
       ],
+    },
+    sovereignty: {
+      title: 'Der Souveränitätsvorteil',
+      subtitle: 'Ihre Website sollte Ihr Unternehmen schützen — nicht gefährden. So halten wir Ihre Daten unter Schweizer Recht.',
+      items: [
+        { title: 'Datenstandort (Genf/Zürich)', text: 'Wir hosten ausschliesslich auf TIER II+ Schweizer Servern. Ihre Geschäftsdaten bleiben unter Schweizer Jurisdiktion, geschützt vor dem US Cloud Act und ausländischer Überwachung.' },
+        { title: 'IP-Leak-Schutz', text: 'Wir eliminieren stille Datentransfers. Keine externen Google Fonts oder US-CDNs. Wir liefern jedes Asset lokal, um die IP-Adressen Ihrer Besucher privat zu halten.' },
+        { title: 'CEO-Haftungsschutz', text: 'Das revidierte nDSG sieht persönliche Haftung für Geschäftsführer vor. Wir bauen \'Privacy by Design\', damit Sie sich auf Wachstum konzentrieren können — nicht auf rechtliche Risiken.' },
+        { title: 'Souveräne KI (Die OpenAI-Alternative)', text: 'Die meisten KI-Tools senden Ihre Firmengeheimnisse an US-Server zum Training. Unsere souveräne KI läuft ausschliesslich auf Infomaniaks Schweizer Infrastruktur. Ihre Daten bleiben im Bunker, sind Ihr Eigentum und werden nie für Drittmodelle verwendet.' },
+      ],
+    },
+    compliance: {
+      badge: 'Kostenloser Compliance-Check',
+      title: 'Ist Ihre Website rechtskonform?',
+      subtitle: 'Geben Sie Ihre Website-URL ein und wir prüfen sie auf Schweizer Datenschutzprobleme — Schriftarten-Lecks, US-Tracking-Skripte, Hosting-Standort und mehr. Kostenlos, sofortige Ergebnisse.',
+      placeholder: 'ihrewebsite.ch',
+      cta: 'Kostenloses Audit starten',
+      footnote: 'Prüft Hosting-Standort, Google Fonts, Tracking-Skripte & Impressum — basierend auf nDSG-Anforderungen.',
     },
     services: {
       title: 'Was wir machen',
@@ -249,6 +302,9 @@ const translations = {
     footer: {
       address: '',
       phone: '+41 44 000 00 00',
+      impressum: 'Impressum',
+      privacy: 'Datenschutzerklärung',
+      rights: 'Alle Rechte vorbehalten.',
     },
   },
   fr: {
@@ -257,6 +313,13 @@ const translations = {
       headline: 'Précision Suisse.\nPerformance Digitale.',
       sub: 'Nous créons des sites web et boutiques en ligne magnifiques pour les entreprises suisses — conçus pour impressionner, performer et convertir.',
       cta: 'Obtenir un devis gratuit',
+      badge: 'Agence Digitale Suisse',
+    },
+    badges: {
+      swissHosted: 'Hébergement 100 % suisse',
+      nfadp: 'Conforme nLPD 2026',
+      privacyFirst: 'Architecture Privacy-First',
+      noUsCloud: 'Aucune fuite vers le cloud US',
     },
     advantage: {
       title: 'Pourquoi klaar ?',
@@ -265,6 +328,24 @@ const translations = {
         { title: 'Qualité suisse', desc: 'Rapide, sécurisé et entièrement conforme à la nLPD. Les données de vos clients sont en sécurité.' },
         { title: 'Prix justes, résultats premium', desc: 'Qualité premium sans les frais d\'agence excessifs. Des méthodes intelligentes pour plus de valeur.' },
       ],
+    },
+    sovereignty: {
+      title: 'L\'Avantage Souveraineté',
+      subtitle: 'Votre site web doit protéger votre entreprise — pas l\'exposer. Voici comment nous gardons vos données sous la loi suisse.',
+      items: [
+        { title: 'Résidence des données (Genève/Zurich)', text: 'Nous hébergeons exclusivement sur des serveurs suisses TIER II+. Vos données restent sous juridiction suisse, protégées du US Cloud Act et de la surveillance étrangère.' },
+        { title: 'Protection contre les fuites IP', text: 'Nous éliminons les transferts de données silencieux. Pas de Google Fonts externes ni de CDN américains. Nous servons chaque ressource localement pour protéger les adresses IP de vos visiteurs.' },
+        { title: 'Bouclier de responsabilité du CEO', text: 'La nLPD révisée engage la responsabilité personnelle des dirigeants. Nous construisons le \'Privacy by Design\' pour que vous puissiez vous concentrer sur la croissance, pas sur les risques juridiques.' },
+        { title: 'IA Souveraine (L\'alternative à OpenAI)', text: 'La plupart des outils IA envoient vos secrets d\'entreprise vers des serveurs US pour l\'entraînement. Notre IA Souveraine fonctionne exclusivement sur l\'infrastructure suisse d\'Infomaniak. Vos données restent dans le bunker, restent votre propriété et ne sont jamais utilisées pour entraîner des modèles tiers.' },
+      ],
+    },
+    compliance: {
+      badge: 'Vérification de conformité gratuite',
+      title: 'Votre site web est-il conforme à la loi ?',
+      subtitle: 'Entrez l\'URL de votre site et nous le scannerons pour détecter les problèmes de protection des données suisses — fuites de polices, scripts de suivi US, localisation de l\'hébergement et plus. Gratuit, résultats instantanés.',
+      placeholder: 'votresite.ch',
+      cta: 'Lancer l\'audit gratuit',
+      footnote: 'Vérifie la localisation de l\'hébergement, Google Fonts, scripts de suivi & Impressum — basé sur les exigences nLPD.',
     },
     services: {
       title: 'Nos Services',
@@ -374,9 +455,14 @@ const translations = {
     footer: {
       address: '',
       phone: '+41 44 000 00 00',
+      impressum: 'Mentions légales',
+      privacy: 'Politique de confidentialité',
+      rights: 'Tous droits réservés.',
     },
   },
 } as const;
+
+type SovereigntyItem = { title: string; text: string };
 
 type PricingTier = {
   name: string;
@@ -395,8 +481,11 @@ type Project = {
 
 type TranslationMap = {
   nav: { proposal: string };
-  hero: { headline: string; sub: string; cta: string };
+  hero: { headline: string; sub: string; cta: string; badge: string };
+  badges: { swissHosted: string; nfadp: string; privacyFirst: string; noUsCloud: string };
   advantage: { title: string; items: { title: string; desc: string }[] };
+  sovereignty: { title: string; subtitle: string; items: SovereigntyItem[] };
+  compliance: { badge: string; title: string; subtitle: string; placeholder: string; cta: string; footnote: string };
   services: { title: string; items: { title: string; desc: string }[] };
   pricing: {
     title: string;
@@ -416,7 +505,7 @@ type TranslationMap = {
     projects: Project[];
   };
   contact: { title: string; steps: string[]; namePlaceholder: string; goalPlaceholder: string; budgets: string[]; next: string; back: string; submit: string; success: string };
-  footer: { address: string; phone: string };
+  footer: { address: string; phone: string; impressum: string; privacy: string; rights: string };
 };
 export type Translations = TranslationMap;
 export const getTranslations = (lang: Lang): Translations => translations[lang] as unknown as Translations;

@@ -13,13 +13,13 @@ export default function Footer({ t }: { t: Translations }) {
           <p className="text-sm text-muted-foreground">{t.footer.phone}</p>
           <p className="text-sm text-muted-foreground">hello@klaar.studio</p>
           <div className="flex gap-4 mt-4">
-            <Link to="/impressum" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Impressum</Link>
+            <Link to="/impressum" className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t.footer.impressum}</Link>
             <span className="text-xs text-muted-foreground">·</span>
-            <Link to="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
+            <Link to="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t.footer.privacy}</Link>
           </div>
         </div>
         <div className="mt-8 pt-6 border-t border-border text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} klaar-Studio GmbH. All rights reserved.
+          © {new Date().getFullYear()} klaar-Studio GmbH. {t.footer.rights}
         </div>
       </div>
     </footer>

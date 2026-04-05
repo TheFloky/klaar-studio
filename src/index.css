@@ -135,7 +135,7 @@
 
   .dark .blueprint-grid {
     background-image:
-      linear-gradient(hsl(0 0% 100% / 0.028) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(0 0% 100% / 0.028) 1px, transparent 1px);
+      linear-gradient(hsl(0 0% 100% / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(0 0% 100% / 0.07) 1px, transparent 1px);
   }
 }

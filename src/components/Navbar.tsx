@@ -13,7 +13,6 @@ const langLabels: Record<Lang, string> = { de: 'DE', fr: 'FR', en: 'EN' };
 
 export default function Navbar({ lang, setLang, ctaText }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [dark, setDark] = useState(true);
 
   useEffect(() => {

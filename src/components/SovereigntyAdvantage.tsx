@@ -1,4 +1,4 @@
-import { Database, Globe, ShieldAlert } from 'lucide-react';
+import { Database, Globe, ShieldAlert, Brain } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const columns = [
@@ -17,6 +17,11 @@ const columns = [
     title: 'CEO Liability Shield',
     text: 'The revised nFADP places personal liability on directors. We build \'Privacy by Design\' so you can focus on growth, not legal risks.',
   },
+  {
+    icon: Brain,
+    title: 'Sovereign AI (The OpenAI Alternative)',
+    text: 'Most AI tools send your company secrets to US servers for training. Our Sovereign AI runs exclusively on Infomaniak\'s Swiss-hosted infrastructure. Your data stays in the bunker, remains your property, and is never used to train third-party models.',
+  },
 ];
 
 export default function SovereigntyAdvantage() {
@@ -31,7 +36,7 @@ export default function SovereigntyAdvantage() {
         <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-16">
           Your website should protect your business — not expose it. Here's how we keep your data under Swiss law.
         </p>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {columns.map((col, i) => {
             const Icon = col.icon;
             return (

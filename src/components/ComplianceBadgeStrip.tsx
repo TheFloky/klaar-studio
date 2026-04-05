@@ -19,16 +19,16 @@ export default function ComplianceBadgeStrip() {
       }`}
     >
       <div className="container">
-        <div className="flex flex-col items-center gap-4 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-10">
+        <div className="mx-auto flex max-w-sm flex-col gap-4 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center sm:gap-10">
           {badges.map(({ icon: Icon, label }) => (
             <div
               key={label}
-              className="flex items-center gap-2.5 text-muted-foreground"
+              className="grid w-full grid-cols-[2rem,minmax(0,1fr)] items-center gap-3 text-left text-muted-foreground sm:flex sm:w-auto sm:items-center sm:gap-2.5"
             >
               <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <Icon className="text-primary" size={16} />
               </div>
-              <span className="text-sm font-semibold tracking-wide whitespace-nowrap">
+              <span className="text-sm font-semibold tracking-wide leading-tight sm:whitespace-nowrap">
                 {label}
               </span>
             </div>

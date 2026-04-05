@@ -6,7 +6,7 @@ const translations = {
     hero: {
       headline: 'Swiss Precision.\nDigital Performance.',
       sub: 'We design stunning websites and online shops for Swiss businesses — built to look great, work fast, and win customers.',
-      cta: 'Get Your Free Quote',
+      cta: 'Book a Free Consultation',
       badge: 'Swiss Digital Agency',
     },
     badges: {

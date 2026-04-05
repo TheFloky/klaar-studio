@@ -354,9 +354,16 @@ export default function Audit() {
           </div>
         )}
 
-        {/* Generate Report */}
+        {/* CTA + Report */}
         {scanComplete && (
-          <div className="flex justify-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              to="/en#contact"
+              className="px-8 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-lg hover:bg-primary/90 transition-all flex items-center gap-2 shadow-sm swiss-red-glow"
+            >
+              <Shield size={16} />
+              {score < 100 ? 'Fix Your Compliance Issues' : 'Let\'s Create a Fresh Look for Your Site'}
+            </Link>
             <button className="px-6 py-3 border-2 border-border rounded-lg text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-all flex items-center gap-2">
               <FileDown size={16} />
               Generate Risk Report PDF

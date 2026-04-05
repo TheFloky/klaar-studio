@@ -82,12 +82,6 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
           })}
         </div>
 
-        {/* Compare Add-ons */}
-        <div className="text-center mt-12">
-          <Button variant="ghost" className="text-primary font-semibold">
-            {t.pricing.addons}
-          </Button>
-        </div>
 
         {/* Footer note */}
         <p className="text-center text-sm text-muted-foreground mt-8 max-w-xl mx-auto italic">

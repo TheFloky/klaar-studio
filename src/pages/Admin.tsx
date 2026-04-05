@@ -61,6 +61,7 @@ export default function Admin() {
       <main className="max-w-5xl mx-auto px-4 py-8">
         {activeTab === "audit" && <AuditTab />}
         {activeTab === "clients" && <ClientsTab />}
+        {activeTab === "bookings" && <BookingsTab />}
         {activeTab === "settings" && <SettingsTab />}
       </main>
     </div>

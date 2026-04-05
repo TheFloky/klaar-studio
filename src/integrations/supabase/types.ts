@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          business: string
+          calendar_event_id: string | null
+          created_at: string
+          id: string
+          name: string
+          needs: string
+          slot_end: string
+          slot_start: string
+          status: string
+          tier: string | null
+        }
+        Insert: {
+          business: string
+          calendar_event_id?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          needs: string
+          slot_end: string
+          slot_start: string
+          status?: string
+          tier?: string | null
+        }
+        Update: {
+          business?: string
+          calendar_event_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          needs?: string
+          slot_end?: string
+          slot_start?: string
+          status?: string
+          tier?: string | null
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           compliance_details: Json | null

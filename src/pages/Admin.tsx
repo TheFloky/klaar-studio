@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { ArrowLeft, Shield, Users, Settings } from "lucide-react";
+import { ArrowLeft, Shield, Users, Settings, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 import ClientsTab from "@/components/admin/ClientsTab";
 import SettingsTab from "@/components/admin/SettingsTab";
+import BookingsTab from "@/components/admin/BookingsTab";
 
 // Lazy import the existing audit content
 import AuditTab from "@/components/admin/AuditTab";
@@ -10,6 +11,7 @@ import AuditTab from "@/components/admin/AuditTab";
 const TABS = [
   { id: "audit", label: "Compliance Audit", icon: Shield },
   { id: "clients", label: "Clients", icon: Users },
+  { id: "bookings", label: "Bookings", icon: CalendarDays },
   { id: "settings", label: "Settings", icon: Settings },
 ] as const;
 
@@ -59,6 +61,7 @@ export default function Admin() {
       <main className="max-w-5xl mx-auto px-4 py-8">
         {activeTab === "audit" && <AuditTab />}
         {activeTab === "clients" && <ClientsTab />}
+        {activeTab === "bookings" && <BookingsTab />}
         {activeTab === "settings" && <SettingsTab />}
       </main>
     </div>

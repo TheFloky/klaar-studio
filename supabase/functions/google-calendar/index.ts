@@ -230,6 +230,22 @@ Deno.serve(async (req) => {
       const eventData = await eventResp.json()
       if (!eventResp.ok) throw new Error(`Event creation error: ${JSON.stringify(eventData)}`)
 
+      // Log the booking to the database
+      const sbClient = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      )
+      await sbClient.from('bookings').insert({
+        name,
+        business,
+        needs,
+        tier: tier || null,
+        slot_start: slotStart,
+        slot_end: slotEnd,
+        calendar_event_id: eventData.id,
+        status: 'confirmed',
+      })
+
       return new Response(JSON.stringify({ success: true, eventId: eventData.id }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })

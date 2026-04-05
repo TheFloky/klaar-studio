@@ -5,7 +5,7 @@ const columns = [
   {
     icon: Database,
     title: 'Data Residency (Geneva/Zurich)',
-    text: 'We host exclusively on TIER III+ Swiss servers. Your business data stays under Swiss jurisdiction, shielded from the US Cloud Act and foreign surveillance.',
+    text: 'We host exclusively on TIER II+ Swiss servers. Your business data stays under Swiss jurisdiction, shielded from the US Cloud Act and foreign surveillance.',
   },
   {
     icon: Globe,

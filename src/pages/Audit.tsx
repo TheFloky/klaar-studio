@@ -76,7 +76,7 @@ function ScoreGauge({ score, scanning }: { score: number; scanning: boolean }) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-5xl font-bold tracking-tight" style={{ color: scanning ? "hsl(var(--muted-foreground))" : color }}>
+          <span className="text-5xl font-bold tracking-tight" style={{ color: scanning ? "#9ca3af" : color }}>
             {scanning ? "—" : `${score}%`}
           </span>
           <span className="text-xs uppercase tracking-widest text-muted-foreground mt-1">Compliance Score</span>

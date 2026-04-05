@@ -10,6 +10,7 @@ import FeaturedProjects from '@/components/FeaturedProjects';
 import TrustBar from '@/components/TrustBar';
 import ContactForm from '@/components/ContactForm';
 import Footer from '@/components/Footer';
+import ComplianceChecker from '@/components/ComplianceChecker';
 
 const validLangs: Lang[] = ['en', 'de', 'fr'];
 
@@ -27,7 +28,6 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Blueprint grid — visible in both light & dark */}
       <div className="fixed inset-0 pointer-events-none z-0 blueprint-grid" />
       <Navbar lang={lang} setLang={setLang} ctaText={t.nav.proposal} />
       <Hero t={t} />
@@ -35,6 +35,7 @@ export default function Index() {
       <Services t={t} />
       <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       <FeaturedProjects t={t} />
+      <ComplianceChecker />
       <TrustBar />
       <ContactForm t={t} selectedTier={selectedTier} />
       <Footer t={t} />

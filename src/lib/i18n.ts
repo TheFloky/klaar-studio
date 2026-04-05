@@ -318,7 +318,7 @@ const translations = {
     hero: {
       headline: 'Précision Suisse.\nPerformance Digitale.',
       sub: 'Nous créons des sites web et boutiques en ligne magnifiques pour les entreprises suisses — conçus pour impressionner, performer et convertir.',
-      cta: 'Obtenir un devis gratuit',
+      cta: 'Réserver une consultation gratuite',
       badge: 'Agence Digitale Suisse',
     },
     badges: {

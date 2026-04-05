@@ -38,7 +38,6 @@ export default function Index() {
       <SovereigntyAdvantage />
       <Services t={t} />
       <ComplianceChecker />
-      <ComplianceChecker />
       <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       <FeaturedProjects t={t} />
       <TrustBar />

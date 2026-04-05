@@ -53,6 +53,7 @@ const translations = {
             'Admin dashboard to manage content',
             'Booking system or inventory tracker',
             'Available in multiple languages',
+            'Swiss server hosting included',
           ],
         },
         {

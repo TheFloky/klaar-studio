@@ -1,11 +1,20 @@
 import { useState, useEffect, useRef } from "react";
-import { Shield, Globe, Type, BarChart3, FileText, AlertTriangle, CheckCircle, XCircle, Search, FileDown } from "lucide-react";
+import { Shield, Globe, Type, BarChart3, FileText, AlertTriangle, CheckCircle, XCircle, Search, FileDown, ArrowLeft } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
+
+interface ScanDetails {
+  ip?: { country?: string; countryCode?: string; ip?: string };
+  fontsFound?: string[];
+  trackersFound?: string[];
+}
 
 interface ScanResults {
   dataResidency: boolean | null;
   fontLeakage: boolean | null;
   trackingTransparency: boolean | null;
   legalPresence: boolean | null;
+  details?: ScanDetails;
 }
 
 const STATUS_MESSAGES = [
@@ -17,18 +26,7 @@ const STATUS_MESSAGES = [
   "Verifying Data Residency compliance...",
   "Scanning footer for Impressum link...",
   "Compiling risk assessment...",
-  "Finalizing compliance report...",
 ];
-
-function getMockResults(url: string): ScanResults {
-  const hash = url.split("").reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
-  return {
-    dataResidency: hash % 3 !== 0,
-    fontLeakage: hash % 2 !== 0,
-    trackingTransparency: hash % 4 !== 0,
-    legalPresence: hash % 5 === 0,
-  };
-}
 
 function ScoreGauge({ score, scanning }: { score: number; scanning: boolean }) {
   const radius = 90;
@@ -63,7 +61,7 @@ function ScoreGauge({ score, scanning }: { score: number; scanning: boolean }) {
   );
 }
 
-function RiskCard({ title, icon: Icon, status, description }: { title: string; icon: React.ElementType; status: boolean | null; description: string }) {
+function RiskCard({ title, icon: Icon, status, description, detail }: { title: string; icon: React.ElementType; status: boolean | null; description: string; detail?: string }) {
   const isPass = status === true;
   const isFail = status === false;
   const isPending = status === null;
@@ -92,6 +90,9 @@ function RiskCard({ title, icon: Icon, status, description }: { title: string; i
             )}
           </div>
           <p className="text-xs text-gray-500 mt-1 leading-relaxed">{description}</p>
+          {detail && !isPending && (
+            <p className="text-[11px] text-gray-400 mt-1 font-mono">{detail}</p>
+          )}
           {!isPending && (
             <span className={`inline-block mt-2 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
               isPass ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
@@ -113,42 +114,92 @@ export default function Admin() {
   const [results, setResults] = useState<ScanResults>({ dataResidency: null, fontLeakage: null, trackingTransparency: null, legalPresence: null });
   const [score, setScore] = useState(0);
   const [scanComplete, setScanComplete] = useState(false);
+  const [error, setError] = useState("");
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const runAudit = () => {
+  const runAudit = async () => {
     if (!url.trim() || scanning) return;
     setScanning(true);
     setScanComplete(false);
     setProgress(0);
     setScore(0);
+    setError("");
     setResults({ dataResidency: null, fontLeakage: null, trackingTransparency: null, legalPresence: null });
 
+    // Start progress animation
     let step = 0;
     intervalRef.current = setInterval(() => {
       step++;
-      const pct = Math.min(Math.round((step / STATUS_MESSAGES.length) * 100), 100);
+      const pct = Math.min(Math.round((step / STATUS_MESSAGES.length) * 90), 90);
       setProgress(pct);
       setStatusMsg(STATUS_MESSAGES[Math.min(step - 1, STATUS_MESSAGES.length - 1)]);
-
-      if (step >= STATUS_MESSAGES.length) {
-        clearInterval(intervalRef.current!);
-        const r = getMockResults(url);
-        setResults(r);
-        const passCount = [r.dataResidency, !r.fontLeakage, !r.trackingTransparency, r.legalPresence].filter(Boolean).length;
-        setScore(passCount * 25);
-        setScanning(false);
-        setScanComplete(true);
+      if (step >= STATUS_MESSAGES.length && intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
-    }, 600);
+    }, 800);
+
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("compliance-scan", {
+        body: { url: url.trim() },
+      });
+
+      if (intervalRef.current) clearInterval(intervalRef.current);
+
+      if (fnError || !data?.success) {
+        setError(fnError?.message || data?.error || "Scan failed");
+        setScanning(false);
+        return;
+      }
+
+      const r = data.results;
+      setResults({
+        dataResidency: r.dataResidency,
+        fontLeakage: r.fontLeakage,
+        trackingTransparency: r.trackingTransparency,
+        legalPresence: r.legalPresence,
+        details: r.details,
+      });
+
+      // Calculate score: each compliant check = 25%
+      const passCount = [
+        r.dataResidency,
+        !r.fontLeakage,
+        !r.trackingTransparency,
+        r.legalPresence,
+      ].filter(Boolean).length;
+      setScore(passCount * 25);
+      setProgress(100);
+      setStatusMsg("Scan complete.");
+      setScanComplete(true);
+    } catch (e) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      setError(e instanceof Error ? e.message : "Scan failed");
+    } finally {
+      setScanning(false);
+    }
   };
 
   useEffect(() => () => { if (intervalRef.current) clearInterval(intervalRef.current); }, []);
+
+  // Build detail strings from real results
+  const ipDetail = results.details?.ip
+    ? `IP: ${results.details.ip.ip || "?"} → ${results.details.ip.country || "Unknown"} (${results.details.ip.countryCode || "?"})`
+    : undefined;
+  const fontsDetail = results.details?.fontsFound?.length
+    ? `Found: ${results.details.fontsFound.join(", ")}`
+    : undefined;
+  const trackersDetail = results.details?.trackersFound?.length
+    ? `Found: ${results.details.trackersFound.join(", ")}`
+    : undefined;
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ fontFamily: "'Inter', 'Helvetica Neue', Helvetica, sans-serif" }}>
       {/* Header */}
       <header className="border-b border-gray-200 bg-white">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+          <Link to="/en" className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+            <ArrowLeft size={18} className="text-gray-500" />
+          </Link>
           <div className="w-8 h-8 bg-[#FF0000] rounded flex items-center justify-center">
             <span className="text-white text-xs font-bold">+</span>
           </div>
@@ -184,11 +235,14 @@ export default function Admin() {
               Run Audit
             </button>
           </div>
+          {error && (
+            <p className="mt-3 text-sm text-red-600">{error}</p>
+          )}
         </div>
 
         {/* Scanning Progress */}
         {scanning && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-3 animate-in fade-in">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-500 font-medium">{statusMsg}</span>
               <span className="font-bold text-gray-700">{progress}%</span>
@@ -203,10 +257,10 @@ export default function Admin() {
         )}
 
         {/* Score + Risk Cards */}
-        {(scanComplete || scanning) && (
+        {(scanComplete) && (
           <div className="grid lg:grid-cols-[280px_1fr] gap-6">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex items-center justify-center">
-              <ScoreGauge score={score} scanning={scanning} />
+              <ScoreGauge score={score} scanning={false} />
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               <RiskCard
@@ -214,24 +268,27 @@ export default function Admin() {
                 icon={Shield}
                 status={results.dataResidency}
                 description="Verifies hosting IP is geolocated within Swiss borders (CH)."
+                detail={ipDetail}
               />
               <RiskCard
                 title="IP Leakage (Fonts)"
                 icon={Type}
                 status={results.fontLeakage === null ? null : !results.fontLeakage}
                 description="Detects calls to fonts.googleapis.com or fonts.gstatic.com that leak visitor IPs."
+                detail={fontsDetail}
               />
               <RiskCard
                 title="Tracking Transparency"
                 icon={BarChart3}
                 status={results.trackingTransparency === null ? null : !results.trackingTransparency}
                 description="Scans for google-analytics.com or googletagmanager.com tracking scripts."
+                detail={trackersDetail}
               />
               <RiskCard
                 title="Legal Presence"
                 icon={FileText}
                 status={results.legalPresence}
-                description="Checks for a visible 'Impressum' link in the page footer."
+                description="Checks for a visible 'Impressum' link in the page."
               />
             </div>
           </div>

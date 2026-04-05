@@ -33,11 +33,11 @@ export default function Index() {
       <div className="fixed inset-0 pointer-events-none z-0 blueprint-grid" />
       <Navbar lang={lang} setLang={setLang} ctaText={t.nav.proposal} />
       <Hero t={t} />
-      <ComplianceBadgeStrip />
+      <ComplianceBadgeStrip t={t} />
       <Advantages t={t} />
-      <SovereigntyAdvantage />
+      <SovereigntyAdvantage t={t} />
       <Services t={t} />
-      <ComplianceChecker />
+      <ComplianceChecker t={t} />
       <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       <FeaturedProjects t={t} />
       <TrustBar />

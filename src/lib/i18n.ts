@@ -303,6 +303,7 @@ const translations = {
             'Tableau de bord pour gérer le contenu',
             'Système de réservation ou d\'inventaire',
             'Disponible en plusieurs langues',
+            'Hébergement sur serveurs suisses inclus',
           ],
         },
         {

@@ -178,6 +178,7 @@ const translations = {
             'Admin-Bereich zur Verwaltung',
             'Buchungssystem oder Lagerverwaltung',
             'Mehrsprachig verfügbar',
+            'Schweizer Server-Hosting inklusive',
           ],
         },
         {

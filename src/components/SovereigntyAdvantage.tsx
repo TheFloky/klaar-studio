@@ -1,4 +1,4 @@
-import { Database, Globe, ShieldAlert } from 'lucide-react';
+import { Database, Globe, ShieldAlert, Brain } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const columns = [
@@ -16,6 +16,11 @@ const columns = [
     icon: ShieldAlert,
     title: 'CEO Liability Shield',
     text: 'The revised nFADP places personal liability on directors. We build \'Privacy by Design\' so you can focus on growth, not legal risks.',
+  },
+  {
+    icon: Brain,
+    title: 'Sovereign AI (The OpenAI Alternative)',
+    text: 'Most AI tools send your company secrets to US servers for training. Our Sovereign AI runs exclusively on Infomaniak\'s Swiss-hosted infrastructure. Your data stays in the bunker, remains your property, and is never used to train third-party models.',
   },
 ];
 

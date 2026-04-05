@@ -262,8 +262,11 @@ export default function Audit() {
           <Link to="/en" className="p-1.5 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft size={18} className="text-muted-foreground" />
           </Link>
-          <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-            <span className="text-primary-foreground text-xs font-bold">+</span>
+          <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <rect x="9" y="3" width="4" height="16" rx="0.5" fill="white" />
+              <rect x="3" y="9" width="16" height="4" rx="0.5" fill="white" />
+            </svg>
           </div>
           <div>
             <h1 className="text-lg font-bold tracking-tight text-foreground">Swiss Compliance Audit</h1>

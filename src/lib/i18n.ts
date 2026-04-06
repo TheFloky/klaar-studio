@@ -175,7 +175,7 @@ const translations = {
       title: 'Warum klaar?',
       items: [
         { title: 'Wir sprechen Ihre Sprache', desc: 'Fliessend auf Deutsch, Französisch und Englisch. Keine Missverständnisse — nur klare Zusammenarbeit.' },
-        { title: 'Schweizer Qualität', desc: 'Schnell, sicher und vollständig nDSG-konform. Die Daten Ihrer Kunden sind bei uns sicher.' },
+        { title: 'Schweizer Standards', desc: 'Schnell, sicher und vollständig nDSG-konform. Die Daten Ihrer Kunden sind bei uns sicher.' },
         { title: 'Faire Preise, Top-Ergebnisse', desc: 'Premium-Qualität ohne Agentur-Aufschlag. Smarte Arbeitsweisen bringen Ihnen mehr Wert für jeden Franken.' },
       ],
     },
@@ -331,7 +331,7 @@ const translations = {
       title: 'Pourquoi klaar ?',
       items: [
         { title: 'On parle votre langue', desc: 'Couramment en allemand, français et anglais. Pas de malentendus — juste une collaboration claire.' },
-        { title: 'Qualité suisse', desc: 'Rapide, sécurisé et entièrement conforme à la nLPD. Les données de vos clients sont en sécurité.' },
+        { title: 'Standards suisses', desc: 'Rapide, sécurisé et entièrement conforme à la nLPD. Les données de vos clients sont en sécurité.' },
         { title: 'Prix justes, résultats premium', desc: 'Qualité premium sans les frais d\'agence excessifs. Des méthodes intelligentes pour plus de valeur.' },
       ],
     },

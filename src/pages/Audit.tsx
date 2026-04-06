@@ -264,8 +264,7 @@ export default function Audit() {
           </Link>
           <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-              <rect x="9" y="3" width="4" height="16" rx="0.5" fill="white" />
-              <rect x="3" y="9" width="16" height="4" rx="0.5" fill="white" />
+              <text x="11" y="16" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="800" fontSize="16">K</text>
             </svg>
           </div>
           <div>

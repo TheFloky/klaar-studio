@@ -331,7 +331,7 @@ const translations = {
       title: 'Pourquoi klaar ?',
       items: [
         { title: 'On parle votre langue', desc: 'Couramment en allemand, français et anglais. Pas de malentendus — juste une collaboration claire.' },
-        { title: 'Qualité suisse', desc: 'Rapide, sécurisé et entièrement conforme à la nLPD. Les données de vos clients sont en sécurité.' },
+        { title: 'Standards suisses', desc: 'Rapide, sécurisé et entièrement conforme à la nLPD. Les données de vos clients sont en sécurité.' },
         { title: 'Prix justes, résultats premium', desc: 'Qualité premium sans les frais d\'agence excessifs. Des méthodes intelligentes pour plus de valeur.' },
       ],
     },

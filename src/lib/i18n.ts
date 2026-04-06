@@ -319,7 +319,7 @@ const translations = {
       headline: 'Précision Suisse.\nPerformance Digitale.',
       sub: 'Nous créons des sites web et boutiques en ligne magnifiques pour les entreprises suisses — conçus pour impressionner, performer et convertir.',
       cta: 'Réserver une consultation gratuite',
-      badge: 'Agence Digitale Suisse',
+      badge: 'Agence Digitale Klaar',
     },
     badges: {
       swissHosted: 'Hébergement 100 % suisse',

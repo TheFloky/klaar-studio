@@ -36,10 +36,7 @@ export default function Navbar({ lang, setLang, ctaText }: NavbarProps) {
         <a href="#" className="inline-flex flex-col items-center leading-none">
           <span className="inline-flex items-center gap-2">
             <span className="font-extrabold tracking-wide text-foreground text-2xl">KLAAR</span>
-            <svg width="18" height="18" viewBox="0 0 16 16" className="inline-block">
-              <rect width="16" height="16" rx="2.5" fill="hsl(var(--primary))" />
-              <text x="8" y="12.5" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="900" fontSize="12" strokeWidth="1.2" stroke="white" paintOrder="stroke">K</text>
-            </svg>
+            <img src={klaarIcon} alt="Klaar" className="inline-block w-[18px] h-[18px] rounded-[2.5px]" />
           </span>
           <span className="font-semibold tracking-[0.38em] uppercase text-muted-foreground -mt-0.5 text-sm my-0 px-[2px] mx-0 text-center -translate-x-[9px]">Studio</span>
         </a>

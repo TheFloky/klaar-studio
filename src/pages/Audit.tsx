@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Shield, Globe, Type, BarChart3, FileText, AlertTriangle, CheckCircle, XCircle, Search, FileDown, ArrowLeft, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useSearchParams } from "react-router-dom";
+import klaarIcon from "@/assets/klaar-logo-icon.png";
 
 interface ScanDetails {
   ip?: { country?: string; countryCode?: string; ip?: string };

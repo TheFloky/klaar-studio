@@ -7,7 +7,7 @@ const translations = {
       headline: 'Swiss Precision.\nDigital Performance.',
       sub: 'We design stunning websites and online shops for Swiss businesses — built to look great, work fast, and win customers.',
       cta: 'Book a Free Consultation',
-      badge: 'Swiss Digital Agency',
+      badge: 'Klaar Digital Agency',
     },
     badges: {
       swissHosted: '100% Swiss-Hosted Data',

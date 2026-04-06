@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Shield, Globe, Type, BarChart3, FileText, AlertTriangle, CheckCircle, XCircle, Search, FileDown, ArrowLeft, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useSearchParams } from "react-router-dom";
+import klaarIcon from "@/assets/klaar-logo-icon.png";
 
 interface ScanDetails {
   ip?: { country?: string; countryCode?: string; ip?: string };
@@ -262,11 +263,7 @@ export default function Audit() {
           <Link to="/en" className="p-1.5 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft size={18} className="text-muted-foreground" />
           </Link>
-          <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-              <text x="11" y="16" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="800" fontSize="16">K</text>
-            </svg>
-          </div>
+          <img src={klaarIcon} alt="Klaar" className="w-10 h-10 rounded-md" />
           <div>
             <h1 className="text-lg font-bold tracking-tight text-foreground">Swiss Compliance Audit</h1>
             <p className="text-[11px] text-muted-foreground uppercase tracking-widest">nFADP / nDSG Conformity Scanner</p>

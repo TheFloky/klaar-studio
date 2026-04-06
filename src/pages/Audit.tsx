@@ -264,8 +264,7 @@ export default function Audit() {
           </Link>
           <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-              <rect x="9" y="3" width="4" height="16" rx="0.5" fill="white" />
-              <rect x="3" y="9" width="16" height="4" rx="0.5" fill="white" />
+              <text x="11" y="16" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="800" fontSize="16">K</text>
             </svg>
           </div>
           <div>
@@ -376,11 +375,10 @@ export default function Audit() {
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-primary">
-                <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
-                <rect x="10" y="6" width="4" height="12" rx="0.5" fill="currentColor" />
-                <rect x="6" y="10" width="12" height="4" rx="0.5" fill="currentColor" />
-                <circle cx="19" cy="5" r="4" fill="currentColor" opacity="0.2" />
-                <path d="M17 5h4M19 3v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <rect x="2" y="2" width="20" height="20" rx="3" stroke="currentColor" strokeWidth="1.5" />
+                <text x="12" y="17" textAnchor="middle" fill="currentColor" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="800" fontSize="14">K</text>
+                <circle cx="20" cy="4" r="3.5" fill="currentColor" opacity="0.2" />
+                <path d="M18.5 4h3M20 2.5v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </div>
             <div>

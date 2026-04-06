@@ -37,8 +37,7 @@ export default function Navbar({ lang, setLang, ctaText }: NavbarProps) {
             <span className="font-extrabold tracking-wide text-foreground text-2xl">KLAAR</span>
             <svg width="18" height="18" viewBox="0 0 16 16" className="inline-block">
               <rect width="16" height="16" rx="2.5" fill="hsl(var(--primary))" />
-              <path d="M6.25 3h3.5v10h-3.5z" fill="white" />
-              <path d="M3 6.25h10v3.5H3z" fill="white" />
+              <text x="8" y="12.5" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="800" fontSize="12">K</text>
             </svg>
           </span>
           <span className="font-semibold tracking-[0.38em] uppercase text-muted-foreground -mt-0.5 text-sm my-0 px-[2px] mx-0 text-center -translate-x-[9px]">Studio</span>

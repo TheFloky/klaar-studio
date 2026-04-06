@@ -7,7 +7,7 @@ const translations = {
       headline: 'Swiss Precision.\nDigital Performance.',
       sub: 'We design stunning websites and online shops for Swiss businesses — built to look great, work fast, and win customers.',
       cta: 'Book a Free Consultation',
-      badge: 'Swiss Digital Agency',
+      badge: 'Klaar Digital Agency',
     },
     badges: {
       swissHosted: '100% Swiss-Hosted Data',
@@ -163,7 +163,7 @@ const translations = {
       headline: 'Schweizer Präzision.\nDigitale Performance.',
       sub: 'Wir gestalten beeindruckende Websites und Online-Shops für Schweizer Unternehmen — gebaut um grossartig auszusehen, schnell zu laden und Kunden zu gewinnen.',
       cta: 'Kostenlose Beratung buchen',
-      badge: 'Schweizer Digitalagentur',
+      badge: 'Klaar Digitalagentur',
     },
     badges: {
       swissHosted: '100 % Schweizer Hosting',
@@ -319,7 +319,7 @@ const translations = {
       headline: 'Précision Suisse.\nPerformance Digitale.',
       sub: 'Nous créons des sites web et boutiques en ligne magnifiques pour les entreprises suisses — conçus pour impressionner, performer et convertir.',
       cta: 'Réserver une consultation gratuite',
-      badge: 'Agence Digitale Suisse',
+      badge: 'Agence Digitale Klaar',
     },
     badges: {
       swissHosted: 'Hébergement 100 % suisse',

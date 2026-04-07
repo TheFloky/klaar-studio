@@ -60,6 +60,9 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
                   <span className="text-3xl sm:text-4xl font-extrabold text-foreground">{tier.price}</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-6">{tier.monthly}</p>
+                {tier.description && (
+                  <p className="text-sm text-muted-foreground mb-6">{tier.description}</p>
+                )}
 
                 <div className="border-t border-border pt-6 mb-8 flex-1">
                   <ul className="space-y-3">
@@ -70,6 +73,9 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
                       </li>
                     ))}
                   </ul>
+                  {tier.note && (
+                    <p className="text-xs text-muted-foreground mt-4 italic">{tier.note}</p>
+                  )}
                 </div>
 
                 <Button

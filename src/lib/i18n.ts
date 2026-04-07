@@ -61,13 +61,16 @@ const translations = {
         {
           name: 'Starter Website',
           price: 'CHF 2\'500',
-          monthly: 'CHF 99/mo support',
+          monthly: 'CHF 60/mo support',
+          description: 'A simple, high-quality one-page website for a clean and professional online presence.',
           features: [
-            'Custom-designed, modern look',
-            'Perfect on phones & tablets',
-            'Swiss payments (TWINT & Stripe)',
-            'Legally compliant (nDSG)',
+            'One-page website (homepage only)',
+            'Includes Impressum & Privacy Policy',
+            'Fully custom-designed (no templates)',
+            'Optimized for mobile, tablet & desktop',
+            'Built with Swiss data protection standards in mind',
           ],
+          note: 'Perfect for businesses that need a clear, credible online presence without unnecessary complexity.',
         },
         {
           name: 'Business Website',
@@ -218,13 +221,16 @@ const translations = {
         {
           name: 'Starter Website',
           price: 'CHF 2\'500',
-          monthly: 'CHF 99/Mt. Support',
+          monthly: 'CHF 60/Mt. Support',
+          description: 'Eine schlichte, hochwertige One-Page-Website für einen professionellen Online-Auftritt.',
           features: [
-            'Individuelles, modernes Design',
-            'Perfekt auf Handy & Tablet',
-            'Schweizer Zahlungen (TWINT & Stripe)',
-            'Rechtskonform (nDSG)',
+            'One-Page-Website (nur Startseite)',
+            'Impressum & Datenschutzerklärung inklusive',
+            'Vollständig individuell gestaltet (keine Templates)',
+            'Optimiert für Handy, Tablet & Desktop',
+            'Nach Schweizer Datenschutzstandards konzipiert',
           ],
+          note: 'Ideal für Unternehmen, die eine klare, glaubwürdige Online-Präsenz ohne unnötige Komplexität benötigen.',
         },
         {
           name: 'Business Website',
@@ -375,13 +381,16 @@ const translations = {
         {
           name: 'Site Starter',
           price: 'CHF 2\'500',
-          monthly: 'CHF 99/mois support',
+          monthly: 'CHF 60/mois support',
+          description: 'Un site one-page simple et de haute qualité pour une présence en ligne claire et professionnelle.',
           features: [
-            'Design moderne sur mesure',
-            'Parfait sur mobile et tablette',
-            'Paiements suisses (TWINT & Stripe)',
-            'Conforme à la loi (nLPD)',
+            'Site one-page (page d\'accueil uniquement)',
+            'Mentions légales & politique de confidentialité incluses',
+            'Design entièrement sur mesure (pas de templates)',
+            'Optimisé pour mobile, tablette & desktop',
+            'Conçu selon les normes suisses de protection des données',
           ],
+          note: 'Parfait pour les entreprises qui ont besoin d\'une présence en ligne claire et crédible sans complexité inutile.',
         },
         {
           name: 'Site Business',
@@ -480,7 +489,9 @@ type PricingTier = {
   name: string;
   price: string;
   monthly: string;
+  description?: string;
   features: string[];
+  note?: string;
 };
 
 type Project = {

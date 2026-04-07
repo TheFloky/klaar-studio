@@ -84,7 +84,7 @@ export default function Impressum() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">Applicable Law & Jurisdiction</h2>
             <p>
-              Polish law applies. For consumers within the EU, the mandatory consumer protection provisions of their country of residence also apply (Regulation (EC) No 593/2008, Art. 6). The place of jurisdiction for all disputes is [City — please update], Poland.
+              Polish law applies. For consumers within the EU, the mandatory consumer protection provisions of their country of residence also apply (Regulation (EC) No 593/2008, Art. 6). The place of jurisdiction for all disputes is Warsaw, Poland.
             </p>
           </section>
         </div>

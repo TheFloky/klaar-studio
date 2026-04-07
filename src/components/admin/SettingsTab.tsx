@@ -4,15 +4,21 @@ import { supabase } from "@/integrations/supabase/client";
 
 const SETTINGS_KEYS = [
   {
-    key: "GOOGLE_SERVICE_ACCOUNT_KEY",
-    label: "Google Service Account Key (JSON)",
-    placeholder: '{"type":"service_account","project_id":"..."}',
-    multiline: true,
+    key: "CAL_API_KEY",
+    label: "Cal.com API Key",
+    placeholder: "cal_live_...",
+    multiline: false,
   },
   {
-    key: "GOOGLE_CALENDAR_ID",
-    label: "Google Calendar ID",
-    placeholder: "your-email@gmail.com or calendar ID",
+    key: "CAL_USERNAME",
+    label: "Cal.com Username",
+    placeholder: "your-username",
+    multiline: false,
+  },
+  {
+    key: "CAL_EVENT_TYPE_ID",
+    label: "Cal.com Event Type ID",
+    placeholder: "123456",
     multiline: false,
   },
 ];
@@ -59,7 +65,7 @@ export default function SettingsTab() {
       <div>
         <h2 className="text-lg font-bold text-gray-900">Integration Settings</h2>
         <p className="text-sm text-gray-500 mt-1">
-          Configure API keys for Google Calendar booking integration.
+          Configure Cal.com for consultation booking.
         </p>
       </div>
 
@@ -117,10 +123,11 @@ export default function SettingsTab() {
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
         <strong>Setup instructions:</strong>
         <ol className="list-decimal ml-5 mt-2 space-y-1">
-          <li>Go to <a href="https://console.cloud.google.com" target="_blank" rel="noopener" className="underline">Google Cloud Console</a> and enable the Calendar API</li>
-          <li>Create a Service Account and download the JSON key</li>
-          <li>Share your Google Calendar with the service account email (grant "Make changes to events")</li>
-          <li>Paste the full JSON key above and your Calendar ID (usually your email)</li>
+          <li>Sign up for a free <a href="https://cal.com" target="_blank" rel="noopener" className="underline">Cal.com</a> account</li>
+          <li>Create an Event Type (e.g. "30 min consultation")</li>
+          <li>Go to <strong>Settings → Developer → API Keys</strong> and create a key</li>
+          <li>Find your Event Type ID from the URL when editing it (e.g. <code>/event-types/123456</code>)</li>
+          <li>Enter your Cal.com username, API key, and Event Type ID above</li>
         </ol>
       </div>
     </div>

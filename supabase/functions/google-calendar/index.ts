@@ -5,6 +5,8 @@ const corsHeaders = {
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 
+const CAL_API_BASE = 'https://api.cal.com/v2'
+
 const GetSlotsSchema = z.object({ action: z.literal('get-slots') })
 
 const BookSchema = z.object({
@@ -19,111 +21,61 @@ const BookSchema = z.object({
 
 const ActionSchema = z.discriminatedUnion('action', [GetSlotsSchema, BookSchema])
 
-async function getAccessToken(serviceAccountKey: any): Promise<string> {
-  const header = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' }))
-  const now = Math.floor(Date.now() / 1000)
-  const claimSet = btoa(JSON.stringify({
-    iss: serviceAccountKey.client_email,
-    scope: 'https://www.googleapis.com/auth/calendar',
-    aud: 'https://oauth2.googleapis.com/token',
-    iat: now,
-    exp: now + 3600,
-  }))
+async function getSettings(): Promise<{ apiKey: string; eventTypeId: string; calUsername: string }> {
+  let apiKey = Deno.env.get('CAL_API_KEY') || ''
+  let eventTypeId = Deno.env.get('CAL_EVENT_TYPE_ID') || ''
+  let calUsername = Deno.env.get('CAL_USERNAME') || ''
 
-  const signInput = `${header}.${claimSet}`
+  if (!apiKey || !eventTypeId || !calUsername) {
+    const sbClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    )
+    const { data: settings } = await sbClient
+      .from('settings')
+      .select('key, value')
+      .in('key', ['CAL_API_KEY', 'CAL_EVENT_TYPE_ID', 'CAL_USERNAME'])
 
-  // Import the private key
-  const pemContents = serviceAccountKey.private_key
-    .replace(/-----BEGIN PRIVATE KEY-----/, '')
-    .replace(/-----END PRIVATE KEY-----/, '')
-    .replace(/\n/g, '')
+    settings?.forEach((s: any) => {
+      if (s.key === 'CAL_API_KEY' && !apiKey) apiKey = s.value
+      if (s.key === 'CAL_EVENT_TYPE_ID' && !eventTypeId) eventTypeId = s.value
+      if (s.key === 'CAL_USERNAME' && !calUsername) calUsername = s.value
+    })
+  }
 
-  const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0))
+  if (!apiKey) throw new Error('Cal.com API key not configured. Add it in Admin → Settings.')
+  if (!eventTypeId) throw new Error('Cal.com Event Type ID not configured. Add it in Admin → Settings.')
+  if (!calUsername) throw new Error('Cal.com username not configured. Add it in Admin → Settings.')
 
-  const cryptoKey = await crypto.subtle.importKey(
-    'pkcs8',
-    binaryKey,
-    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
-    false,
-    ['sign']
-  )
-
-  const signature = await crypto.subtle.sign(
-    'RSASSA-PKCS1-v1_5',
-    cryptoKey,
-    new TextEncoder().encode(signInput)
-  )
-
-  const base64Signature = btoa(String.fromCharCode(...new Uint8Array(signature)))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
-
-  const jwt = `${header.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')}.${claimSet.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')}.${base64Signature}`
-
-  const tokenResp = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
-  })
-
-  const tokenData = await tokenResp.json()
-  if (!tokenResp.ok) throw new Error(`Token error: ${JSON.stringify(tokenData)}`)
-  return tokenData.access_token
+  return { apiKey, eventTypeId, calUsername }
 }
 
-function getNext7Days(): { start: string; end: string } {
-  const now = new Date()
-  const end = new Date(now)
-  end.setDate(end.getDate() + 7)
-  return { start: now.toISOString(), end: end.toISOString() }
-}
+function formatSlotsResponse(slots: any[]): any[] {
+  const dayMap: Record<string, { date: string; label: string; slots: any[] }> = {}
 
-function generateSlots(busyPeriods: { start: string; end: string }[]): any[] {
-  const days: any[] = []
-  const now = new Date()
+  for (const slot of slots) {
+    const start = new Date(slot.time)
+    const dateStr = start.toISOString().split('T')[0]
 
-  for (let d = 0; d < 7; d++) {
-    const date = new Date(now)
-    date.setDate(date.getDate() + d)
-
-    const dayOfWeek = date.getDay()
-    if (dayOfWeek === 0 || dayOfWeek === 6) continue // skip weekends
-
-    const dateStr = date.toISOString().split('T')[0]
-    const dayLabel = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-
-    const slots: any[] = []
-    // Generate 30-min slots from 9:00 to 17:00
-    for (let hour = 9; hour < 17; hour++) {
-      for (let min = 0; min < 60; min += 30) {
-        const slotStart = new Date(date)
-        slotStart.setHours(hour, min, 0, 0)
-        const slotEnd = new Date(slotStart)
-        slotEnd.setMinutes(slotEnd.getMinutes() + 30)
-
-        if (slotStart < now) continue
-
-        const isBusy = busyPeriods.some(bp => {
-          const bpStart = new Date(bp.start)
-          const bpEnd = new Date(bp.end)
-          return slotStart < bpEnd && slotEnd > bpStart
-        })
-
-        if (!isBusy) {
-          slots.push({
-            start: slotStart.toISOString(),
-            end: slotEnd.toISOString(),
-            display: slotStart.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Zurich' }),
-          })
-        }
+    if (!dayMap[dateStr]) {
+      dayMap[dateStr] = {
+        date: dateStr,
+        label: start.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+        slots: [],
       }
     }
 
-    if (slots.length > 0) {
-      days.push({ date: dateStr, label: dayLabel, slots })
-    }
+    const end = new Date(start)
+    end.setMinutes(end.getMinutes() + 30)
+
+    dayMap[dateStr].slots.push({
+      start: start.toISOString(),
+      end: end.toISOString(),
+      display: start.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Zurich' }),
+    })
   }
 
-  return days
+  return Object.values(dayMap)
 }
 
 Deno.serve(async (req) => {
@@ -132,40 +84,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Try env vars first, then fall back to DB settings
-    let serviceAccountJson = Deno.env.get('GOOGLE_SERVICE_ACCOUNT_KEY')
-    let calendarId = Deno.env.get('GOOGLE_CALENDAR_ID')
-
-    if (!serviceAccountJson || !calendarId) {
-      const sbClient = createClient(
-        Deno.env.get('SUPABASE_URL')!,
-        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-      )
-      const { data: settings } = await sbClient
-        .from('settings')
-        .select('key, value')
-        .in('key', ['GOOGLE_SERVICE_ACCOUNT_KEY', 'GOOGLE_CALENDAR_ID'])
-
-      settings?.forEach((s: any) => {
-        if (s.key === 'GOOGLE_SERVICE_ACCOUNT_KEY' && !serviceAccountJson) serviceAccountJson = s.value
-        if (s.key === 'GOOGLE_CALENDAR_ID' && !calendarId) calendarId = s.value
-      })
-    }
-
-    if (!serviceAccountJson) {
-      return new Response(JSON.stringify({ error: 'Google Calendar not configured. Add keys in Admin → Settings.' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
-
-    if (!calendarId) {
-      return new Response(JSON.stringify({ error: 'Calendar ID not configured. Add it in Admin → Settings.' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
-
     const body = await req.json()
     const parsed = ActionSchema.safeParse(body)
     if (!parsed.success) {
@@ -175,30 +93,38 @@ Deno.serve(async (req) => {
       })
     }
 
-    const serviceAccountKey = JSON.parse(serviceAccountJson)
-    const accessToken = await getAccessToken(serviceAccountKey)
+    const { apiKey, eventTypeId, calUsername } = await getSettings()
 
     if (parsed.data.action === 'get-slots') {
-      const { start, end } = getNext7Days()
+      const now = new Date()
+      const end = new Date(now)
+      end.setDate(end.getDate() + 7)
 
-      const freeBusyResp = await fetch('https://www.googleapis.com/calendar/v3/freeBusy', {
-        method: 'POST',
+      const startDate = now.toISOString().split('T')[0]
+      const endDate = end.toISOString().split('T')[0]
+
+      const url = `${CAL_API_BASE}/slots/available?startTime=${startDate}&endTime=${endDate}&eventTypeId=${eventTypeId}`
+
+      const resp = await fetch(url, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+          'cal-api-version': '2024-09-04',
+          Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({
-          timeMin: start,
-          timeMax: end,
-          items: [{ id: calendarId }],
-        }),
       })
 
-      const freeBusyData = await freeBusyResp.json()
-      if (!freeBusyResp.ok) throw new Error(`FreeBusy error: ${JSON.stringify(freeBusyData)}`)
+      const data = await resp.json()
+      if (!resp.ok) throw new Error(`Cal.com slots error: ${JSON.stringify(data)}`)
 
-      const busyPeriods = freeBusyData.calendars?.[calendarId]?.busy || []
-      const days = generateSlots(busyPeriods)
+      // Cal.com v2 returns { data: { slots: { "YYYY-MM-DD": [...] } } }
+      const slotsObj = data?.data?.slots || {}
+      const allSlots: any[] = []
+      for (const dateKey of Object.keys(slotsObj)) {
+        for (const slot of slotsObj[dateKey]) {
+          allSlots.push(slot)
+        }
+      }
+
+      const days = formatSlotsResponse(allSlots)
 
       return new Response(JSON.stringify({ days }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -206,31 +132,35 @@ Deno.serve(async (req) => {
     }
 
     if (parsed.data.action === 'book') {
-      const { name, business, needs, tier, slotStart, slotEnd } = parsed.data
+      const { name, business, needs, tier, slotStart } = parsed.data
 
-      const event = {
-        summary: `Consultation: ${name} — ${business}`,
-        description: `Name: ${name}\nBusiness: ${business}\nNeeds: ${needs}\n${tier ? `Selected Tier: ${tier}` : ''}`,
-        start: { dateTime: slotStart, timeZone: 'Europe/Zurich' },
-        end: { dateTime: slotEnd, timeZone: 'Europe/Zurich' },
-      }
-
-      const eventResp = await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
+      const bookResp = await fetch(`${CAL_API_BASE}/bookings`, {
+        method: 'POST',
+        headers: {
+          'cal-api-version': '2024-08-13',
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          start: slotStart,
+          eventTypeId: Number(eventTypeId),
+          attendee: {
+            name,
+            email: `${business.toLowerCase().replace(/[^a-z0-9]/g, '')}@placeholder.com`,
+            timeZone: 'Europe/Zurich',
           },
-          body: JSON.stringify(event),
-        }
-      )
+          metadata: {
+            business,
+            needs,
+            tier: tier || '',
+          },
+        }),
+      })
 
-      const eventData = await eventResp.json()
-      if (!eventResp.ok) throw new Error(`Event creation error: ${JSON.stringify(eventData)}`)
+      const bookData = await bookResp.json()
+      if (!bookResp.ok) throw new Error(`Cal.com booking error: ${JSON.stringify(bookData)}`)
 
-      // Log the booking to the database
+      // Log to database
       const sbClient = createClient(
         Deno.env.get('SUPABASE_URL')!,
         Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -241,12 +171,12 @@ Deno.serve(async (req) => {
         needs,
         tier: tier || null,
         slot_start: slotStart,
-        slot_end: slotEnd,
-        calendar_event_id: eventData.id,
+        slot_end: parsed.data.slotEnd,
+        calendar_event_id: String(bookData?.data?.uid || bookData?.data?.id || ''),
         status: 'confirmed',
       })
 
-      return new Response(JSON.stringify({ success: true, eventId: eventData.id }), {
+      return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }

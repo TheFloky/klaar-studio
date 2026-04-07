@@ -16,7 +16,7 @@ const translations = {
       noUsCloud: 'No US-Cloud Data Leaks',
     },
     advantage: {
-      title: 'Why Choose klaar?',
+      title: 'Why Choose KLAAR?',
       items: [
         { title: 'We Speak Your Language', desc: 'Fluent in German, French, and English. No miscommunication, no confusion — just clear collaboration.' },
         { title: 'Built to Swiss Standards', desc: 'Fast, secure, and fully compliant with Swiss data protection law (nDSG). Your customers\' data is safe.' },
@@ -177,7 +177,7 @@ const translations = {
       noUsCloud: 'Keine US-Cloud-Datenlecks',
     },
     advantage: {
-      title: 'Warum klaar?',
+      title: 'Warum KLAAR?',
       items: [
         { title: 'Wir sprechen Ihre Sprache', desc: 'Fliessend auf Deutsch, Französisch und Englisch. Keine Missverständnisse — nur klare Zusammenarbeit.' },
         { title: 'Schweizer Standards', desc: 'Schnell, sicher und vollständig nDSG-konform. Die Daten Ihrer Kunden sind bei uns sicher.' },
@@ -338,7 +338,7 @@ const translations = {
       noUsCloud: 'Aucune fuite vers le cloud US',
     },
     advantage: {
-      title: 'Pourquoi klaar ?',
+      title: 'Pourquoi KLAAR ?',
       items: [
         { title: 'On parle votre langue', desc: 'Couramment en allemand, français et anglais. Pas de malentendus — juste une collaboration claire.' },
         { title: 'Standards suisses', desc: 'Rapide, sécurisé et entièrement conforme à la nLPD. Les données de vos clients sont en sécurité.' },

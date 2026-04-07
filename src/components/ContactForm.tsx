@@ -11,6 +11,7 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
   const { ref, isVisible } = useScrollReveal();
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [business, setBusiness] = useState('');
   const [needs, setNeeds] = useState('');
   const [calLink, setCalLink] = useState('');
@@ -42,6 +43,7 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
     const url = calLink || 'https://cal.com';
     const params = new URLSearchParams({
       name,
+      email,
       notes: `Business: ${business}\nNeeds: ${needs}${selectedTier ? `\nTier: ${selectedTier}` : ''}`,
     });
     window.open(`${url}?${params.toString()}`, '_blank');
@@ -101,7 +103,14 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
                 placeholder={t.contact.namePlaceholder}
                 className="bg-secondary/50 border-border"
               />
-              <Button className="w-full swiss-red-glow" onClick={() => setStep(1)} disabled={!name.trim()}>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t.contact.emailPlaceholder}
+                className="bg-secondary/50 border-border"
+              />
+              <Button className="w-full swiss-red-glow" onClick={() => setStep(1)} disabled={!name.trim() || !email.trim()}>
                 {t.contact.next}
               </Button>
             </div>

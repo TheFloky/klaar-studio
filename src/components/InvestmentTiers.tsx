@@ -1,11 +1,13 @@
-import { Check, Star, ShoppingBag, Crown, Globe, Zap, Brain } from 'lucide-react';
+import { Check, Star, ShoppingBag, Crown, Globe, Zap, Brain, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { Link, useParams } from 'react-router-dom';
 import type { Translations } from '@/lib/i18n';
 
 export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; onSelectTier?: (tier: string) => void }) {
   const { ref, isVisible } = useScrollReveal();
+  const { lang } = useParams<{ lang: string }>();
 
   return (
     <section ref={ref} id="pricing" className="py-24 sm:py-32" aria-label="Pricing packages">
@@ -59,7 +61,13 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
                 <div className="mb-1">
                   <span className="text-3xl sm:text-4xl font-extrabold text-foreground">{tier.price}</span>
                 </div>
-                <p className="text-sm text-muted-foreground mb-6">{tier.monthly}</p>
+                <Link
+                  to={`/${lang || 'en'}/maintenance`}
+                  className="text-sm text-muted-foreground mb-6 inline-flex items-center gap-1 hover:text-primary transition-colors underline decoration-dotted underline-offset-4"
+                >
+                  {tier.monthly}
+                  <HelpCircle size={14} className="opacity-60" />
+                </Link>
                 {tier.description && (
                   <p className="text-sm text-muted-foreground mb-6">{tier.description}</p>
                 )}

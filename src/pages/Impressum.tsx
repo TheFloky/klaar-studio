@@ -15,18 +15,18 @@ export default function Impressum() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">Service Provider (Art. 5 Polish Act on Electronic Services)</h2>
             <p>
-              klaar-Studio Sp. z o.o.<br />
-              [Street Address — please update]<br />
-              [Postal Code, City], Poland
+              Floky Julian Vidal<br />
+              ulica Fryderyka Chopina 16<br />
+              05-082, Blizne Jasińskiego, Stare Babice, Warszawski Zachodni, Mazowieckie, Poland
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">Company Registration</h2>
             <p>
-              Registered in the National Court Register (KRS) maintained by the District Court in [City — please update]<br />
+              Registered in the National Court Register (KRS) maintained by the District Court in Warsaw<br />
               KRS Number: [0000000000 — please update]<br />
-              NIP (Tax ID): [0000000000 — please update]<br />
+              NIP (Tax ID): 9512546451<br />
               REGON: [000000000 — please update]<br />
               Share capital: [amount] PLN
             </p>
@@ -34,14 +34,14 @@ export default function Impressum() {
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">Represented by</h2>
-            <p>[Managing Director / Member of the Management Board — please update]</p>
+            <p>Julian Vidal</p>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">Contact</h2>
             <p>
-              Email: <a href="mailto:hello@klaar.studio" className="text-primary hover:underline">hello@klaar.studio</a><br />
-              Phone: +41 44 000 00 00
+              Email: <a href="mailto:info@klaar-studio.ch" className="text-primary hover:underline">info@klaar-studio.ch</a><br />
+              Phone: +41 797508350
             </p>
           </section>
 
@@ -60,14 +60,14 @@ export default function Impressum() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">VAT Identification Number</h2>
             <p>
-              EU VAT ID: PL [0000000000 — please update]<br />
+              EU VAT ID: PL 9512546451<br />
               (Issued pursuant to Art. 97 of the Polish VAT Act)
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">Editorial Responsibility</h2>
-            <p>[Name of responsible person — please update]</p>
+            <p>Julian Vidal</p>
           </section>
 
           <section>

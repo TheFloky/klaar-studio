@@ -139,6 +139,7 @@ const translations = {
       title: 'Book a Free Consultation',
       steps: ['Full Name', 'Business', 'Your Needs'],
       namePlaceholder: 'Your full name',
+      emailPlaceholder: 'your@email.com',
       businessPlaceholder: 'Your business name',
       needsPlaceholder: 'Tell us what you need — a website, an online shop, compliance audit, or something else...',
       next: 'Next',
@@ -295,6 +296,7 @@ const translations = {
       title: 'Kostenlose Beratung buchen',
       steps: ['Vollständiger Name', 'Unternehmen', 'Ihr Bedarf'],
       namePlaceholder: 'Ihr vollständiger Name',
+      emailPlaceholder: 'ihre@email.com',
       businessPlaceholder: 'Ihr Firmenname',
       needsPlaceholder: 'Sagen Sie uns, was Sie brauchen — eine Website, einen Online-Shop, ein Compliance-Audit oder etwas anderes...',
       next: 'Weiter',
@@ -451,6 +453,7 @@ const translations = {
       title: 'Réservez une consultation gratuite',
       steps: ['Nom complet', 'Entreprise', 'Vos besoins'],
       namePlaceholder: 'Votre nom complet',
+      emailPlaceholder: 'votre@email.com',
       businessPlaceholder: 'Le nom de votre entreprise',
       needsPlaceholder: 'Dites-nous ce dont vous avez besoin — un site web, une boutique en ligne, un audit de conformité ou autre...',
       next: 'Suivant',
@@ -513,7 +516,7 @@ type TranslationMap = {
     ctaButton: string;
     projects: Project[];
   };
-  contact: { title: string; steps: string[]; namePlaceholder: string; businessPlaceholder: string; needsPlaceholder: string; next: string; back: string; submit: string; success: string; pickDate: string; loading: string; noSlots: string };
+  contact: { title: string; steps: string[]; namePlaceholder: string; emailPlaceholder: string; businessPlaceholder: string; needsPlaceholder: string; next: string; back: string; submit: string; success: string; pickDate: string; loading: string; noSlots: string };
   footer: { address: string; phone: string; impressum: string; privacy: string; rights: string };
 };
 export type Translations = TranslationMap;

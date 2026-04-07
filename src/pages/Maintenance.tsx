@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Server, Scale, FileEdit, HeadsetIcon, Wrench, Cloud } from 'lucide-react';
 
 const items = [
@@ -36,18 +36,30 @@ const items = [
 
 export default function Maintenance() {
   const { lang } = useParams<{ lang: string }>();
+  const location = useLocation();
+  const navigate = useNavigate();
   const backPath = lang ? `/${lang}` : '/en';
+  const savedScrollY = (location.state as { scrollY?: number })?.scrollY;
+
+  const handleBack = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(backPath, { replace: true });
+    if (savedScrollY !== undefined) {
+      setTimeout(() => window.scrollTo(0, savedScrollY), 50);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="container max-w-3xl py-16 sm:py-24 px-4">
-        <Link
-          to={backPath}
+        <a
+          href={backPath}
+          onClick={handleBack}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-10 transition-colors"
         >
           <ArrowLeft size={16} />
           Back to Homepage
-        </Link>
+        </a>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-4">Maintenance & Support</h1>
         <p className="text-muted-foreground mb-12 max-w-xl">

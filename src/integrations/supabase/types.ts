@@ -19,6 +19,7 @@ export type Database = {
           business: string
           calendar_event_id: string | null
           created_at: string
+          email: string | null
           id: string
           name: string
           needs: string
@@ -31,6 +32,7 @@ export type Database = {
           business: string
           calendar_event_id?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           name: string
           needs: string
@@ -43,6 +45,7 @@ export type Database = {
           business?: string
           calendar_event_id?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           name?: string
           needs?: string

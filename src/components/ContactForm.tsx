@@ -27,10 +27,11 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
       });
   }, []);
 
-  const handleBook = () => {
+  const handleBook = async () => {
     // Log the lead to the database
-    supabase.from('bookings').insert({
+    await supabase.from('bookings').insert({
       name,
+      email,
       business,
       needs,
       tier: selectedTier || null,

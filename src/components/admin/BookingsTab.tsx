@@ -5,6 +5,7 @@ import { Calendar, Clock, Loader2, Trash2 } from "lucide-react";
 type Booking = {
   id: string;
   name: string;
+  email: string | null;
   business: string;
   needs: string;
   tier: string | null;

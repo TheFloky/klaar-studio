@@ -61,21 +61,18 @@ const translations = {
         {
           name: 'Starter Website',
           price: 'CHF 2\'500',
-          monthly: 'CHF 60/mo support',
-          description: 'A simple, high-quality one-page website for a clean and professional online presence.',
+          monthly: 'CHF 79/mo Maintenance & Support',
           features: [
             'One-page website (homepage + Impressum & Privacy Policy)',
-            'Includes Impressum & Privacy Policy',
             'Fully custom-designed (no templates)',
             'Perfect on phones & tablets',
             'Legally compliant (nDSG)',
           ],
-          note: 'Perfect for businesses that need a clear, credible online presence without unnecessary complexity.',
         },
         {
           name: 'Business Website',
           price: 'CHF 4\'000',
-          monthly: 'CHF 150/mo support',
+          monthly: 'CHF 150/mo Maintenance & Support',
           features: [
             'Everything in Starter',
             'Admin dashboard to manage content',
@@ -87,7 +84,7 @@ const translations = {
         {
           name: 'Online Shop',
           price: 'CHF 5\'000',
-          monthly: 'CHF 200/mo support',
+          monthly: 'CHF 200/mo Maintenance & Support',
           features: [
             'Everything in Business',
             'Full Shopify or WooCommerce store',
@@ -98,7 +95,7 @@ const translations = {
         {
           name: 'klaar Elite',
           price: 'CHF 7\'500+',
-          monthly: 'CHF 400/mo support',
+          monthly: 'CHF 400/mo Maintenance & Support',
           features: [
             'Everything in Online Shop',
             'Custom AI tools to automate your work',
@@ -221,21 +218,18 @@ const translations = {
         {
           name: 'Starter Website',
           price: 'CHF 2\'500',
-          monthly: 'CHF 60/Mt. Support',
-          description: 'Eine schlichte, hochwertige One-Page-Website für einen professionellen Online-Auftritt.',
+          monthly: 'CHF 79/Mt. Wartung & Support',
           features: [
             'One-Page-Website (Startseite + Impressum & Datenschutz)',
-            'Impressum & Datenschutzerklärung inklusive',
             'Vollständig individuell gestaltet (keine Templates)',
             'Perfekt auf Handy & Tablet',
             'Rechtskonform (nDSG)',
           ],
-          note: 'Ideal für Unternehmen, die eine klare, glaubwürdige Online-Präsenz ohne unnötige Komplexität benötigen.',
         },
         {
           name: 'Business Website',
           price: 'CHF 4\'000',
-          monthly: 'CHF 150/Mt. Support',
+          monthly: 'CHF 150/Mt. Wartung & Support',
           features: [
             'Alles aus Starter',
             'Admin-Bereich zur Verwaltung',
@@ -247,7 +241,7 @@ const translations = {
         {
           name: 'Online-Shop',
           price: 'CHF 5\'000',
-          monthly: 'CHF 200/Mt. Support',
+          monthly: 'CHF 200/Mt. Wartung & Support',
           features: [
             'Alles aus Business',
             'Kompletter Shopify / WooCommerce Shop',
@@ -258,7 +252,7 @@ const translations = {
         {
           name: 'klaar Elite',
           price: 'CHF 7\'500+',
-          monthly: 'CHF 400/Mt. Support',
+          monthly: 'CHF 400/Mt. Wartung & Support',
           features: [
             'Alles aus Online-Shop',
             'Individuelle KI-Tools für Ihre Arbeit',
@@ -381,21 +375,18 @@ const translations = {
         {
           name: 'Site Starter',
           price: 'CHF 2\'500',
-          monthly: 'CHF 60/mois support',
-          description: 'Un site one-page simple et de haute qualité pour une présence en ligne claire et professionnelle.',
+          monthly: 'CHF 79/mois Maintenance & Support',
           features: [
             'Site one-page (page d\'accueil + Mentions & Protection des données)',
-            'Mentions légales & politique de confidentialité incluses',
             'Design entièrement sur mesure (pas de templates)',
             'Parfait sur mobile & tablette',
             'Conforme juridiquement (nLPD)',
           ],
-          note: 'Parfait pour les entreprises qui ont besoin d\'une présence en ligne claire et crédible sans complexité inutile.',
         },
         {
           name: 'Site Business',
           price: 'CHF 4\'000',
-          monthly: 'CHF 150/mois support',
+          monthly: 'CHF 150/mois Maintenance & Support',
           features: [
             'Tout dans Starter',
             'Tableau de bord pour gérer le contenu',
@@ -407,7 +398,7 @@ const translations = {
         {
           name: 'Boutique en Ligne',
           price: 'CHF 5\'000',
-          monthly: 'CHF 200/mois support',
+          monthly: 'CHF 200/mois Maintenance & Support',
           features: [
             'Tout dans Business',
             'Boutique Shopify / WooCommerce complète',
@@ -418,7 +409,7 @@ const translations = {
         {
           name: 'klaar Elite',
           price: 'CHF 7\'500+',
-          monthly: 'CHF 400/mois support',
+          monthly: 'CHF 400/mois Maintenance & Support',
           features: [
             'Tout dans Boutique en Ligne',
             'Outils IA personnalisés pour votre travail',

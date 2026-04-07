@@ -489,7 +489,9 @@ type PricingTier = {
   name: string;
   price: string;
   monthly: string;
+  description?: string;
   features: string[];
+  note?: string;
 };
 
 type Project = {

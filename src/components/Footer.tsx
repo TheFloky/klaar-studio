@@ -10,8 +10,7 @@ export default function Footer({ t }: { t: Translations }) {
             <p className="text-xl font-extrabold text-foreground leading-none">KLAAR</p>
             <p className="text-[0.5rem] font-medium tracking-[0.25em] uppercase text-muted-foreground">Studio</p>
           </div>
-          <p className="text-sm text-muted-foreground">{t.footer.phone}</p>
-          <p className="text-sm text-muted-foreground">hello@klaar.studio</p>
+          <p className="text-sm text-muted-foreground">info@klaar-studio.ch</p>
           <div className="flex gap-4 mt-4">
             <Link to="/impressum" className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t.footer.impressum}</Link>
             <span className="text-xs text-muted-foreground">·</span>

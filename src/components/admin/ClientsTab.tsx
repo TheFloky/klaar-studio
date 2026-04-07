@@ -152,7 +152,9 @@ export default function ClientsTab() {
   };
 
   const updateField = async (clientId: string, field: string, value: string) => {
-    await supabase.from("clients").update({ [field]: value }).eq("id", clientId);
+    const updateData: Record<string, string> = {};
+    updateData[field] = value;
+    await supabase.from("clients").update(updateData as any).eq("id", clientId);
     setClients((prev) => prev.map((c) => (c.id === clientId ? { ...c, [field]: value } : c)));
   };
 

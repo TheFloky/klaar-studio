@@ -21,16 +21,6 @@ export default function Impressum() {
             </p>
           </section>
 
-          <section>
-            <h2 className="text-lg font-semibold text-foreground mb-2">Company Registration</h2>
-            <p>
-              Registered in the National Court Register (KRS) maintained by the District Court in Warsaw<br />
-              KRS Number: [0000000000 — please update]<br />
-              NIP (Tax ID): 9512546451<br />
-              REGON: [000000000 — please update]<br />
-              Share capital: [amount] PLN
-            </p>
-          </section>
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">Represented by</h2>

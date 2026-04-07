@@ -63,6 +63,7 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
                 </div>
                 <Link
                   to={`/${lang || 'en'}/maintenance`}
+                  state={{ scrollY: window.scrollY }}
                   className="text-sm text-muted-foreground mb-6 inline-flex items-center gap-1 hover:text-primary transition-colors underline decoration-dotted underline-offset-4"
                 >
                   {tier.monthly}

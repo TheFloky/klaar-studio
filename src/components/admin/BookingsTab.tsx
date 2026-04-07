@@ -74,6 +74,7 @@ export default function BookingsTab() {
           <div className="flex items-start justify-between">
             <div>
               <p className="font-semibold text-gray-900">{b.name}</p>
+              {b.email && <p className="text-sm text-gray-500">{b.email}</p>}
               <p className="text-sm text-gray-500">{b.business}</p>
             </div>
             <div className="flex items-center gap-2">

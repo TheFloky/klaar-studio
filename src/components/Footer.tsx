@@ -18,7 +18,7 @@ export default function Footer({ t }: { t: Translations }) {
           </div>
         </div>
         <div className="mt-8 pt-6 border-t border-border text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} klaar-Studio GmbH. {t.footer.rights}
+          © {new Date().getFullYear()} klaar-Studio. {t.footer.rights}
         </div>
       </div>
     </footer>

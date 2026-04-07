@@ -4,22 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 const SETTINGS_KEYS = [
   {
-    key: "CAL_API_KEY",
-    label: "Cal.com API Key",
-    placeholder: "cal_live_...",
-    multiline: false,
-  },
-  {
-    key: "CAL_USERNAME",
-    label: "Cal.com Username",
-    placeholder: "your-username",
-    multiline: false,
-  },
-  {
-    key: "CAL_EVENT_TYPE_ID",
-    label: "Cal.com Event Type ID",
-    placeholder: "123456",
-    multiline: false,
+    key: "CAL_BOOKING_LINK",
+    label: "Cal.com Booking Link",
+    placeholder: "https://cal.com/your-username/30min",
+    secret: false,
   },
 ];
 
@@ -74,31 +62,22 @@ export default function SettingsTab() {
           <label className="block text-sm font-semibold text-gray-700">{setting.label}</label>
 
           <div className="relative">
-            {setting.multiline ? (
-              <textarea
-                rows={4}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-[#FF0000]/20 focus:border-[#FF0000] outline-none resize-none"
-                placeholder={setting.placeholder}
-                value={values[setting.key] || ""}
-                onChange={(e) => setValues((prev) => ({ ...prev, [setting.key]: e.target.value }))}
-                style={{ WebkitTextSecurity: visible[setting.key] ? "none" : "disc" } as any}
-              />
-            ) : (
-              <input
-                type={visible[setting.key] ? "text" : "password"}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-[#FF0000]/20 focus:border-[#FF0000] outline-none"
-                placeholder={setting.placeholder}
-                value={values[setting.key] || ""}
-                onChange={(e) => setValues((prev) => ({ ...prev, [setting.key]: e.target.value }))}
-              />
-            )}
+            <input
+              type={setting.secret && !visible[setting.key] ? "password" : "text"}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-[#FF0000]/20 focus:border-[#FF0000] outline-none"
+              placeholder={setting.placeholder}
+              value={values[setting.key] || ""}
+              onChange={(e) => setValues((prev) => ({ ...prev, [setting.key]: e.target.value }))}
+            />
 
-            <button
-              onClick={() => setVisible((prev) => ({ ...prev, [setting.key]: !prev[setting.key] }))}
-              className="absolute top-2 right-2 p-1 text-gray-400 hover:text-gray-600"
-            >
-              {visible[setting.key] ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
+            {setting.secret && (
+              <button
+                onClick={() => setVisible((prev) => ({ ...prev, [setting.key]: !prev[setting.key] }))}
+                className="absolute top-2 right-2 p-1 text-gray-400 hover:text-gray-600"
+              >
+                {visible[setting.key] ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            )}
           </div>
 
           <button
@@ -125,9 +104,8 @@ export default function SettingsTab() {
         <ol className="list-decimal ml-5 mt-2 space-y-1">
           <li>Sign up for a free <a href="https://cal.com" target="_blank" rel="noopener" className="underline">Cal.com</a> account</li>
           <li>Create an Event Type (e.g. "30 min consultation")</li>
-          <li>Go to <strong>Settings → Developer → API Keys</strong> and create a key</li>
-          <li>Find your Event Type ID from the URL when editing it (e.g. <code>/event-types/123456</code>)</li>
-          <li>Enter your Cal.com username, API key, and Event Type ID above</li>
+          <li>Copy the booking link from your event type page</li>
+          <li>Paste the full URL above (e.g. <code>https://cal.com/your-name/30min</code>)</li>
         </ol>
       </div>
     </div>

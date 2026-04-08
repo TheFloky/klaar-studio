@@ -260,19 +260,7 @@ export default function Audit() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
-          <Link to="/en" className="p-1.5 rounded-lg hover:bg-muted transition-colors">
-            <ArrowLeft size={18} className="text-muted-foreground" />
-          </Link>
-          <img src={klaarIcon} alt="Klaar" className="w-10 h-10 rounded-md" />
-          <div>
-            <h1 className="text-lg font-bold tracking-tight text-foreground">Swiss Compliance Audit</h1>
-            <p className="text-[11px] text-muted-foreground uppercase tracking-widest">nFADP / nDSG Conformity Scanner</p>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Swiss Compliance Audit" subtitle="nFADP / nDSG Conformity Scanner" backTo={backPath} />
 
       <main className="max-w-5xl mx-auto px-4 py-8 space-y-8">
         {/* URL Input */}
@@ -357,7 +345,7 @@ export default function Audit() {
         {scanComplete && (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              to="/en#contact"
+              to={`${backPath}#contact`}
               className="px-8 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-lg hover:bg-primary/90 transition-all flex items-center gap-2 shadow-sm swiss-red-glow"
             >
               <Shield size={16} />

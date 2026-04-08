@@ -1,5 +1,6 @@
-import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Server, Scale, FileEdit, HeadsetIcon, Wrench, Cloud } from 'lucide-react';
+import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
+import { Server, Scale, FileEdit, HeadsetIcon, Wrench, Cloud } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 
 const items = [
   {
@@ -38,7 +39,7 @@ export default function Maintenance() {
   const { lang } = useParams<{ lang: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const backPath = lang ? `/${lang}` : '/en';
+  const backPath = `/${lang || 'de'}`;
   const savedScrollY = (location.state as { scrollY?: number })?.scrollY;
 
   const handleBack = (e: React.MouseEvent) => {
@@ -51,17 +52,8 @@ export default function Maintenance() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="container max-w-3xl py-16 sm:py-24 px-4">
-        <a
-          href={backPath}
-          onClick={handleBack}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-10 transition-colors"
-        >
-          <ArrowLeft size={16} />
-          Back to Homepage
-        </a>
-
-        <h1 className="text-3xl sm:text-4xl font-extrabold mb-4">Maintenance & Support</h1>
+      <PageHeader title="Maintenance & Support" backTo={backPath} />
+      <div className="container max-w-3xl py-12 sm:py-16 px-4">
         <p className="text-muted-foreground mb-12 max-w-xl">
           Every plan includes ongoing maintenance and support to keep your website secure, compliant, and running smoothly.
         </p>

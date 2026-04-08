@@ -11,7 +11,8 @@ export default function ComplianceChecker({ t }: { t: Translations }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
-    navigate(`/audit?url=${encodeURIComponent(url.trim())}`);
+    const lang = window.location.pathname.split('/')[1] || 'de';
+    navigate(`/${lang}/audit?url=${encodeURIComponent(url.trim())}`);
   };
 
   return (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Shield, Users, Settings, CalendarDays, LogOut } from "lucide-react";
+import { ArrowLeft, Shield, Users, Settings, CalendarDays, LogOut, Moon, Sun } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import AdminLogin from "@/components/admin/AdminLogin";
@@ -21,6 +21,11 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState<TabId>("clients");
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark);
+  }, [dark]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -48,7 +53,7 @@ export default function Admin() {
     <div className="min-h-screen bg-gray-50" style={{ fontFamily: "'Inter', 'Helvetica Neue', Helvetica, sans-serif" }}>
       <header className="border-b border-gray-200 bg-white">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
-          <Link to="/en" className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+          <Link to="/de" className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
             <ArrowLeft size={18} className="text-gray-500" />
           </Link>
           <div className="w-8 h-8 bg-[#FF0000] rounded flex items-center justify-center">
@@ -58,13 +63,21 @@ export default function Admin() {
             <h1 className="text-lg font-bold tracking-tight text-gray-900">klaar-Studio Admin</h1>
             <p className="text-[11px] text-gray-400 uppercase tracking-widest">Internal Dashboard</p>
           </div>
-          <button
-            onClick={() => supabase.auth.signOut()}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <LogOut size={14} />
-            Sign out
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setDark(!dark)}
+              className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-gray-500"
+            >
+              {dark ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <button
+              onClick={() => supabase.auth.signOut()}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <LogOut size={14} />
+              Sign out
+            </button>
+          </div>
         </div>
       </header>
 

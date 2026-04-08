@@ -21,6 +21,11 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState<TabId>("clients");
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark);
+  }, [dark]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -58,13 +63,21 @@ export default function Admin() {
             <h1 className="text-lg font-bold tracking-tight text-gray-900">klaar-Studio Admin</h1>
             <p className="text-[11px] text-gray-400 uppercase tracking-widest">Internal Dashboard</p>
           </div>
-          <button
-            onClick={() => supabase.auth.signOut()}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <LogOut size={14} />
-            Sign out
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setDark(!dark)}
+              className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-gray-500"
+            >
+              {dark ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <button
+              onClick={() => supabase.auth.signOut()}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <LogOut size={14} />
+              Sign out
+            </button>
+          </div>
         </div>
       </header>
 

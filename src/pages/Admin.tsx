@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Shield, Users, Settings, CalendarDays, LogOut } from "lucide-react";
+import { ArrowLeft, Shield, Users, Settings, CalendarDays, LogOut, Moon, Sun } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import AdminLogin from "@/components/admin/AdminLogin";

@@ -165,7 +165,8 @@ function RiskCard({ title, riskKey, icon: Icon, status, description, detail }: {
 
 export default function Audit() {
   const [searchParams] = useSearchParams();
-  const [url, setUrl] = useState(searchParams.get("url") || "");
+  const { lang } = useParams<{ lang: string }>();
+  const backPath = `/${lang || 'de'}`;
   const [scanning, setScanning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState("");

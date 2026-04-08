@@ -21,7 +21,7 @@ export default function Index() {
   const navigate = useNavigate();
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   
-  const lang: Lang = validLangs.includes(langParam as Lang) ? (langParam as Lang) : 'en';
+  const lang: Lang = validLangs.includes(langParam as Lang) ? (langParam as Lang) : 'de';
   const t = getTranslations(lang);
 
   const setLang = (newLang: Lang) => {

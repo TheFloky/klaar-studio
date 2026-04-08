@@ -23,9 +23,9 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Navigate to="/de" replace />} />
             <Route path="/admin" element={<Admin />} />
-            <Route path="/audit" element={<Audit />} />
-            <Route path="/impressum" element={<Impressum />} />
-            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/:lang/audit" element={<Audit />} />
+            <Route path="/:lang/impressum" element={<Impressum />} />
+            <Route path="/:lang/privacy" element={<Privacy />} />
             <Route path="/:lang/maintenance" element={<Maintenance />} />
             <Route path="/:lang" element={<Index />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

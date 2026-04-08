@@ -1,15 +1,14 @@
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import PageHeader from '@/components/PageHeader';
 
 export default function Privacy() {
+  const { lang } = useParams<{ lang: string }>();
+  const backPath = `/${lang || 'de'}`;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="container max-w-3xl py-16 px-4">
-        <Link to="/en" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8">
-          <ArrowLeft className="w-4 h-4" /> Back to Homepage
-        </Link>
-
-        <h1 className="text-3xl font-bold mb-2">Privacy Policy</h1>
+      <PageHeader title="Privacy Policy" backTo={backPath} />
+      <div className="container max-w-3xl py-12 px-4">
         <p className="text-sm text-muted-foreground mb-8">
           This Privacy Policy explains how we collect and process personal data in accordance with the General Data Protection Regulation (EU) 2016/679 (GDPR).<br />
           When providing services to clients in Switzerland, we also take into account applicable Swiss data protection standards.

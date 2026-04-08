@@ -1,16 +1,14 @@
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import PageHeader from '@/components/PageHeader';
 
 export default function Impressum() {
+  const { lang } = useParams<{ lang: string }>();
+  const backPath = `/${lang || 'de'}`;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="container max-w-3xl py-16 px-4">
-        <Link to="/en" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8">
-          <ArrowLeft className="w-4 h-4" /> Back to Homepage
-        </Link>
-
-        <h1 className="text-3xl font-bold mb-8">Legal Notice (Impressum)</h1>
-
+      <PageHeader title="Legal Notice (Impressum)" backTo={backPath} />
+      <div className="container max-w-3xl py-12 px-4">
         <div className="space-y-6 text-sm leading-relaxed text-muted-foreground">
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">Service Provider</h2>

@@ -1,7 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import type { Translations } from '@/lib/i18n';
 
 export default function Footer({ t }: { t: Translations }) {
+  const { lang } = useParams<{ lang: string }>();
+  const l = lang || 'de';
+
   return (
     <footer className="border-t border-border py-12">
       <div className="container">
@@ -12,9 +15,9 @@ export default function Footer({ t }: { t: Translations }) {
           </div>
           <p className="text-sm text-muted-foreground">info@klaar-studio.ch</p>
           <div className="flex gap-4 mt-4">
-            <Link to="/impressum" className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t.footer.impressum}</Link>
+            <Link to={`/${l}/impressum`} className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t.footer.impressum}</Link>
             <span className="text-xs text-muted-foreground">·</span>
-            <Link to="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t.footer.privacy}</Link>
+            <Link to={`/${l}/privacy`} className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t.footer.privacy}</Link>
           </div>
         </div>
         <div className="mt-8 pt-6 border-t border-border text-center text-xs text-muted-foreground">

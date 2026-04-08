@@ -48,7 +48,7 @@ export default function Admin() {
     <div className="min-h-screen bg-gray-50" style={{ fontFamily: "'Inter', 'Helvetica Neue', Helvetica, sans-serif" }}>
       <header className="border-b border-gray-200 bg-white">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
-          <Link to="/en" className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+          <Link to="/de" className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
             <ArrowLeft size={18} className="text-gray-500" />
           </Link>
           <div className="w-8 h-8 bg-[#FF0000] rounded flex items-center justify-center">

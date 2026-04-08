@@ -167,6 +167,7 @@ export default function Audit() {
   const [searchParams] = useSearchParams();
   const { lang } = useParams<{ lang: string }>();
   const backPath = `/${lang || 'de'}`;
+  const [url, setUrl] = useState(searchParams.get("url") || "");
   const [scanning, setScanning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState("");

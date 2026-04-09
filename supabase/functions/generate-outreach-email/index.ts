@@ -172,7 +172,7 @@ Return ONLY the email text, no subject line prefix or metadata.`;
         body: JSON.stringify({
           model: "google/gemini-2.5-flash",
           messages: [
-            { role: "system", content: `You write compelling, professional business emails. You use Swiss German conventions (ss instead of ß). Output only the email body text. This is variant ${variant} of 3 — make each version distinct in tone and structure while following all guidelines. Variant 1: formal and data-driven. Variant 2: warm and relationship-focused. Variant 3: concise and direct.` },
+            { role: "system", content: `You write short, personal, professional business emails that sound like a real person — not a template. You use Swiss German conventions (ss instead of ß). Output only the email body text. Keep emails under 250 words. This is variant ${variant} of 3 — make each version distinct while following all guidelines. Variant 1: slightly more detail on compliance findings. Variant 2: warmer, relationship-focused opening. Variant 3: ultra-concise, gets to the point fastest.` },
             { role: "user", content: prompt },
           ],
         }),

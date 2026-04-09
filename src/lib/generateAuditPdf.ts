@@ -48,7 +48,7 @@ function boolToStatus(leakage: boolean): string {
   return leakage ? "red" : "green";
 }
 
-export function generateAuditPdf(data: AuditPdfData): void {
+export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: boolean }): any {
   const doc = new jsPDF("p", "mm", "a4");
   const pw = 210;
   const margin = 20;
@@ -319,7 +319,10 @@ export function generateAuditPdf(data: AuditPdfData): void {
   doc.setFontSize(5.5);
   doc.text("Dieses Dokument wurde automatisch erstellt und dient ausschliesslich zu Informationszwecken.", margin, y + 13);
 
-  // Save
+  // Save or return blob
   const fileName = `Compliance-Audit_${data.targetUrl.replace(/https?:\/\//, "").replace(/[^a-zA-Z0-9.-]/g, "_")}_${new Date().toISOString().slice(0, 10)}.pdf`;
+  if (options?.returnBlob) {
+    return doc.output("blob");
+  }
   doc.save(fileName);
 }

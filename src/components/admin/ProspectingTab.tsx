@@ -427,7 +427,7 @@ export default function ProspectingTab() {
                     {prospect.status === "completed" && (
                       <div className="flex items-center gap-4 mt-2" onClick={(e) => e.stopPropagation()}>
                         {([
-                          { field: "email_demo_sent" as const, label: "Email demo" },
+                          { field: "email_demo_sent" as const, label: "Website demo" },
                           { field: "email_sent" as const, label: "Email sent" },
                           { field: "meeting_done" as const, label: "Meeting done" },
                         ]).map(({ field, label }) => (

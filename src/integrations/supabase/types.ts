@@ -62,8 +62,10 @@ export type Database = {
           compliance_score: number | null
           created_at: string
           id: string
+          maintenance_fee: number | null
           name: string | null
           niche: string | null
+          project_fee: number | null
           status: string | null
           tier: string | null
           todos: Json | null
@@ -75,8 +77,10 @@ export type Database = {
           compliance_score?: number | null
           created_at?: string
           id?: string
+          maintenance_fee?: number | null
           name?: string | null
           niche?: string | null
+          project_fee?: number | null
           status?: string | null
           tier?: string | null
           todos?: Json | null
@@ -88,8 +92,10 @@ export type Database = {
           compliance_score?: number | null
           created_at?: string
           id?: string
+          maintenance_fee?: number | null
           name?: string | null
           niche?: string | null
+          project_fee?: number | null
           status?: string | null
           tier?: string | null
           todos?: Json | null
@@ -108,11 +114,14 @@ export type Database = {
           demo_site_password: string | null
           demo_site_url: string | null
           description: string | null
+          email_demo_sent: boolean
           email_draft: string | null
           email_language: string | null
+          email_sent: boolean
           email_subject: string | null
           financials: Json | null
           id: string
+          meeting_done: boolean
           niche: string | null
           reputation: Json | null
           research_summary: string | null
@@ -129,11 +138,14 @@ export type Database = {
           demo_site_password?: string | null
           demo_site_url?: string | null
           description?: string | null
+          email_demo_sent?: boolean
           email_draft?: string | null
           email_language?: string | null
+          email_sent?: boolean
           email_subject?: string | null
           financials?: Json | null
           id?: string
+          meeting_done?: boolean
           niche?: string | null
           reputation?: Json | null
           research_summary?: string | null
@@ -150,11 +162,14 @@ export type Database = {
           demo_site_password?: string | null
           demo_site_url?: string | null
           description?: string | null
+          email_demo_sent?: boolean
           email_draft?: string | null
           email_language?: string | null
+          email_sent?: boolean
           email_subject?: string | null
           financials?: Json | null
           id?: string
+          meeting_done?: boolean
           niche?: string | null
           reputation?: Json | null
           research_summary?: string | null

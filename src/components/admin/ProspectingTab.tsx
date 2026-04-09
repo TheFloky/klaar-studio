@@ -65,6 +65,7 @@ export default function ProspectingTab() {
   const [includeDemoSite, setIncludeDemoSite] = useState(false);
   const [demoUrl, setDemoUrl] = useState("");
   const [demoPassword, setDemoPassword] = useState("");
+  const [emailNotes, setEmailNotes] = useState("");
   const [emailVariants, setEmailVariants] = useState<EmailVariant[]>([]);
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [uploadingPdf, setUploadingPdf] = useState<string | null>(null);
@@ -213,6 +214,7 @@ export default function ProspectingTab() {
           demoSiteUrl: demoUrl || null,
           demoSitePassword: demoPassword || null,
           auditPdfUrl: auditPdfUrls[prospect.id] || null,
+          customNotes: emailNotes || null,
         },
       });
 
@@ -719,7 +721,7 @@ export default function ProspectingTab() {
                         <button
                           onClick={() => generateEmail(prospect)}
                           disabled={generatingEmailId === prospect.id}
-                          className="ml-auto px-4 py-1.5 bg-[#FF0000] text-white text-xs font-semibold rounded-lg hover:bg-red-600 disabled:opacity-40 transition-all flex items-center gap-2"
+                          className="ml-auto px-4 py-1.5 bg-[#FF0000] text-white text-xs font-semibold rounded-lg hover:bg-red-600 disabled:opacity-40 transition-all flex items-center gap-2 shrink-0"
                         >
                           {generatingEmailId === prospect.id ? (
                             <><Loader2 size={12} className="animate-spin" /> Generating 3 variants…</>
@@ -727,6 +729,17 @@ export default function ProspectingTab() {
                             <><Mail size={12} /> Generate 3 Emails</>
                           )}
                         </button>
+                      </div>
+
+                      {/* Custom notes for AI */}
+                      <div className="mb-3">
+                        <textarea
+                          value={emailNotes}
+                          onChange={(e) => setEmailNotes(e.target.value)}
+                          placeholder="Custom notes for the AI (e.g. 'Mention we met at an event', 'Focus on their outdated design', 'They recently rebranded')…"
+                          rows={2}
+                          className="w-full text-xs px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 resize-none"
+                        />
                       </div>
 
                       {/* Demo site fields */}

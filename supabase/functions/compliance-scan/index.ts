@@ -223,13 +223,13 @@ Deno.serve(async (req) => {
         /\b[A-Z]{2}\d{8,12}\b/,  // EU VAT
         /uid|vat|mwst|ust-id|ust\.?-?id/i,
       ];
-      legalDetails.hasVatId = vatPatterns.some(p => p.test(html));
+      legalDetails.hasVatId = vatPatterns.some(p => p.test(allHtml));
 
       // Company name (look for common legal forms)
       const companyPatterns = [
         /gmbh|ag\b|ltd|s\.r\.o|sp\.\s*z\s*o\.o|inc\b|corp\b|sarl|sàrl|sa\b/i,
       ];
-      legalDetails.hasCompanyName = companyPatterns.some(p => p.test(html));
+      legalDetails.hasCompanyName = companyPatterns.some(p => p.test(allHtml));
 
       // Determine legal presence status
       if (legalDetails.impressumInFooter && legalDetails.hasAddress && legalDetails.hasEmail) {

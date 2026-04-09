@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Shield, Globe, Type, BarChart3, FileText, AlertTriangle, CheckCircle, XCircle, Search, FileDown, ExternalLink, Loader2 } from "lucide-react";
+import { generateAuditPdf } from "@/lib/generateAuditPdf";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useSearchParams, useParams } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";

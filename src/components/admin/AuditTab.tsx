@@ -1,11 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { Shield, Globe, Type, BarChart3, FileText, AlertTriangle, CheckCircle, XCircle, Search, FileDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { generateAuditPdf } from "@/lib/generateAuditPdf";
 
 interface ScanDetails {
   ip?: { country?: string; countryCode?: string; ip?: string };
   fontsFound?: string[];
   trackersFound?: string[];
+  siteTitle?: string;
+  siteDescription?: string;
+  legalDetails?: any;
 }
 
 interface ScanResults {
@@ -248,7 +252,21 @@ export default function AuditTab() {
       {/* Generate Report */}
       {scanComplete && (
         <div className="flex justify-center">
-          <button className="px-6 py-3 border-2 border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:border-[#FF0000] hover:text-[#FF0000] transition-all flex items-center gap-2">
+          <button
+            onClick={() => {
+              generateAuditPdf({
+                targetUrl: url,
+                siteTitle: results.details?.siteTitle,
+                score,
+                dataResidency: typeof results.dataResidency === "string" ? results.dataResidency : results.dataResidency ? "green" : "red",
+                fontLeakage: results.fontLeakage === true,
+                trackingTransparency: results.trackingTransparency === true,
+                legalPresence: typeof results.legalPresence === "string" ? results.legalPresence : results.legalPresence ? "green" : "red",
+                details: results.details,
+              });
+            }}
+            className="px-6 py-3 border-2 border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:border-[#FF0000] hover:text-[#FF0000] transition-all flex items-center gap-2"
+          >
             <FileDown size={16} />
             Generate Risk Report PDF
           </button>

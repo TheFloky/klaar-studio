@@ -600,6 +600,20 @@ export default function Audit() {
           </div>
         )}
 
+        {scanComplete && pdfFallbackUrl && (
+          <div className="flex justify-center">
+            <a
+              href={pdfFallbackUrl}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-primary hover:underline"
+            >
+              Download the PDF manually
+            </a>
+          </div>
+        )}
+
         {/* AI Privacy Toggle */}
         <div className="bg-card rounded-xl border border-border shadow-sm p-6">
           <div className="flex items-start gap-4">

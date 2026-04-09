@@ -26,15 +26,18 @@ Deno.serve(async (req) => {
       it: "Italian",
     };
 
+    const niche = (prospect.niche || "").toLowerCase();
+    const isSensitiveSector = ["medical", "medizin", "arzt", "praxis", "gesundheit", "legal", "recht", "anwalt", "kanzlei", "law"].some(k => niche.includes(k));
+
     const complianceIssues: string[] = [];
     const cd = prospect.compliance_details;
     if (cd) {
-      if (cd.dataResidency === "red") complianceIssues.push("Server hosted in the USA (US Cloud Act risk, nFADP/GDPR non-compliance)");
-      else if (cd.dataResidency === "yellow") complianceIssues.push("Server hosted in EU but not Switzerland (adequate but lacks Swiss data sovereignty)");
-      if (cd.fontLeakage) complianceIssues.push("Google Fonts loaded externally (IP addresses leaked to US servers without consent)");
-      if (cd.trackingTransparency) complianceIssues.push("US-based tracking scripts detected without transparent consent mechanisms");
-      if (cd.legalPresence === "red") complianceIssues.push("No Impressum / legal notice found (legally required under EU and Swiss law)");
-      else if (cd.legalPresence === "yellow") complianceIssues.push("Impressum exists but is incomplete or not properly placed");
+      if (cd.dataResidency === "red") complianceIssues.push("Server in den USA gehostet – Risiko durch den US Cloud Act (nDSG & DSGVO)");
+      else if (cd.dataResidency === "yellow") complianceIssues.push("Server in der EU, aber nicht in der Schweiz – Datensouveränität nicht vollständig gewährleistet");
+      if (cd.fontLeakage) complianceIssues.push("Google Fonts werden extern geladen – IP-Adressen der Besucher werden ohne Einwilligung an US-Server übermittelt");
+      if (cd.trackingTransparency) complianceIssues.push("US-basierte Tracking-Skripte ohne transparente Einwilligungsmechanismen erkannt");
+      if (cd.legalPresence === "red") complianceIssues.push("Kein Impressum gefunden – gesetzlich vorgeschrieben nach Art. 3 UWG (CH) und EU-Recht");
+      else if (cd.legalPresence === "yellow") complianceIssues.push("Impressum vorhanden, aber unvollständig oder nicht korrekt platziert (Art. 3 UWG)");
     }
 
     const reputation = prospect.reputation || {};
@@ -44,15 +47,20 @@ Deno.serve(async (req) => {
     const contactRole = prospect.contacts?.[0]?.role || "";
 
     const demoSection = includeDemoSite && demoSiteUrl
-      ? `\n\nIMPORTANT: Include a section about a personalized demo/preview site we've prepared for them. The URL is: ${demoSiteUrl} and the access password is: ${demoSitePassword || "none"}. Present this as a preview of what their refreshed online presence could look like.`
+      ? `\n\nINCLUDE DEMO SITE SECTION:
+Present a personalized preview/demo site we've prepared. Format it like this:
+- Mention that we have prepared a personalized preview of what their refreshed online presence could look like
+- Add: "Optimiert für Desktop und Smartphone"
+- Place the URL on its own line: ${demoSiteUrl}
+${demoSitePassword ? `- Place the password on its own line, bold: **Passwort: ${demoSitePassword}**` : ""}`
       : "";
 
-    const prompt = `You are writing a professional cold outreach email from klaar-Studio, a Swiss web design and compliance agency specializing in creating privacy-compliant, user-friendly websites for Swiss and EU businesses, with a focus on local businesses in and around Basel.
+    const prompt = `You are writing a professional cold outreach email from KLAAR, a Swiss web design and compliance agency (klaar-studio.ch) specializing in creating privacy-compliant, user-friendly websites for Swiss and EU businesses, with a focus on local businesses in and around Basel.
 
 RECIPIENT INFO:
 - Company: ${prospect.company_name}
 - Contact: ${contactName}${contactRole ? ` (${contactRole})` : ""}
-- Industry: ${prospect.niche || "Unknown"}
+- Industry/Niche: ${prospect.niche || "Unknown"}
 - Website: ${prospect.website}
 - Company description: ${prospect.description || "N/A"}
 - Current website quality: ${reputation.website_quality || "Unknown"}
@@ -64,22 +72,51 @@ Compliance Score: ${prospect.compliance_score}%
 
 ADDITIONAL PAIN POINTS:
 ${painPoints.length > 0 ? painPoints.map((p: string) => `- ${p}`).join("\n") : "- None identified"}
-
 ${demoSection}
 
 WRITE THE EMAIL IN ${(langNames[language] || "German").toUpperCase()}.
 
-GUIDELINES:
-- Start with a personalized hook about their specific compliance issues (this creates urgency)
-- Be specific about THEIR problems, not generic
-- Transition naturally to how a website refresh would solve both compliance AND business goals
-- Mention that klaar-Studio specializes in Swiss data protection standards (nDSG) and GDPR compliance
-- NEVER mention Poland or that the agency is based in Poland. Position the agency as a Swiss compliance-focused web agency based around Basel.
-- Keep it professional but warm, not salesy
-- End with a clear call to action (suggest a brief call)
-- Sign off as Julian Vidal, klaar-Studio
-- Email: info@klaar-studio.ch, Phone: +41 79 750 83 50
-- Keep it under 300 words
+CRITICAL GUIDELINES:
+
+1. SECTOR-SPECIFIC LANGUAGE:
+${isSensitiveSector ? `- This is a ${prospect.niche} business. You MUST include the phrase "besonders schützenswerte Personendaten" (sensitive personal data) when discussing data protection. This carries much higher legal weight in Switzerland for medical/legal sectors.` : ""}
+- For SMEs (KMU), use "Datensouveränität" instead of technical jargon like "Data Residency".
+- Use accessible business language, not developer jargon.
+
+2. COMPLIANCE SCORE ANCHORING:
+- Always mention their specific compliance score (${prospect.compliance_score}%).
+- Frame KLAAR's services as the "bridge" to reach 100% compliance — e.g., "Wir können Ihnen helfen, diesen Wert auf 100% zu bringen."
+- Mention that we have prepared a detailed Compliance-Audit-Bericht (PDF) that we can share with them.
+
+3. UPGRADE NARRATIVE (GENTLE):
+- NEVER criticize their current website or make them feel bad about their choices.
+- Frame everything as "modernization" and "how a refreshed website can help their business grow".
+- Focus on what they gain, not what's wrong.
+
+4. LEGAL ACCURACY:
+- For Impressum issues: cite "Art. 3 UWG"
+- For data/hosting issues: cite "nDSG (Schweiz)" and "DSGVO (EU)"
+- For personal liability: mention "Art. 60 nDSG" and "CHF 250'000 persönliche Haftung"
+
+5. CALL-TO-ACTION:
+- Offer a "10-minütiges Telefonat" or "unverbindliches Kennenlernen"
+- Use concrete timeframes like "nächste Woche" instead of vague "bald"
+
+6. REGIONAL TONE:
+- Use Standard High German but Swiss conventions: "ss" instead of "ß" (e.g., "Grüsse" not "Grüße", "Strasse" not "Straße")
+- Close with "Freundliche Grüsse" NOT "Mit freundlichen Grüßen"
+- Maintain a Swiss formal but warm tone
+
+7. POSITIONING:
+- NEVER mention Poland or that the agency is based in Poland.
+- Position as: "Als Schweizer Webdesign- und Compliance-Agentur sind wir darauf spezialisiert, Webseiten für Schweizer und EU-Unternehmen datenschutzkonform und benutzerfreundlich zu gestalten."
+- Mention focus on local businesses in and around Basel.
+
+8. ALWAYS include a link to our website: klaar-studio.ch
+
+- Sign off as Julian Vidal, KLAAR
+- Email: info@klaar-studio.ch | Telefon: +41 79 750 83 50
+- Keep it under 350 words
 
 Return ONLY the email text, no subject line prefix or metadata.`;
 
@@ -92,7 +129,7 @@ Return ONLY the email text, no subject line prefix or metadata.`;
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          { role: "system", content: "You write compelling business emails. Output only the email body text." },
+          { role: "system", content: "You write compelling, professional business emails. You use Swiss German conventions (ss instead of ß). Output only the email body text." },
           { role: "user", content: prompt },
         ],
       }),
@@ -120,10 +157,10 @@ Return ONLY the email text, no subject line prefix or metadata.`;
       body: JSON.stringify({
         model: "google/gemini-2.5-flash-lite",
         messages: [
-          { role: "system", content: "Generate a compelling email subject line. Output ONLY the subject line, nothing else. No quotes around it." },
+          { role: "system", content: "Generate a compelling email subject line. Output ONLY the subject line, nothing else. No quotes around it. Use Swiss German conventions (ss instead of ß)." },
           {
             role: "user",
-            content: `Write a subject line in ${langNames[language] || "German"} for this cold outreach email to ${prospect.company_name}. The email is about improving their website and fixing data compliance issues we found. The subject should spark curiosity and feel personally relevant — like a helpful observation, not a sales pitch or a threat. Avoid words like "warning", "urgent", "risk", "danger". Keep it under 60 characters. Examples of good tones: "Kurze Frage zu Ihrer Website", "Ist ${prospect.company_name} datenschutzkonform?", "Ein Vorschlag für Ihre Online-Präsenz".`,
+            content: `Write a subject line in ${langNames[language] || "German"} for this cold outreach email to ${prospect.company_name}. The email is about improving their website and fixing data compliance issues we found (score: ${prospect.compliance_score}%). The subject should spark curiosity and feel personally relevant — like a helpful observation, not a sales pitch or a threat. Avoid words like "warning", "urgent", "risk", "danger", "Warnung", "dringend", "Risiko", "Gefahr". Keep it under 60 characters. Examples of good tones: "Kurze Frage zu Ihrer Webseite", "Ist ${prospect.company_name} datenschutzkonform?", "Ein Vorschlag für Ihre Online-Präsenz", "${prospect.company_name}: ${prospect.compliance_score}% Compliance-Score".`,
           },
         ],
       }),

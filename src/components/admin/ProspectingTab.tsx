@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Globe, Search, Loader2, Trash2, Mail, Copy, CheckCircle2, AlertTriangle,
   XCircle, Building2, Users, Phone, AtSign, TrendingUp, Shield, ExternalLink,
-  ChevronDown, ChevronUp, Eye, Lock, Star, Target, FileText, Link as LinkIcon,
+  ChevronDown, ChevronUp, Eye, EyeOff, Lock, Star, Target, FileText, Link as LinkIcon,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -195,7 +195,12 @@ export default function ProspectingTab() {
             contacts: prospect.contacts,
             compliance_score: prospect.compliance_score,
             compliance_details: prospect.compliance_details,
-            reputation: prospect.reputation,
+            reputation: {
+              ...(prospect.reputation as any || {}),
+              pain_points: ((prospect.reputation as any)?.pain_points || []).filter(
+                (p: string) => !((prospect.reputation as any)?.muted_pain_points || []).includes(p)
+              ),
+            },
           },
           language: emailLanguage,
           includeDemoSite,
@@ -258,11 +263,28 @@ export default function ProspectingTab() {
     if (!prospect) return;
     const rep = prospect.reputation || {};
     const painPoints = [...(rep.pain_points || [])];
+    const muted = [...(rep.muted_pain_points || [])];
+    // Also remove from muted if it was muted
+    const removedPoint = painPoints[index];
     painPoints.splice(index, 1);
-    const updatedRep = { ...rep, pain_points: painPoints };
+    const newMuted = muted.filter((m: string) => m !== removedPoint);
+    const updatedRep = { ...rep, pain_points: painPoints, muted_pain_points: newMuted };
     await supabase.from("prospects").update({ reputation: updatedRep } as any).eq("id", prospectId);
     setProspects((prev) => prev.map((p) => p.id === prospectId ? { ...p, reputation: updatedRep } : p));
     toast({ title: "Pain point removed" });
+  };
+
+  const toggleMutePainPoint = async (prospectId: string, painPoint: string) => {
+    const prospect = prospects.find((p) => p.id === prospectId);
+    if (!prospect) return;
+    const rep = prospect.reputation || {};
+    const muted = [...(rep.muted_pain_points || [])];
+    const isMuted = muted.includes(painPoint);
+    const newMuted = isMuted ? muted.filter((m: string) => m !== painPoint) : [...muted, painPoint];
+    const updatedRep = { ...rep, muted_pain_points: newMuted };
+    await supabase.from("prospects").update({ reputation: updatedRep } as any).eq("id", prospectId);
+    setProspects((prev) => prev.map((p) => p.id === prospectId ? { ...p, reputation: updatedRep } : p));
+    toast({ title: isMuted ? "Pain point will be mentioned in email" : "Pain point won't be mentioned in email" });
   };
 
   const convertToClient = async (prospect: Prospect) => {
@@ -529,20 +551,31 @@ export default function ProspectingTab() {
                             <div>
                               <h4 className="text-[10px] uppercase tracking-wider text-red-400 font-semibold mb-2">Pain Points</h4>
                               <ul className="space-y-1">
-                                {reputation.pain_points.map((p: string, i: number) => (
-                                  <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1.5 group">
-                                    <XCircle size={12} className="text-red-400 shrink-0 mt-0.5" />
-                                    <span className="flex-1">{p}</span>
-                                    <button
-                                      type="button"
-                                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); removePainPoint(prospect.id, i); }}
-                                      className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
-                                      title="Remove this pain point"
-                                    >
-                                      <Trash2 size={14} />
-                                    </button>
-                                  </li>
-                                ))}
+                                {reputation.pain_points.map((p: string, i: number) => {
+                                  const isMuted = (reputation.muted_pain_points || []).includes(p);
+                                  return (
+                                    <li key={i} className={`text-xs flex items-start gap-1.5 group ${isMuted ? 'text-gray-400 dark:text-gray-600 line-through' : 'text-gray-600 dark:text-gray-400'}`}>
+                                      <XCircle size={12} className={`shrink-0 mt-0.5 ${isMuted ? 'text-gray-300 dark:text-gray-600' : 'text-red-400'}`} />
+                                      <span className="flex-1">{p}</span>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleMutePainPoint(prospect.id, p); }}
+                                        className={`shrink-0 p-1 rounded transition-all ${isMuted ? 'text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20' : 'text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20'}`}
+                                        title={isMuted ? "Include in email" : "Don't mention in email"}
+                                      >
+                                        {isMuted ? <Eye size={14} /> : <EyeOff size={14} />}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); removePainPoint(prospect.id, i); }}
+                                        className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
+                                        title="Delete this pain point"
+                                      >
+                                        <Trash2 size={14} />
+                                      </button>
+                                    </li>
+                                  );
+                                })}
                               </ul>
                             </div>
                           )}

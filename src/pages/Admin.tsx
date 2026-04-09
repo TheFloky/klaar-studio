@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Shield, Users, Settings, CalendarDays, LogOut, Moon, Sun } from "lucide-react";
+import { ArrowLeft, Shield, Users, Settings, CalendarDays, LogOut, Moon, Sun, Crosshair } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import AdminLogin from "@/components/admin/AdminLogin";
@@ -7,8 +7,10 @@ import ClientsTab from "@/components/admin/ClientsTab";
 import SettingsTab from "@/components/admin/SettingsTab";
 import BookingsTab from "@/components/admin/BookingsTab";
 import AuditTab from "@/components/admin/AuditTab";
+import ProspectingTab from "@/components/admin/ProspectingTab";
 
 const TABS = [
+  { id: "prospecting", label: "Prospecting", icon: Crosshair },
   { id: "audit", label: "Compliance Audit", icon: Shield },
   { id: "clients", label: "Clients", icon: Users },
   { id: "bookings", label: "Bookings", icon: CalendarDays },
@@ -18,7 +20,7 @@ const TABS = [
 type TabId = typeof TABS[number]["id"];
 
 export default function Admin() {
-  const [activeTab, setActiveTab] = useState<TabId>("clients");
+  const [activeTab, setActiveTab] = useState<TabId>("prospecting");
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
@@ -101,6 +103,7 @@ export default function Admin() {
       </div>
 
       <main className="max-w-5xl mx-auto px-4 py-8">
+        {activeTab === "prospecting" && <ProspectingTab />}
         {activeTab === "audit" && <AuditTab />}
         {activeTab === "clients" && <ClientsTab />}
         {activeTab === "bookings" && <BookingsTab />}

@@ -47,7 +47,27 @@ Deno.serve(async (req) => {
       );
     }
 
-    const [scrapeRes, ipRes] = await Promise.all([
+    // Also try to scrape /impressum and /kontakt pages where emails typically live
+    const baseUrl = new URL(targetUrl);
+    const subpageUrls = [
+      `${baseUrl.origin}/impressum`,
+      `${baseUrl.origin}/kontakt`,
+      `${baseUrl.origin}/contact`,
+      `${baseUrl.origin}/about`,
+    ];
+
+    const subpageFetches = subpageUrls.map(u =>
+      fetch("https://api.firecrawl.dev/v1/scrape", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${FIRECRAWL_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url: u, formats: ["html"], onlyMainContent: false }),
+      }).catch(() => null)
+    );
+
+    const [scrapeRes, ipRes, ...subpageResults] = await Promise.all([
       fetch("https://api.firecrawl.dev/v1/scrape", {
         method: "POST",
         headers: {
@@ -61,6 +81,7 @@ Deno.serve(async (req) => {
         }),
       }),
       fetch(`http://ip-api.com/json/${hostname}?fields=status,country,countryCode,query`),
+      ...subpageFetches,
     ]);
 
     // Process IP geolocation — 3-state: "green" | "yellow" | "red"

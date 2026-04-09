@@ -320,11 +320,11 @@ export default function Audit() {
         details: r.details,
       });
 
-      const totalScore = Math.round(
-        stateToScore(r.dataResidency) +
-        stateToScore(fontState) +
-        stateToScore(trackingState) +
-        stateToScore(r.legalPresence)
+      const totalScore = calculateComplianceScore(
+        r.dataResidency,
+        fontState,
+        trackingState,
+        r.legalPresence
       );
       setScore(totalScore);
       setProgress(100);

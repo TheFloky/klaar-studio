@@ -227,8 +227,29 @@ Return a JSON object with these exact fields:
     "pain_points": ["list of visible issues with their website/digital presence"],
     "strengths": ["what they do well"]
   },
+  "client_quality_score": {
+    "score": 0-100,
+    "website_condition": 0-100,
+    "outreach_likelihood": 0-100,
+    "budget_potential": 0-100,
+    "reasoning": "1-2 sentence explanation of the score"
+  },
+  "reputation_score": {
+    "score": 0-100,
+    "google_rating_estimate": "estimated Google Maps rating if determinable (e.g. 4.2/5), or null",
+    "trust_signals": ["list of trust signals found: certifications, awards, partnerships, longevity, etc."],
+    "red_flags": ["any negative signals: outdated info, broken links, no reviews, etc."],
+    "reasoning": "1-2 sentence explanation"
+  },
   "research_summary": "A 3-5 sentence executive summary of this company, their market position, digital maturity, and key opportunities for us to help them."
 }
+
+SCORING GUIDELINES:
+- client_quality_score.website_condition: How bad/outdated is the website? Higher = worse condition = more need for our services. Consider design quality, mobile responsiveness, loading indicators, content freshness.
+- client_quality_score.outreach_likelihood: How likely are they to respond positively to a cold email? Consider company size, industry, digital awareness, current pain points.
+- client_quality_score.budget_potential: How likely they can afford a professional website (CHF 2500-15000+)? Consider company size, industry, location, apparent revenue.
+- client_quality_score.score: Weighted average (40% website_condition + 30% outreach_likelihood + 30% budget_potential).
+- reputation_score.score: Overall reputation estimate (0-100). Consider brand presence, professionalism, trust signals, apparent customer base.
 
 Be thorough but only include data you can actually verify from the content. For missing data, use null.`;
 

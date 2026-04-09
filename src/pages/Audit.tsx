@@ -443,6 +443,7 @@ export default function Audit() {
     }
   }, [url, score, results, generatingPdf, ipDetail, fontsDetail, trackersDetail, legalDetail]);
 
+  const dataResidencyDesc =
     results.dataResidency === "red"
       ? "Server is hosted in the USA — critical risk under nFADP and US Cloud Act."
       : results.dataResidency === "yellow"

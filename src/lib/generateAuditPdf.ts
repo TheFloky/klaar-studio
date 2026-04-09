@@ -57,6 +57,8 @@ function boolToStatus(leakage: boolean): string {
 
 export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: boolean }): any {
   const doc = new jsPDF("p", "mm", "a4");
+  registerFonts(doc);
+  doc.setFont("Inter", "normal");
   const pw = 210;
   const margin = 20;
   const contentW = pw - margin * 2;

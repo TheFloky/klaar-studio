@@ -604,9 +604,12 @@ export default function ProspectingTab() {
                                     <span className="text-gray-400 text-[10px] uppercase">Red Flags</span>
                                     <ul className="mt-1 space-y-0.5">
                                       {reputation.reputation_score.red_flags.map((f: string, i: number) => (
-                                        <li key={i} className="text-gray-600 dark:text-gray-400 flex items-start gap-1">
-                                          <XCircle size={10} className="text-red-400 shrink-0 mt-0.5" /> {f}
+                                        <li key={i} className="text-gray-600 dark:text-gray-400 flex items-start gap-1 group">
+                                          <XCircle size={10} className="text-red-400 shrink-0 mt-0.5" />
+                                          <span className="flex-1">{f}</span>
+                                          <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeReputationItem(prospect.id, "reputation_score.red_flags", i); }} className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100" title="Remove"><Trash2 size={10} /></button>
                                         </li>
+                                      ))}
                                       ))}
                                     </ul>
                                   </div>

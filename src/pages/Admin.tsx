@@ -20,7 +20,7 @@ const TABS = [
 type TabId = typeof TABS[number]["id"];
 
 export default function Admin() {
-  const [activeTab, setActiveTab] = useState<TabId>("clients");
+  const [activeTab, setActiveTab] = useState<TabId>("prospecting");
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));

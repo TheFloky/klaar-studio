@@ -9,7 +9,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { prospect, language, includeDemoSite, demoSiteUrl, demoSitePassword, auditPdfUrl } = await req.json();
+    const { prospect, language, includeDemoSite, demoSiteUrl, demoSitePassword, auditPdfUrl, customNotes } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -120,6 +120,7 @@ ADDITIONAL PAIN POINTS (use sparingly, only if very relevant):
 ${painPoints.length > 0 ? painPoints.map((p: string) => `- ${p}`).join("\n") : "- None identified"}
 ${demoSection}
 ${auditSection}
+${customNotes ? `\n\nCUSTOM NOTES FROM THE SENDER (incorporate these naturally into the email):\n${customNotes}` : ""}
 
 WRITE THE EMAIL IN ${(langNames[language] || "German").toUpperCase()}.
 

@@ -3,6 +3,7 @@ import { Shield, Globe, Type, BarChart3, FileText, AlertTriangle, CheckCircle, X
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useSearchParams, useParams } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
+import { useToast } from "@/hooks/use-toast";
 
 type TriState = "green" | "yellow" | "red" | null;
 

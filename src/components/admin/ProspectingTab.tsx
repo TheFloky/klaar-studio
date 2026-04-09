@@ -277,6 +277,16 @@ export default function ProspectingTab() {
                           {prospect.status}
                         </span>
                         {prospect.compliance_score > 0 && <ScoreBadge score={prospect.compliance_score} />}
+                        {reputation.client_quality_score?.score != null && (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 flex items-center gap-1" title="Client Quality Score">
+                            <Target size={10} /> {reputation.client_quality_score.score}%
+                          </span>
+                        )}
+                        {reputation.reputation_score?.score != null && (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 flex items-center gap-1" title="Reputation Score">
+                            <Star size={10} /> {reputation.reputation_score.score}%
+                          </span>
+                        )}
                       </div>
                       <div className="flex items-center gap-4 text-xs text-gray-400">
                         <a href={prospect.website} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="hover:text-[#FF0000] inline-flex items-center gap-1">

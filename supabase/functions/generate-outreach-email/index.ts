@@ -62,7 +62,46 @@ Include this link on its own line: ${auditPdfUrl}
 Frame it as: "Den vollständigen Compliance-Audit-Bericht für Ihre Webseite finden Sie hier:"`
       : `\n\nMention that we have prepared a detailed Compliance-Audit-Bericht (PDF) that we can share with them upon request.`;
 
-    const prompt = `You are writing a professional cold outreach email from KLAAR, a Swiss web design and compliance agency (klaar-studio.ch) specializing in creating privacy-compliant, user-friendly websites for Swiss and EU businesses, with a focus on local businesses in and around Basel.
+    const prompt = `You are writing a professional cold outreach email from KLAAR Studio, a Swiss web design and compliance agency (klaar-studio.ch) specializing in creating privacy-compliant, user-friendly websites for Swiss and EU businesses, with a focus on local businesses in and around Basel.
+
+STYLE REFERENCE (match this tone, structure, and brevity):
+"""
+Guten Tag Frau Bruckner,
+
+mein Name ist Julian Vidal, ich leite KLAAR Studio – eine Webdesign- und Compliance-Agentur mit Fokus auf lokale Unternehmen in der Schweiz.
+
+Ich habe mir Ihre Website praxis-bruckner.ch kurz angeschaut und dabei ein paar konkrete Optimierungspunkte entdeckt.
+
+Aktuell liegt Ihr Datenschutz-Score bei etwa 75%.
+Ein wesentlicher Grund dafür ist das Hosting in den USA. Dabei werden bereits beim Aufruf Ihrer Website personenbezogene Daten (z. B. IP-Adressen) an US-Server übertragen, was aus Sicht des Schweizer Datenschutzgesetzes (nDSG) problematisch sein kann.
+
+Hätten Sie nächste Woche kurz 10 Minuten Zeit für ein unverbindliches Gespräch?
+Ich zeige Ihnen gerne konkret, wo sich Ihre Website verbessern lässt und wie sie dauerhaft gesetzeskonform bleibt.
+
+Weitere Infos finden Sie hier:
+www.klaar-studio.ch
+
+Freundliche Grüsse
+
+Julian Vidal
+KLAAR Studio
+www.klaar-studio.ch
+julian.vidal@klaar-studio.ch
+Telefon: +41 79 750 83 50
+"""
+
+KEY STYLE OBSERVATIONS TO FOLLOW:
+- Short, direct sentences. No filler or marketing fluff.
+- Use "KLAAR Studio" (not just "KLAAR").
+- Personal but professional — "ich leite KLAAR Studio" not "wir sind eine führende Agentur".
+- Lead with "Ich habe mir Ihre Website [domain] kurz angeschaut" — shows personal effort.
+- Mention ONE or TWO specific compliance issues concisely, don't list everything.
+- Frame issues gently: "problematisch sein kann" not "critical risk".
+- Use "Datenschutz-Score" not "Compliance Score".
+- CTA: "Hätten Sie nächste Woche kurz 10 Minuten Zeit für ein unverbindliches Gespräch?"
+- End with "Weitere Infos finden Sie hier: www.klaar-studio.ch"
+- Sign off: Julian Vidal / KLAAR Studio / www.klaar-studio.ch / julian.vidal@klaar-studio.ch / Telefon: +41 79 750 83 50
+- Keep it SHORT — under 250 words ideally, never exceed 300.
 
 RECIPIENT INFO:
 - Company: ${prospect.company_name}
@@ -73,11 +112,11 @@ RECIPIENT INFO:
 - Current website quality: ${reputation.website_quality || "Unknown"}
 - Digital maturity: ${reputation.digital_maturity || "Unknown"}
 
-COMPLIANCE ISSUES FOUND (use as the email hook):
+COMPLIANCE ISSUES FOUND (pick the 1-2 most impactful to mention):
 ${complianceIssues.length > 0 ? complianceIssues.map((i) => `- ${i}`).join("\n") : "- No critical issues found"}
-Compliance Score: ${prospect.compliance_score}%
+Datenschutz-Score: ${prospect.compliance_score}%
 
-ADDITIONAL PAIN POINTS:
+ADDITIONAL PAIN POINTS (use sparingly, only if very relevant):
 ${painPoints.length > 0 ? painPoints.map((p: string) => `- ${p}`).join("\n") : "- None identified"}
 ${demoSection}
 ${auditSection}
@@ -87,47 +126,38 @@ WRITE THE EMAIL IN ${(langNames[language] || "German").toUpperCase()}.
 CRITICAL GUIDELINES:
 
 1. PERSONAL INTRODUCTION:
-- The email MUST begin with a personal introduction from Julian Vidal. Example: "Mein Name ist Julian Vidal und ich leite KLAAR, eine Schweizer Webdesign- und Compliance-Agentur mit Fokus auf lokale Unternehmen in und um Basel."
-- Make it warm and personal, as if Julian is personally reaching out.
+- Start with "mein Name ist Julian Vidal, ich leite KLAAR Studio – eine Webdesign- und Compliance-Agentur mit Fokus auf lokale Unternehmen in der Schweiz."
 
 2. SECTOR-SPECIFIC LANGUAGE:
-${isSensitiveSector ? `- This is a ${prospect.niche} business. You MUST include the phrase "besonders schützenswerte Personendaten" (sensitive personal data) when discussing data protection. This carries much higher legal weight in Switzerland for medical/legal sectors.` : ""}
-- For SMEs (KMU), use "Datensouveränität" instead of technical jargon like "Data Residency".
-- Use accessible business language, not developer jargon.
+${isSensitiveSector ? `- This is a ${prospect.niche} business. Use "besonders schützenswerte Personendaten" when discussing data protection.` : ""}
+- Use "Datensouveränität" instead of "Data Residency" for SMEs.
+- Use "Datenschutz-Score" not "Compliance Score".
 
-3. COMPLIANCE SCORE ANCHORING:
-- Always mention their specific compliance score (${prospect.compliance_score}%).
-- Frame KLAAR's services as the "bridge" to reach 100% compliance — e.g., "Wir können Ihnen helfen, diesen Wert auf 100% zu bringen."
+3. COMPLIANCE SCORE:
+- Mention their specific score (${prospect.compliance_score}%) as "Datenschutz-Score".
+- Frame improvement gently: "Wir können Ihnen helfen, diesen Wert auf 100% zu bringen."
 
-4. UPGRADE NARRATIVE (GENTLE):
-- NEVER criticize their current website or make them feel bad about their choices.
-- Frame everything as "modernization" and "how a refreshed website can help their business grow".
-- Focus on what they gain, not what's wrong.
+4. TONE:
+- NEVER criticize their website. Use "Optimierungspunkte" and "modernisiert".
+- Be specific but gentle: "problematisch sein kann" not "critical violation".
+- Sound like a real person writing a personal email, not a template.
 
-5. LEGAL ACCURACY:
-- For Impressum issues: cite "Art. 3 UWG"
-- For data/hosting issues: cite "nDSG (Schweiz)" and "DSGVO (EU)"
-- For personal liability: mention "Art. 60 nDSG" and "CHF 250'000 persönliche Haftung"
+5. LEGAL REFERENCES (use sparingly, only when directly relevant):
+- Impressum: "Art. 3 UWG"
+- Hosting/data: "nDSG" and "DSGVO"
+- Liability: "Art. 60 nDSG" (only if high impact)
 
-6. CALL-TO-ACTION:
-- Offer a "10-minütiges Telefonat" or "unverbindliches Kennenlernen"
-- Use concrete timeframes like "nächste Woche" instead of vague "bald"
+6. SWISS CONVENTIONS:
+- "ss" instead of "ß" (e.g., "Grüsse" not "Grüße", "Strasse" not "Straße")
+- "Freundliche Grüsse" as closing
 
-7. REGIONAL TONE:
-- Use Standard High German but Swiss conventions: "ss" instead of "ß" (e.g., "Grüsse" not "Grüße", "Strasse" not "Straße")
-- Close with "Freundliche Grüsse" NOT "Mit freundlichen Grüßen"
-- Maintain a Swiss formal but warm tone
+7. POSITIONING:
+- NEVER mention Poland. Position as Swiss agency focused on local businesses.
+- Use "KLAAR Studio" consistently.
 
-8. POSITIONING:
-- NEVER mention Poland or that the agency is based in Poland.
-- Position as: "Als Schweizer Webdesign- und Compliance-Agentur sind wir darauf spezialisiert, Webseiten für Schweizer und EU-Unternehmen datenschutzkonform und benutzerfreundlich zu gestalten."
-- Mention focus on local businesses in and around Basel.
-
-9. ALWAYS include a link to our website: klaar-studio.ch
-
-- Sign off as Julian Vidal, KLAAR
-- Email: info@klaar-studio.ch | Telefon: +41 79 750 83 50
-- Keep it under 350 words
+8. STRUCTURE:
+- Greeting → Introduction → "Ich habe mir Ihre Website angeschaut" → 1-2 findings → Demo/Audit if applicable → CTA → Website link → Signature
+- Keep paragraphs short (1-3 sentences each).
 
 Return ONLY the email text, no subject line prefix or metadata.`;
 
@@ -142,7 +172,7 @@ Return ONLY the email text, no subject line prefix or metadata.`;
         body: JSON.stringify({
           model: "google/gemini-2.5-flash",
           messages: [
-            { role: "system", content: `You write compelling, professional business emails. You use Swiss German conventions (ss instead of ß). Output only the email body text. This is variant ${variant} of 3 — make each version distinct in tone and structure while following all guidelines. Variant 1: formal and data-driven. Variant 2: warm and relationship-focused. Variant 3: concise and direct.` },
+            { role: "system", content: `You write short, personal, professional business emails that sound like a real person — not a template. You use Swiss German conventions (ss instead of ß). Output only the email body text. Keep emails under 250 words. This is variant ${variant} of 3 — make each version distinct while following all guidelines. Variant 1: slightly more detail on compliance findings. Variant 2: warmer, relationship-focused opening. Variant 3: ultra-concise, gets to the point fastest.` },
             { role: "user", content: prompt },
           ],
         }),

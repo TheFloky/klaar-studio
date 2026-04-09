@@ -7,6 +7,9 @@ interface ScanDetails {
   ip?: { country?: string; countryCode?: string; ip?: string };
   fontsFound?: string[];
   trackersFound?: string[];
+  siteTitle?: string;
+  siteDescription?: string;
+  legalDetails?: any;
 }
 
 interface ScanResults {

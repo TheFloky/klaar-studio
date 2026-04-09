@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Globe, Search, Loader2, Trash2, Mail, Copy, CheckCircle2, AlertTriangle,
   XCircle, Building2, Users, Phone, AtSign, TrendingUp, Shield, ExternalLink,
-  ChevronDown, ChevronUp, Eye, Lock,
+  ChevronDown, ChevronUp, Eye, Lock, Star, Target,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";

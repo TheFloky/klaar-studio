@@ -98,6 +98,69 @@ export type Database = {
         }
         Relationships: []
       }
+      prospects: {
+        Row: {
+          company_name: string | null
+          compliance_details: Json | null
+          compliance_score: number | null
+          contacts: Json | null
+          created_at: string
+          demo_site_password: string | null
+          demo_site_url: string | null
+          description: string | null
+          email_draft: string | null
+          email_language: string | null
+          financials: Json | null
+          id: string
+          niche: string | null
+          reputation: Json | null
+          research_summary: string | null
+          status: string | null
+          updated_at: string
+          website: string
+        }
+        Insert: {
+          company_name?: string | null
+          compliance_details?: Json | null
+          compliance_score?: number | null
+          contacts?: Json | null
+          created_at?: string
+          demo_site_password?: string | null
+          demo_site_url?: string | null
+          description?: string | null
+          email_draft?: string | null
+          email_language?: string | null
+          financials?: Json | null
+          id?: string
+          niche?: string | null
+          reputation?: Json | null
+          research_summary?: string | null
+          status?: string | null
+          updated_at?: string
+          website: string
+        }
+        Update: {
+          company_name?: string | null
+          compliance_details?: Json | null
+          compliance_score?: number | null
+          contacts?: Json | null
+          created_at?: string
+          demo_site_password?: string | null
+          demo_site_url?: string | null
+          description?: string | null
+          email_draft?: string | null
+          email_language?: string | null
+          financials?: Json | null
+          id?: string
+          niche?: string | null
+          reputation?: Json | null
+          research_summary?: string | null
+          status?: string | null
+          updated_at?: string
+          website?: string
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           created_at: string

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Globe, Search, Loader2, Trash2, Mail, Copy, CheckCircle2, AlertTriangle,
   XCircle, Building2, Users, Phone, AtSign, TrendingUp, Shield, ExternalLink,
-  ChevronDown, ChevronUp, Eye, Lock,
+  ChevronDown, ChevronUp, Eye, Lock, Star, Target,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -277,6 +277,16 @@ export default function ProspectingTab() {
                           {prospect.status}
                         </span>
                         {prospect.compliance_score > 0 && <ScoreBadge score={prospect.compliance_score} />}
+                        {reputation.client_quality_score?.score != null && (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 flex items-center gap-1" title="Client Quality Score">
+                            <Target size={10} /> {reputation.client_quality_score.score}%
+                          </span>
+                        )}
+                        {reputation.reputation_score?.score != null && (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 flex items-center gap-1" title="Reputation Score">
+                            <Star size={10} /> {reputation.reputation_score.score}%
+                          </span>
+                        )}
                       </div>
                       <div className="flex items-center gap-4 text-xs text-gray-400">
                         <a href={prospect.website} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="hover:text-[#FF0000] inline-flex items-center gap-1">
@@ -363,6 +373,96 @@ export default function ProspectingTab() {
                         </div>
                       </div>
                     </div>
+
+                    {/* Scores */}
+                    {(reputation.client_quality_score || reputation.reputation_score) && (
+                      <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {reputation.client_quality_score && (
+                            <div>
+                              <h4 className="text-[10px] uppercase tracking-wider text-purple-400 font-semibold mb-3 flex items-center gap-1">
+                                <Target size={12} /> Client Quality Score: {reputation.client_quality_score.score}%
+                              </h4>
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="text-gray-500">Website Condition</span>
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${reputation.client_quality_score.website_condition || 0}%` }} />
+                                    </div>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium w-8 text-right">{reputation.client_quality_score.website_condition}%</span>
+                                  </div>
+                                </div>
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="text-gray-500">Outreach Likelihood</span>
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${reputation.client_quality_score.outreach_likelihood || 0}%` }} />
+                                    </div>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium w-8 text-right">{reputation.client_quality_score.outreach_likelihood}%</span>
+                                  </div>
+                                </div>
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="text-gray-500">Budget Potential</span>
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${reputation.client_quality_score.budget_potential || 0}%` }} />
+                                    </div>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium w-8 text-right">{reputation.client_quality_score.budget_potential}%</span>
+                                  </div>
+                                </div>
+                                {reputation.client_quality_score.reasoning && (
+                                  <p className="text-[11px] text-gray-500 mt-1 italic">{reputation.client_quality_score.reasoning}</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          {reputation.reputation_score && (
+                            <div>
+                              <h4 className="text-[10px] uppercase tracking-wider text-amber-400 font-semibold mb-3 flex items-center gap-1">
+                                <Star size={12} /> Reputation Score: {reputation.reputation_score.score}%
+                              </h4>
+                              <div className="space-y-2 text-xs">
+                                {reputation.reputation_score.google_rating_estimate && (
+                                  <div className="flex items-center gap-1.5">
+                                    <Star size={12} className="text-amber-400 fill-amber-400" />
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium">{reputation.reputation_score.google_rating_estimate}</span>
+                                    <span className="text-gray-400">Google Maps</span>
+                                  </div>
+                                )}
+                                {reputation.reputation_score.trust_signals?.length > 0 && (
+                                  <div>
+                                    <span className="text-gray-400 text-[10px] uppercase">Trust Signals</span>
+                                    <ul className="mt-1 space-y-0.5">
+                                      {reputation.reputation_score.trust_signals.map((s: string, i: number) => (
+                                        <li key={i} className="text-gray-600 dark:text-gray-400 flex items-start gap-1">
+                                          <CheckCircle2 size={10} className="text-green-400 shrink-0 mt-0.5" /> {s}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                                {reputation.reputation_score.red_flags?.length > 0 && (
+                                  <div>
+                                    <span className="text-gray-400 text-[10px] uppercase">Red Flags</span>
+                                    <ul className="mt-1 space-y-0.5">
+                                      {reputation.reputation_score.red_flags.map((f: string, i: number) => (
+                                        <li key={i} className="text-gray-600 dark:text-gray-400 flex items-start gap-1">
+                                          <XCircle size={10} className="text-red-400 shrink-0 mt-0.5" /> {f}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                                {reputation.reputation_score.reasoning && (
+                                  <p className="text-[11px] text-gray-500 mt-1 italic">{reputation.reputation_score.reasoning}</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Reputation */}
                     {(reputation.pain_points?.length > 0 || reputation.strengths?.length > 0) && (

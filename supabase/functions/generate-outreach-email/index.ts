@@ -120,10 +120,10 @@ Return ONLY the email text, no subject line prefix or metadata.`;
       body: JSON.stringify({
         model: "google/gemini-2.5-flash-lite",
         messages: [
-          { role: "system", content: "Generate a compelling email subject line. Output ONLY the subject line, nothing else." },
+          { role: "system", content: "Generate a compelling email subject line. Output ONLY the subject line, nothing else. No quotes around it." },
           {
             role: "user",
-            content: `Write a subject line in ${langNames[language] || "German"} for this cold outreach email about data compliance issues found on ${prospect.company_name}'s website. Make it intriguing but professional, mentioning compliance/data protection. Under 60 characters.`,
+            content: `Write a subject line in ${langNames[language] || "German"} for this cold outreach email to ${prospect.company_name}. The email is about improving their website and fixing data compliance issues we found. The subject should spark curiosity and feel personally relevant — like a helpful observation, not a sales pitch or a threat. Avoid words like "warning", "urgent", "risk", "danger". Keep it under 60 characters. Examples of good tones: "Kurze Frage zu Ihrer Website", "Ist ${prospect.company_name} datenschutzkonform?", "Ein Vorschlag für Ihre Online-Präsenz".`,
           },
         ],
       }),

@@ -20,6 +20,7 @@ interface Prospect {
   compliance_details: any;
   research_summary: string | null;
   email_draft: string | null;
+  email_subject: string | null;
   email_language: string | null;
   demo_site_url: string | null;
   demo_site_password: string | null;
@@ -155,6 +156,7 @@ export default function ProspectingTab() {
         .from("prospects")
         .update({
           email_draft: data.email,
+          email_subject: data.subject || null,
           email_language: emailLanguage,
           demo_site_url: includeDemoSite ? demoUrl : null,
           demo_site_password: includeDemoSite ? demoPassword : null,
@@ -477,6 +479,19 @@ export default function ProspectingTab() {
                       {/* Email Draft */}
                       {prospect.email_draft && (
                         <div className="mt-3">
+                          {prospect.email_subject && (
+                            <div className="mb-2 flex items-center gap-2">
+                              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Subject:</span>
+                              <span className="text-xs font-medium text-gray-800 dark:text-gray-200">{prospect.email_subject}</span>
+                              <button
+                                onClick={() => copyToClipboard(prospect.email_subject || "")}
+                                className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                title="Copy subject"
+                              >
+                                <Copy size={10} />
+                              </button>
+                            </div>
+                          )}
                           <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 p-4">
                             <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap font-sans leading-relaxed">
                               {prospect.email_draft}
@@ -491,7 +506,7 @@ export default function ProspectingTab() {
                             </button>
                             {contacts[0]?.email && (
                               <a
-                                href={`mailto:${contacts[0].email}?body=${encodeURIComponent(prospect.email_draft || "")}`}
+                                href={`mailto:${contacts[0].email}?subject=${encodeURIComponent(prospect.email_subject || "")}&body=${encodeURIComponent(prospect.email_draft || "")}`}
                                 className="px-3 py-1.5 text-xs font-medium text-white bg-[#FF0000] rounded-lg hover:bg-red-600 transition-all flex items-center gap-1.5"
                               >
                                 <Mail size={12} /> Open in Mail Client

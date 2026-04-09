@@ -359,8 +359,8 @@ export default function Audit() {
         siteTitle: results.details?.legalDetails?.hasCompanyName ? undefined : undefined,
         score,
         dataResidency: typeof results.dataResidency === "string" ? results.dataResidency : results.dataResidency ? "green" : "red",
-        fontLeakage: results.fontLeakage === "red" || results.fontLeakage === true,
-        trackingTransparency: results.trackingTransparency === "red" || results.trackingTransparency === true,
+        fontLeakage: results.fontLeakage === "red",
+        trackingTransparency: results.trackingTransparency === "red",
         legalPresence: typeof results.legalPresence === "string" ? results.legalPresence : results.legalPresence ? "green" : "red",
         details: results.details,
       }, { returnBlob: true });

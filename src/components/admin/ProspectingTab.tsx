@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import {
   Globe, Search, Loader2, Trash2, Mail, Copy, CheckCircle2, AlertTriangle,
   XCircle, Building2, Users, Phone, AtSign, TrendingUp, Shield, ExternalLink,
-  ChevronDown, ChevronUp, Eye, Lock, Star, Target,
+  ChevronDown, ChevronUp, Eye, Lock, Star, Target, FileText, Link as LinkIcon,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { generateAuditPdf } from "@/lib/generateAuditPdf";
 
 interface Prospect {
   id: string;
@@ -26,6 +27,11 @@ interface Prospect {
   demo_site_password: string | null;
   status: string;
   created_at: string;
+}
+
+interface EmailVariant {
+  email: string;
+  subject: string;
 }
 
 const LANGUAGES = [
@@ -56,6 +62,10 @@ export default function ProspectingTab() {
   const [includeDemoSite, setIncludeDemoSite] = useState(false);
   const [demoUrl, setDemoUrl] = useState("");
   const [demoPassword, setDemoPassword] = useState("");
+  const [emailVariants, setEmailVariants] = useState<EmailVariant[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState(0);
+  const [uploadingPdf, setUploadingPdf] = useState<string | null>(null);
+  const [auditPdfUrls, setAuditPdfUrls] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   const fetchProspects = async () => {
@@ -75,7 +85,6 @@ export default function ProspectingTab() {
     setResearching(true);
 
     try {
-      // Insert prospect
       const { data: inserted, error: insertErr } = await supabase
         .from("prospects")
         .insert({ website: newUrl.trim(), status: "researching" })
@@ -87,7 +96,6 @@ export default function ProspectingTab() {
       setNewUrl("");
       await fetchProspects();
 
-      // Run research
       const { data: resData, error: resErr } = await supabase.functions.invoke("prospect-research", {
         body: { url: newUrl.trim() },
       });
@@ -117,7 +125,8 @@ export default function ProspectingTab() {
         } as any)
         .eq("id", inserted.id);
 
-      toast({ title: "Research complete", description: `${r.company_name} has been analyzed.` });
+      const scanInfo = r.scan_count ? ` (${r.scan_count} scans merged)` : "";
+      toast({ title: "Research complete", description: `${r.company_name} has been analyzed.${scanInfo}` });
       await fetchProspects();
       setExpandedId(inserted.id);
     } catch (e: any) {
@@ -128,8 +137,48 @@ export default function ProspectingTab() {
     }
   };
 
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[äÄ]/g, "ae").replace(/[öÖ]/g, "oe").replace(/[üÜ]/g, "ue")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  };
+
+  const uploadAuditPdf = async (prospect: Prospect) => {
+    setUploadingPdf(prospect.id);
+    try {
+      const pdfBlob = generateAuditPdf({
+        companyName: prospect.company_name || "Unknown",
+        website: prospect.website,
+        score: prospect.compliance_score,
+        details: prospect.compliance_details,
+      });
+
+      const slug = generateSlug(prospect.company_name || prospect.website);
+      const filePath = `${slug}.pdf`;
+
+      const { error: uploadErr } = await supabase.storage
+        .from("audit-reports")
+        .upload(filePath, pdfBlob, { contentType: "application/pdf", upsert: true });
+
+      if (uploadErr) throw uploadErr;
+
+      const baseUrl = window.location.origin;
+      const auditUrl = `${baseUrl}/audits/${slug}`;
+      setAuditPdfUrls(prev => ({ ...prev, [prospect.id]: auditUrl }));
+      toast({ title: "Audit PDF uploaded", description: `Shareable link: ${auditUrl}` });
+    } catch (e: any) {
+      toast({ title: "Upload failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUploadingPdf(null);
+    }
+  };
+
   const generateEmail = async (prospect: Prospect) => {
     setGeneratingEmailId(prospect.id);
+    setEmailVariants([]);
+    setSelectedVariant(0);
     try {
       const { data, error } = await supabase.functions.invoke("generate-outreach-email", {
         body: {
@@ -147,29 +196,46 @@ export default function ProspectingTab() {
           includeDemoSite,
           demoSiteUrl: demoUrl || null,
           demoSitePassword: demoPassword || null,
+          auditPdfUrl: auditPdfUrls[prospect.id] || null,
         },
       });
 
       if (error || !data?.success) throw new Error(error?.message || "Email generation failed");
 
+      const variants: EmailVariant[] = data.variants || [{ email: data.email, subject: data.subject }];
+      setEmailVariants(variants);
+
+      // Save the first variant by default
       await supabase
         .from("prospects")
         .update({
-          email_draft: data.email,
-          email_subject: data.subject || null,
+          email_draft: variants[0]?.email || data.email,
+          email_subject: variants[0]?.subject || data.subject || null,
           email_language: emailLanguage,
           demo_site_url: includeDemoSite ? demoUrl : null,
           demo_site_password: includeDemoSite ? demoPassword : null,
         } as any)
         .eq("id", prospect.id);
 
-      toast({ title: "Email draft generated" });
+      toast({ title: `${variants.length} email variants generated` });
       await fetchProspects();
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally {
       setGeneratingEmailId(null);
     }
+  };
+
+  const selectVariant = async (prospect: Prospect, index: number) => {
+    setSelectedVariant(index);
+    const v = emailVariants[index];
+    if (!v) return;
+    await supabase
+      .from("prospects")
+      .update({ email_draft: v.email, email_subject: v.subject || null } as any)
+      .eq("id", prospect.id);
+    await fetchProspects();
+    toast({ title: `Variant ${index + 1} selected` });
   };
 
   const copyToClipboard = (text: string) => {
@@ -207,6 +273,8 @@ export default function ProspectingTab() {
     }
   };
 
+  const VARIANT_LABELS = ["Formal & Data-driven", "Warm & Personal", "Concise & Direct"];
+
   return (
     <div className="space-y-6">
       {/* Research Input */}
@@ -215,7 +283,7 @@ export default function ProspectingTab() {
           Research a Potential Client
         </label>
         <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">
-          Enter a website URL to gather company intelligence, compliance audit, and generate an outreach email.
+          Enter a website URL to gather company intelligence (3x scans merged for accuracy), compliance audit, and generate 3 outreach email variants.
         </p>
         <div className="flex gap-3">
           <div className="relative flex-1">
@@ -235,7 +303,7 @@ export default function ProspectingTab() {
             className="px-5 py-3 bg-[#FF0000] text-white font-semibold text-sm rounded-lg hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-2 shadow-sm"
           >
             {researching ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-            {researching ? "Researching…" : "Research"}
+            {researching ? "Researching (3x scan)…" : "Research"}
           </button>
         </div>
       </div>
@@ -384,33 +452,17 @@ export default function ProspectingTab() {
                                 <Target size={12} /> Client Quality Score: {reputation.client_quality_score.score}%
                               </h4>
                               <div className="space-y-2">
-                                <div className="flex items-center justify-between text-xs">
-                                  <span className="text-gray-500">Website Condition</span>
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${reputation.client_quality_score.website_condition || 0}%` }} />
+                                {["website_condition", "outreach_likelihood", "budget_potential"].map((key) => (
+                                  <div key={key} className="flex items-center justify-between text-xs">
+                                    <span className="text-gray-500">{key.split("_").map(w => w[0].toUpperCase() + w.slice(1)).join(" ")}</span>
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                        <div className="h-full bg-purple-500 rounded-full" style={{ width: `${reputation.client_quality_score[key] || 0}%` }} />
+                                      </div>
+                                      <span className="text-gray-700 dark:text-gray-300 font-medium w-8 text-right">{reputation.client_quality_score[key]}%</span>
                                     </div>
-                                    <span className="text-gray-700 dark:text-gray-300 font-medium w-8 text-right">{reputation.client_quality_score.website_condition}%</span>
                                   </div>
-                                </div>
-                                <div className="flex items-center justify-between text-xs">
-                                  <span className="text-gray-500">Outreach Likelihood</span>
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${reputation.client_quality_score.outreach_likelihood || 0}%` }} />
-                                    </div>
-                                    <span className="text-gray-700 dark:text-gray-300 font-medium w-8 text-right">{reputation.client_quality_score.outreach_likelihood}%</span>
-                                  </div>
-                                </div>
-                                <div className="flex items-center justify-between text-xs">
-                                  <span className="text-gray-500">Budget Potential</span>
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${reputation.client_quality_score.budget_potential || 0}%` }} />
-                                    </div>
-                                    <span className="text-gray-700 dark:text-gray-300 font-medium w-8 text-right">{reputation.client_quality_score.budget_potential}%</span>
-                                  </div>
-                                </div>
+                                ))}
                                 {reputation.client_quality_score.reasoning && (
                                   <p className="text-[11px] text-gray-500 mt-1 italic">{reputation.client_quality_score.reasoning}</p>
                                 )}
@@ -474,15 +526,11 @@ export default function ProspectingTab() {
                               <ul className="space-y-1">
                                 {reputation.pain_points.map((p: string, i: number) => (
                                   <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1.5 group">
-                                    <XCircle size={12} className="text-red-400 shrink-0 mt-0.5" /> 
+                                    <XCircle size={12} className="text-red-400 shrink-0 mt-0.5" />
                                     <span className="flex-1">{p}</span>
                                     <button
                                       type="button"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        removePainPoint(prospect.id, i);
-                                      }}
+                                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); removePainPoint(prospect.id, i); }}
                                       className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
                                       title="Remove this pain point"
                                     >
@@ -509,10 +557,50 @@ export default function ProspectingTab() {
                       </div>
                     )}
 
-                    {/* Email Generation */}
+                    {/* Audit PDF & Email Generation */}
                     <div className="px-5 py-4 bg-gray-50/50 dark:bg-gray-800/30">
+                      {/* Audit PDF Section */}
+                      <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                        <h4 className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-3 flex items-center gap-1">
+                          <FileText size={12} /> Audit Report PDF
+                        </h4>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => uploadAuditPdf(prospect)}
+                            disabled={uploadingPdf === prospect.id}
+                            className="px-4 py-1.5 text-xs font-semibold text-white bg-gray-800 dark:bg-gray-600 rounded-lg hover:bg-gray-700 disabled:opacity-40 transition-all flex items-center gap-2"
+                          >
+                            {uploadingPdf === prospect.id ? (
+                              <><Loader2 size={12} className="animate-spin" /> Uploading…</>
+                            ) : (
+                              <><FileText size={12} /> Generate & Upload PDF</>
+                            )}
+                          </button>
+                          {auditPdfUrls[prospect.id] && (
+                            <div className="flex items-center gap-2">
+                              <a
+                                href={auditPdfUrls[prospect.id]}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-[#FF0000] hover:underline flex items-center gap-1"
+                              >
+                                <LinkIcon size={10} /> {auditPdfUrls[prospect.id]}
+                              </a>
+                              <button
+                                onClick={() => copyToClipboard(auditPdfUrls[prospect.id])}
+                                className="p-1 text-gray-400 hover:text-gray-600"
+                                title="Copy link"
+                              >
+                                <Copy size={10} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Email Section */}
                       <h4 className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-3 flex items-center gap-1">
-                        <Mail size={12} /> Outreach Email
+                        <Mail size={12} /> Outreach Email (3 variants)
                       </h4>
 
                       {/* Email Controls */}
@@ -543,9 +631,9 @@ export default function ProspectingTab() {
                           className="ml-auto px-4 py-1.5 bg-[#FF0000] text-white text-xs font-semibold rounded-lg hover:bg-red-600 disabled:opacity-40 transition-all flex items-center gap-2"
                         >
                           {generatingEmailId === prospect.id ? (
-                            <><Loader2 size={12} className="animate-spin" /> Generating…</>
+                            <><Loader2 size={12} className="animate-spin" /> Generating 3 variants…</>
                           ) : (
-                            <><Mail size={12} /> Generate Email</>
+                            <><Mail size={12} /> Generate 3 Emails</>
                           )}
                         </button>
                       </div>
@@ -576,51 +664,79 @@ export default function ProspectingTab() {
                         </div>
                       )}
 
-                      {/* Email Draft */}
-                      {prospect.email_draft && (
-                        <div className="mt-3">
-                          {prospect.email_subject && (
-                            <div className="mb-2 flex items-center gap-2">
-                              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Subject:</span>
-                              <span className="text-xs font-medium text-gray-800 dark:text-gray-200">{prospect.email_subject}</span>
+                      {/* Email Variants */}
+                      {emailVariants.length > 1 && (
+                        <div className="mb-3">
+                          <div className="flex gap-2">
+                            {emailVariants.map((_, i) => (
                               <button
-                                onClick={() => copyToClipboard(prospect.email_subject || "")}
-                                className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                                title="Copy subject"
+                                key={i}
+                                onClick={() => selectVariant(prospect, i)}
+                                className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${
+                                  selectedVariant === i
+                                    ? "bg-[#FF0000] text-white border-[#FF0000]"
+                                    : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600 hover:border-[#FF0000]/50"
+                                }`}
                               >
-                                <Copy size={10} />
+                                Variant {i + 1}: {VARIANT_LABELS[i] || `#${i + 1}`}
                               </button>
-                            </div>
-                          )}
-                          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 p-4">
-                            <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap font-sans leading-relaxed">
-                              {prospect.email_draft}
-                            </pre>
-                          </div>
-                          <div className="flex gap-2 mt-2">
-                            <button
-                              onClick={() => copyToClipboard(prospect.email_draft || "")}
-                              className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-1.5"
-                            >
-                              <Copy size={12} /> Copy Email
-                            </button>
-                            {contacts[0]?.email && (
-                              <a
-                                href={`mailto:${contacts[0].email}?subject=${encodeURIComponent(prospect.email_subject || "")}&body=${encodeURIComponent(prospect.email_draft || "")}`}
-                                className="px-3 py-1.5 text-xs font-medium text-white bg-[#FF0000] rounded-lg hover:bg-red-600 transition-all flex items-center gap-1.5"
-                              >
-                                <Mail size={12} /> Open in Mail Client
-                              </a>
-                            )}
-                            <button
-                              onClick={() => convertToClient(prospect)}
-                              className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-1.5 ml-auto"
-                            >
-                              <Building2 size={12} /> Add to Clients
-                            </button>
+                            ))}
                           </div>
                         </div>
                       )}
+
+                      {/* Show current variant or saved draft */}
+                      {(() => {
+                        const currentEmail = emailVariants.length > 0 ? emailVariants[selectedVariant]?.email : prospect.email_draft;
+                        const currentSubject = emailVariants.length > 0 ? emailVariants[selectedVariant]?.subject : prospect.email_subject;
+
+                        if (!currentEmail) return null;
+
+                        return (
+                          <div className="mt-3">
+                            {currentSubject && (
+                              <div className="mb-2 flex items-center gap-2">
+                                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Subject:</span>
+                                <span className="text-xs font-medium text-gray-800 dark:text-gray-200">{currentSubject}</span>
+                                <button
+                                  onClick={() => copyToClipboard(currentSubject)}
+                                  className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                  title="Copy subject"
+                                >
+                                  <Copy size={10} />
+                                </button>
+                              </div>
+                            )}
+                            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 p-4">
+                              <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap font-sans leading-relaxed">
+                                {currentEmail}
+                              </pre>
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                              <button
+                                onClick={() => copyToClipboard(currentEmail)}
+                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-1.5"
+                              >
+                                <Copy size={12} /> Copy Email
+                              </button>
+                              {contacts[0]?.email && (
+                                <a
+                                  href={`mailto:${contacts[0].email}?subject=${encodeURIComponent(currentSubject || "")}&body=${encodeURIComponent(currentEmail)}`}
+                                  className="px-3 py-1.5 text-xs font-medium text-white bg-[#FF0000] rounded-lg hover:bg-red-600 transition-all flex items-center gap-1.5"
+                                >
+                                  <Mail size={12} /> Open in Mail Client
+                                </a>
+                              )}
+                              <button
+                                onClick={() => convertToClient(prospect)}
+                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-1.5 ml-auto"
+                              >
+                                <Building2 size={12} /> Add to Clients
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 )}

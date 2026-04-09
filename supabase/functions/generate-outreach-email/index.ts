@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
       ? `\n\nIMPORTANT: Include a section about a personalized demo/preview site we've prepared for them. The URL is: ${demoSiteUrl} and the access password is: ${demoSitePassword || "none"}. Present this as a preview of what their refreshed online presence could look like.`
       : "";
 
-    const prompt = `You are writing a professional cold outreach email from klaar-Studio (a Swiss web design and compliance agency based in Poland, serving Swiss and EU businesses).
+    const prompt = `You are writing a professional cold outreach email from klaar-Studio, a Swiss web design and compliance agency specializing in creating privacy-compliant, user-friendly websites for Swiss and EU businesses, with a focus on local businesses in and around Basel.
 
 RECIPIENT INFO:
 - Company: ${prospect.company_name}
@@ -74,6 +74,7 @@ GUIDELINES:
 - Be specific about THEIR problems, not generic
 - Transition naturally to how a website refresh would solve both compliance AND business goals
 - Mention that klaar-Studio specializes in Swiss data protection standards (nDSG) and GDPR compliance
+- NEVER mention Poland or that the agency is based in Poland. Position the agency as a Swiss compliance-focused web agency based around Basel.
 - Keep it professional but warm, not salesy
 - End with a clear call to action (suggest a brief call)
 - Sign off as Julian Vidal, klaar-Studio

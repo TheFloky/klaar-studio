@@ -180,6 +180,18 @@ export default function ProspectingTab() {
     setProspects((prev) => prev.filter((p) => p.id !== id));
   };
 
+  const removePainPoint = async (prospectId: string, index: number) => {
+    const prospect = prospects.find((p) => p.id === prospectId);
+    if (!prospect) return;
+    const rep = prospect.reputation || {};
+    const painPoints = [...(rep.pain_points || [])];
+    painPoints.splice(index, 1);
+    const updatedRep = { ...rep, pain_points: painPoints };
+    await supabase.from("prospects").update({ reputation: updatedRep } as any).eq("id", prospectId);
+    setProspects((prev) => prev.map((p) => p.id === prospectId ? { ...p, reputation: updatedRep } : p));
+    toast({ title: "Pain point removed" });
+  };
+
   const convertToClient = async (prospect: Prospect) => {
     const { error } = await supabase.from("clients").insert({
       website: prospect.website,
@@ -359,8 +371,19 @@ export default function ProspectingTab() {
                               <h4 className="text-[10px] uppercase tracking-wider text-red-400 font-semibold mb-2">Pain Points</h4>
                               <ul className="space-y-1">
                                 {reputation.pain_points.map((p: string, i: number) => (
-                                  <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1.5">
-                                    <XCircle size={12} className="text-red-400 shrink-0 mt-0.5" /> {p}
+                                  <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1.5 group">
+                                    <XCircle size={12} className="text-red-400 shrink-0 mt-0.5" /> 
+                                    <span className="flex-1">{p}</span>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        removePainPoint(prospect.id, i);
+                                      }}
+                                      className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition-all shrink-0"
+                                      title="Remove this pain point"
+                                    >
+                                      <Trash2 size={10} />
+                                    </button>
                                   </li>
                                 ))}
                               </ul>

@@ -169,8 +169,8 @@ export default function ProspectingTab() {
 
       if (uploadErr) throw uploadErr;
 
-      const baseUrl = window.location.origin;
-      const auditUrl = `${baseUrl}/audits/${slug}`;
+      const publishedUrl = "https://klaar-studio.lovable.app";
+      const auditUrl = `${publishedUrl}/audits/${slug}`;
       setAuditPdfUrls(prev => ({ ...prev, [prospect.id]: auditUrl }));
       toast({ title: "Audit PDF uploaded", description: `Shareable link: ${auditUrl}` });
     } catch (e: any) {

@@ -293,7 +293,11 @@ Be thorough but only include data you can actually verify from the content. For 
       general_email: companyIntel.general_email || null,
       general_phone: companyIntel.general_phone || null,
       financials: companyIntel.financials || {},
-      reputation: companyIntel.reputation || {},
+      reputation: {
+        ...(companyIntel.reputation || {}),
+        client_quality_score: companyIntel.client_quality_score || null,
+        reputation_score: companyIntel.reputation_score || null,
+      },
       research_summary: companyIntel.research_summary || null,
       compliance_score: complianceScore,
       compliance_details: complianceDetails,

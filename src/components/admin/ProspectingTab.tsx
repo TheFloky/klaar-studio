@@ -820,9 +820,9 @@ export default function ProspectingTab() {
                               )}
                               <button
                                 onClick={() => convertToClient(prospect)}
-                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-1.5 ml-auto"
+                                className="px-3 py-1.5 text-xs font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all flex items-center gap-1.5 ml-auto"
                               >
-                                <Building2 size={12} /> Add to Clients
+                                <Building2 size={12} /> Transfer to Client
                               </button>
                             </div>
                           </div>

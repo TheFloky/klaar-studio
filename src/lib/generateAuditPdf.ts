@@ -23,14 +23,14 @@ interface AuditPdfData {
   };
 }
 
-const BRAND_RED = [213, 43, 30] as const;   // #D52B1E
-const DARK = [13, 13, 13] as const;
-const GRAY = [107, 114, 128] as const;
-const LIGHT_BG = [250, 250, 250] as const;
-const GREEN = [34, 197, 94] as const;
-const AMBER = [234, 179, 8] as const;
-const RED = [239, 68, 68] as const;
-const WHITE = [255, 255, 255] as const;
+const BRAND_RED: [number, number, number] = [213, 43, 30];
+const DARK: [number, number, number] = [13, 13, 13];
+const GRAY: [number, number, number] = [107, 114, 128];
+const LIGHT_BG: [number, number, number] = [250, 250, 250];
+const GREEN: [number, number, number] = [34, 197, 94];
+const AMBER: [number, number, number] = [234, 179, 8];
+const RED: [number, number, number] = [239, 68, 68];
+const WHITE: [number, number, number] = [255, 255, 255];
 
 function statusColor(status: string): readonly [number, number, number] {
   if (status === "green") return GREEN;

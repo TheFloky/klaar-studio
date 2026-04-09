@@ -195,7 +195,12 @@ export default function ProspectingTab() {
             contacts: prospect.contacts,
             compliance_score: prospect.compliance_score,
             compliance_details: prospect.compliance_details,
-            reputation: prospect.reputation,
+            reputation: {
+              ...(prospect.reputation as any || {}),
+              pain_points: ((prospect.reputation as any)?.pain_points || []).filter(
+                (p: string) => !((prospect.reputation as any)?.muted_pain_points || []).includes(p)
+              ),
+            },
           },
           language: emailLanguage,
           includeDemoSite,

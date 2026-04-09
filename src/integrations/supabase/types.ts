@@ -110,6 +110,7 @@ export type Database = {
           description: string | null
           email_draft: string | null
           email_language: string | null
+          email_subject: string | null
           financials: Json | null
           id: string
           niche: string | null
@@ -130,6 +131,7 @@ export type Database = {
           description?: string | null
           email_draft?: string | null
           email_language?: string | null
+          email_subject?: string | null
           financials?: Json | null
           id?: string
           niche?: string | null
@@ -150,6 +152,7 @@ export type Database = {
           description?: string | null
           email_draft?: string | null
           email_language?: string | null
+          email_subject?: string | null
           financials?: Json | null
           id?: string
           niche?: string | null

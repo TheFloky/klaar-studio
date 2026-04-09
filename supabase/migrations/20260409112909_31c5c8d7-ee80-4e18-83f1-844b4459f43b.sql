@@ -1,0 +1,1 @@
+ALTER TABLE public.prospects ADD COLUMN email_subject text;

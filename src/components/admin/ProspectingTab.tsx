@@ -282,6 +282,27 @@ export default function ProspectingTab() {
     toast({ title: "Pain point removed" });
   };
 
+  const removeReputationItem = async (prospectId: string, path: string, index: number) => {
+    const prospect = prospects.find((p) => p.id === prospectId);
+    if (!prospect) return;
+    const rep = { ...(prospect.reputation || {}) } as any;
+    // path can be "strengths", "reputation_score.trust_signals", "reputation_score.red_flags"
+    const parts = path.split(".");
+    let arr: any[];
+    if (parts.length === 2) {
+      arr = [...(rep[parts[0]]?.[parts[1]] || [])];
+      arr.splice(index, 1);
+      rep[parts[0]] = { ...rep[parts[0]], [parts[1]]: arr };
+    } else {
+      arr = [...(rep[parts[0]] || [])];
+      arr.splice(index, 1);
+      rep[parts[0]] = arr;
+    }
+    await supabase.from("prospects").update({ reputation: rep } as any).eq("id", prospectId);
+    setProspects((prev) => prev.map((p) => p.id === prospectId ? { ...p, reputation: rep } : p));
+    toast({ title: "Item removed" });
+  };
+
   const toggleMutePainPoint = async (prospectId: string, painPoint: string) => {
     const prospect = prospects.find((p) => p.id === prospectId);
     if (!prospect) return;
@@ -569,8 +590,10 @@ export default function ProspectingTab() {
                                     <span className="text-gray-400 text-[10px] uppercase">Trust Signals</span>
                                     <ul className="mt-1 space-y-0.5">
                                       {reputation.reputation_score.trust_signals.map((s: string, i: number) => (
-                                        <li key={i} className="text-gray-600 dark:text-gray-400 flex items-start gap-1">
-                                          <CheckCircle2 size={10} className="text-green-400 shrink-0 mt-0.5" /> {s}
+                                        <li key={i} className="text-gray-600 dark:text-gray-400 flex items-start gap-1 group">
+                                          <CheckCircle2 size={10} className="text-green-400 shrink-0 mt-0.5" />
+                                          <span className="flex-1">{s}</span>
+                                          <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeReputationItem(prospect.id, "reputation_score.trust_signals", i); }} className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100" title="Remove"><Trash2 size={10} /></button>
                                         </li>
                                       ))}
                                     </ul>
@@ -581,8 +604,10 @@ export default function ProspectingTab() {
                                     <span className="text-gray-400 text-[10px] uppercase">Red Flags</span>
                                     <ul className="mt-1 space-y-0.5">
                                       {reputation.reputation_score.red_flags.map((f: string, i: number) => (
-                                        <li key={i} className="text-gray-600 dark:text-gray-400 flex items-start gap-1">
-                                          <XCircle size={10} className="text-red-400 shrink-0 mt-0.5" /> {f}
+                                        <li key={i} className="text-gray-600 dark:text-gray-400 flex items-start gap-1 group">
+                                          <XCircle size={10} className="text-red-400 shrink-0 mt-0.5" />
+                                          <span className="flex-1">{f}</span>
+                                          <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeReputationItem(prospect.id, "reputation_score.red_flags", i); }} className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100" title="Remove"><Trash2 size={10} /></button>
                                         </li>
                                       ))}
                                     </ul>
@@ -639,8 +664,10 @@ export default function ProspectingTab() {
                               <h4 className="text-[10px] uppercase tracking-wider text-green-400 font-semibold mb-2">Strengths</h4>
                               <ul className="space-y-1">
                                 {reputation.strengths.map((s: string, i: number) => (
-                                  <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1.5">
-                                    <CheckCircle2 size={12} className="text-green-400 shrink-0 mt-0.5" /> {s}
+                                  <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1.5 group">
+                                    <CheckCircle2 size={12} className="text-green-400 shrink-0 mt-0.5" />
+                                    <span className="flex-1">{s}</span>
+                                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeReputationItem(prospect.id, "strengths", i); }} className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100" title="Remove"><Trash2 size={12} /></button>
                                   </li>
                                 ))}
                               </ul>

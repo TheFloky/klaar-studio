@@ -375,14 +375,16 @@ export default function ProspectingTab() {
                                     <XCircle size={12} className="text-red-400 shrink-0 mt-0.5" /> 
                                     <span className="flex-1">{p}</span>
                                     <button
+                                      type="button"
                                       onClick={(e) => {
+                                        e.preventDefault();
                                         e.stopPropagation();
                                         removePainPoint(prospect.id, i);
                                       }}
-                                      className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition-all shrink-0"
+                                      className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
                                       title="Remove this pain point"
                                     >
-                                      <Trash2 size={10} />
+                                      <Trash2 size={14} />
                                     </button>
                                   </li>
                                 ))}

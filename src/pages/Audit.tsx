@@ -3,6 +3,7 @@ import { Shield, Globe, Type, BarChart3, FileText, AlertTriangle, CheckCircle, X
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useSearchParams, useParams } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
+import { useToast } from "@/hooks/use-toast";
 
 type TriState = "green" | "yellow" | "red" | null;
 
@@ -227,6 +228,7 @@ function stateToScore(state: TriState): number {
 export default function Audit() {
   const [searchParams] = useSearchParams();
   const { lang } = useParams<{ lang: string }>();
+  const { toast } = useToast();
   const backPath = `/${lang || 'de'}`;
   const [url, setUrl] = useState(searchParams.get("url") || "");
   const [scanning, setScanning] = useState(false);
@@ -239,6 +241,7 @@ export default function Audit() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoRan = useRef(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [pdfFallbackUrl, setPdfFallbackUrl] = useState<string | null>(null);
 
 
 
@@ -344,12 +347,18 @@ export default function Audit() {
   const generatePDF = useCallback(async () => {
     if (generatingPdf) return;
     setGeneratingPdf(true);
+    setPdfFallbackUrl((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return null;
+    });
+
     try {
       const { jsPDF } = await import("jspdf");
       const pdf = new jsPDF("p", "mm", "a4");
       const w = 210;
       let y = 20;
 
+      const fileName = `compliance-report-${url.replace(/https?:\/\//, "").replace(/[^a-zA-Z0-9]/g, "-") || "website"}.pdf`;
       const stateLabel = (s: TriState) => s === "green" ? "COMPLIANT" : s === "yellow" ? "WARNING" : s === "red" ? "CRITICAL RISK" : "N/A";
       const stateColor = (s: TriState): [number, number, number] => s === "green" ? [34, 197, 94] : s === "yellow" ? [234, 179, 8] : [255, 0, 0];
 
@@ -388,7 +397,10 @@ export default function Audit() {
       ];
 
       for (const card of cards) {
-        if (y > 260) { pdf.addPage(); y = 20; }
+        if (y > 260) {
+          pdf.addPage();
+          y = 20;
+        }
         const [cr, cg, cb] = stateColor(card.status);
         pdf.setFillColor(cr, cg, cb);
         pdf.roundedRect(15, y, 4, 20, 1, 1, "F");
@@ -413,7 +425,10 @@ export default function Audit() {
         }
       }
 
-      if (y > 240) { pdf.addPage(); y = 20; }
+      if (y > 240) {
+        pdf.addPage();
+        y = 20;
+      }
       y += 6;
       pdf.setFillColor(255, 240, 240);
       pdf.roundedRect(15, y, w - 30, 24, 2, 2, "F");
@@ -435,13 +450,37 @@ export default function Audit() {
         pdf.text(`Page ${i} of ${pageCount}`, w - 15, 290, { align: "right" });
       }
 
-      pdf.save(`compliance-report-${url.replace(/https?:\/\//, "").replace(/[^a-zA-Z0-9]/g, "-")}.pdf`);
+      const blob = pdf.output("blob");
+      const objectUrl = URL.createObjectURL(blob);
+      setPdfFallbackUrl(objectUrl);
+
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = fileName;
+      link.rel = "noopener";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.setTimeout(() => {
+        window.open(objectUrl, "_blank", "noopener,noreferrer");
+      }, 150);
+
+      toast({
+        title: "PDF ready",
+        description: "If the download didn't start automatically, use the fallback link below.",
+      });
     } catch (e) {
       console.error("PDF generation failed:", e);
+      toast({
+        title: "PDF generation failed",
+        description: "Please try again. If it still fails, I can switch this to a server-generated PDF.",
+        variant: "destructive",
+      });
     } finally {
       setGeneratingPdf(false);
     }
-  }, [url, score, results, generatingPdf, ipDetail, fontsDetail, trackersDetail, legalDetail]);
+  }, [url, score, results, generatingPdf, ipDetail, fontsDetail, trackersDetail, legalDetail, toast]);
 
   const dataResidencyDesc =
     results.dataResidency === "red"
@@ -558,6 +597,20 @@ export default function Audit() {
               {generatingPdf ? <Loader2 size={16} className="animate-spin" /> : <FileDown size={16} />}
               {generatingPdf ? 'Generating...' : 'Generate Risk Report PDF'}
             </button>
+          </div>
+        )}
+
+        {scanComplete && pdfFallbackUrl && (
+          <div className="flex justify-center">
+            <a
+              href={pdfFallbackUrl}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-primary hover:underline"
+            >
+              Download the PDF manually
+            </a>
           </div>
         )}
 

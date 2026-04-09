@@ -836,6 +836,54 @@ export default function ProspectingTab() {
           })}
         </div>
       )}
+
+      {/* Transfer to Client Modal */}
+      {transferId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onClick={() => setTransferId(null)}>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1">Transfer to Client</h3>
+            <p className="text-xs text-gray-400 mb-4">
+              Move <strong>{prospects.find(p => p.id === transferId)?.company_name}</strong> to the Clients tab with pricing details.
+            </p>
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold block mb-1">Project Fee (CHF)</label>
+                <input
+                  type="number"
+                  value={transferFee}
+                  onChange={(e) => setTransferFee(e.target.value)}
+                  placeholder="e.g. 2500"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm bg-gray-50 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#FF0000]/20 focus:border-[#FF0000]"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold block mb-1">Monthly Maintenance Fee (CHF)</label>
+                <input
+                  type="number"
+                  value={transferMaintenance}
+                  onChange={(e) => setTransferMaintenance(e.target.value)}
+                  placeholder="e.g. 150"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm bg-gray-50 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#FF0000]/20 focus:border-[#FF0000]"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 mt-5">
+              <button
+                onClick={() => setTransferId(null)}
+                className="flex-1 px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={executeTransfer}
+                className="flex-1 px-4 py-2 text-xs font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all flex items-center justify-center gap-1.5"
+              >
+                <Building2 size={14} /> Transfer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

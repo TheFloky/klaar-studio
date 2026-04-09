@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
     const mainMarkdown = scrapeData?.data?.markdown || scrapeData?.markdown || "";
     const sitePages = mapData?.links || [];
 
-    // Step 2: Scrape key subpages (about, contact, team, impressum)
+    // Step 2: Scrape key subpages
     const importantPages = sitePages
       .filter((p: string) =>
         /about|ueber|über|kontakt|contact|team|impressum|legal|datenschutz|privacy/i.test(p)
@@ -142,7 +142,6 @@ Deno.serve(async (req) => {
     const fontLeakage = htmlLower.includes("fonts.googleapis.com") || htmlLower.includes("fonts.gstatic.com");
     const trackingTransparency = htmlLower.includes("google-analytics.com") || htmlLower.includes("googletagmanager.com");
 
-    // Legal presence
     const impressumLinkRegex = /<a[^>]*href=["'][^"']*impressum[^"']*["'][^>]*>/i;
     const hasImpressumLink = impressumLinkRegex.test(mainHtml) || htmlLower.includes(">impressum<");
     const footerMatch = mainHtml.match(/<footer[\s\S]*?<\/footer>/i);
@@ -176,7 +175,7 @@ Deno.serve(async (req) => {
       },
     };
 
-    // Step 4: Use AI to analyze all gathered content and extract company intelligence
+    // Step 4: Run AI analysis 3 times in parallel for accuracy
     const allContent = `
 MAIN PAGE CONTENT:
 ${mainMarkdown.slice(0, 4000)}
@@ -245,43 +244,99 @@ Return a JSON object with these exact fields:
 }
 
 SCORING GUIDELINES:
-- client_quality_score.website_condition: How bad/outdated is the website? Higher = worse condition = more need for our services. Consider design quality, mobile responsiveness, loading indicators, content freshness.
-- client_quality_score.outreach_likelihood: How likely are they to respond positively to a cold email? Consider company size, industry, digital awareness, current pain points.
-- client_quality_score.budget_potential: How likely they can afford a professional website (CHF 2500-15000+)? Consider company size, industry, location, apparent revenue.
+- client_quality_score.website_condition: How bad/outdated is the website? Higher = worse condition = more need for our services.
+- client_quality_score.outreach_likelihood: How likely are they to respond positively to a cold email?
+- client_quality_score.budget_potential: How likely they can afford a professional website (CHF 2500-15000+)?
 - client_quality_score.score: Weighted average (40% website_condition + 30% outreach_likelihood + 30% budget_potential).
-- reputation_score.score: Overall reputation estimate (0-100). Consider brand presence, professionalism, trust signals, apparent customer base.
+- reputation_score.score: Overall reputation estimate (0-100).
 
 Be thorough but only include data you can actually verify from the content. For missing data, use null.`;
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: "You are a precise business analyst. Always respond with valid JSON only, no markdown fences." },
-          { role: "user", content: aiPrompt },
-        ],
-      }),
-    });
-
-    let companyIntel: any = {};
-    if (aiRes.ok) {
-      const aiData = await aiRes.json();
-      const content = aiData.choices?.[0]?.message?.content || "";
+    const callAI = async () => {
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: "You are a precise business analyst. Always respond with valid JSON only, no markdown fences." },
+            { role: "user", content: aiPrompt },
+          ],
+        }),
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      const content = data.choices?.[0]?.message?.content || "";
       try {
-        // Strip markdown code fences if present
         const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-        companyIntel = JSON.parse(cleaned);
+        return JSON.parse(cleaned);
       } catch {
-        console.error("Failed to parse AI response:", content.slice(0, 500));
-        companyIntel = { research_summary: content.slice(0, 1000) };
+        return null;
       }
+    };
+
+    // Run 3 scans in parallel
+    console.log("Running 3 AI scans in parallel...");
+    const [scan1, scan2, scan3] = await Promise.all([callAI(), callAI(), callAI()]);
+    const scans = [scan1, scan2, scan3].filter(Boolean);
+
+    if (scans.length === 0) {
+      return new Response(JSON.stringify({ error: "All AI scans failed" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Merge results using AI
+    let companyIntel: any;
+    if (scans.length === 1) {
+      companyIntel = scans[0];
     } else {
-      console.error("AI request failed:", aiRes.status);
+      const mergePrompt = `You are merging ${scans.length} independent analyses of the same company into one definitive profile.
+
+SCAN RESULTS:
+${scans.map((s, i) => `--- Scan ${i + 1} ---\n${JSON.stringify(s, null, 2)}`).join("\n\n")}
+
+MERGE RULES:
+1. For text fields (company_name, niche, description): pick the most detailed/accurate version
+2. For contacts: merge all unique contacts, prefer entries with more complete info
+3. For scores (0-100): take the AVERAGE of all scans, rounded to nearest integer
+4. For arrays (pain_points, strengths, trust_signals, red_flags): merge unique items, remove duplicates
+5. For financial estimates: pick the most conservative/realistic estimate
+6. For research_summary: write a new summary that incorporates the best insights from all scans
+
+Return a single merged JSON object with the exact same structure.`;
+
+      const mergeRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: "You merge business intelligence data. Always respond with valid JSON only, no markdown fences." },
+            { role: "user", content: mergePrompt },
+          ],
+        }),
+      });
+
+      if (mergeRes.ok) {
+        const mergeData = await mergeRes.json();
+        const mergeContent = mergeData.choices?.[0]?.message?.content || "";
+        try {
+          const cleaned = mergeContent.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+          companyIntel = JSON.parse(cleaned);
+        } catch {
+          companyIntel = scans[0]; // fallback to first scan
+        }
+      } else {
+        companyIntel = scans[0];
+      }
     }
 
     const result = {
@@ -302,6 +357,7 @@ Be thorough but only include data you can actually verify from the content. For 
       compliance_score: complianceScore,
       compliance_details: complianceDetails,
       site_pages: sitePages.slice(0, 20),
+      scan_count: scans.length,
     };
 
     return new Response(JSON.stringify({ success: true, result }), {

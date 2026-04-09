@@ -220,10 +220,32 @@ function RiskCard({ title, riskKey, icon: Icon, status, description, detail }: {
   );
 }
 
-function stateToScore(state: TriState): number {
-  if (state === "green") return 25;
-  if (state === "yellow") return 12.5;
+// Weighted scoring: Data Residency (35%), Legal Presence (30%), Font Leakage (15%), Tracking (20%)
+const CATEGORY_WEIGHTS = {
+  dataResidency: 35,
+  legalPresence: 30,
+  tracking: 20,
+  fonts: 15,
+};
+
+function stateToPercent(state: TriState): number {
+  if (state === "green") return 1;
+  if (state === "yellow") return 0.5;
   return 0;
+}
+
+function calculateComplianceScore(
+  dataResidency: TriState,
+  fontState: TriState,
+  trackingState: TriState,
+  legalPresence: TriState
+): number {
+  return Math.round(
+    stateToPercent(dataResidency) * CATEGORY_WEIGHTS.dataResidency +
+    stateToPercent(legalPresence) * CATEGORY_WEIGHTS.legalPresence +
+    stateToPercent(trackingState) * CATEGORY_WEIGHTS.tracking +
+    stateToPercent(fontState) * CATEGORY_WEIGHTS.fonts
+  );
 }
 
 export default function Audit() {

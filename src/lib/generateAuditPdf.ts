@@ -346,14 +346,26 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
     const whyText = check.whyItMatters[statusKey] || check.whyItMatters.red;
     const lawText = check.lawArticle[statusKey] || check.lawArticle.red;
 
-    // Pre-calculate card height
-    const summaryLines = doc.splitTextToSize(summaryText, contentW - 22);
-    const whyLines = doc.splitTextToSize(whyText, contentW - 22);
-    const lawLines = doc.splitTextToSize(lawText, contentW - 22);
+    // Split text into lines for width calculation
+    const textInset = 10;
+    const textWidth = contentW - textInset - 12; // padding on both sides
+    const summaryLines = doc.splitTextToSize(summaryText, textWidth);
+    const whyLines = doc.splitTextToSize(whyText, textWidth);
+    const lawLines = doc.splitTextToSize(lawText, textWidth);
     const techDetailH = check.techDetail ? 5 : 0;
-    const cardH = 14 + summaryLines.length * 3.5 + 8 + whyLines.length * 3.5 + 6 + lawLines.length * 3.5 + techDetailH + 10;
 
-    y = ensureSpace(doc, y, cardH, 20);
+    // Calculate exact card height by simulating the layout
+    let innerH = 16; // title area (dot + title + gap)
+    innerH += summaryLines.length * 3.5 + 2; // summary text
+    innerH += techDetailH; // tech detail
+    innerH += 6; // gap + "Warum" header
+    innerH += whyLines.length * 3.5 + 2; // why text
+    const lawBoxH = lawLines.length * 3.5 + 8;
+    innerH += lawBoxH; // law box
+    innerH += 6; // law link + bottom padding
+    const cardH = innerH;
+
+    y = ensureSpace(doc, y, cardH + 5, 20);
 
     // Card border + background
     doc.setFillColor(...WHITE);
@@ -384,14 +396,14 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
     doc.setTextColor(60, 60, 60);
     doc.setFont("Inter", "normal");
     doc.setFontSize(7.5);
-    doc.text(summaryLines, margin + 10, cy);
+    doc.text(summaryLines, margin + textInset, cy);
     cy += summaryLines.length * 3.5 + 2;
 
     // Tech detail (IP, fonts found, etc.)
     if (check.techDetail) {
       doc.setFontSize(6.5);
       doc.setTextColor(140, 140, 140);
-      doc.text(check.techDetail, margin + 10, cy);
+      doc.text(check.techDetail, margin + textInset, cy);
       cy += 5;
     }
 
@@ -400,18 +412,17 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
     doc.setFont("Inter", "bold");
     doc.setFontSize(7);
     doc.setTextColor(...DARK);
-    doc.text("Warum das wichtig ist:", margin + 10, cy);
+    doc.text("Warum das wichtig ist:", margin + textInset, cy);
     cy += 4;
 
     doc.setFont("Inter", "normal");
     doc.setFontSize(7);
     doc.setTextColor(80, 80, 80);
-    doc.text(whyLines, margin + 10, cy);
+    doc.text(whyLines, margin + textInset, cy);
     cy += whyLines.length * 3.5 + 2;
 
     // Law reference with article text
     doc.setFillColor(245, 247, 250);
-    const lawBoxH = lawLines.length * 3.5 + 8;
     doc.roundedRect(margin + 8, cy - 1, contentW - 16, lawBoxH, 1.5, 1.5, "F");
 
     doc.setFont("Inter", "normal");

@@ -282,6 +282,27 @@ export default function ProspectingTab() {
     toast({ title: "Pain point removed" });
   };
 
+  const removeReputationItem = async (prospectId: string, path: string, index: number) => {
+    const prospect = prospects.find((p) => p.id === prospectId);
+    if (!prospect) return;
+    const rep = { ...(prospect.reputation || {}) } as any;
+    // path can be "strengths", "reputation_score.trust_signals", "reputation_score.red_flags"
+    const parts = path.split(".");
+    let arr: any[];
+    if (parts.length === 2) {
+      arr = [...(rep[parts[0]]?.[parts[1]] || [])];
+      arr.splice(index, 1);
+      rep[parts[0]] = { ...rep[parts[0]], [parts[1]]: arr };
+    } else {
+      arr = [...(rep[parts[0]] || [])];
+      arr.splice(index, 1);
+      rep[parts[0]] = arr;
+    }
+    await supabase.from("prospects").update({ reputation: rep } as any).eq("id", prospectId);
+    setProspects((prev) => prev.map((p) => p.id === prospectId ? { ...p, reputation: rep } : p));
+    toast({ title: "Item removed" });
+  };
+
   const toggleMutePainPoint = async (prospectId: string, painPoint: string) => {
     const prospect = prospects.find((p) => p.id === prospectId);
     if (!prospect) return;

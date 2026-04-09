@@ -445,9 +445,13 @@ export default function Audit() {
               <Shield size={16} />
               {score < 100 ? 'Fix Your Compliance Issues' : 'Let\'s Create a Fresh Look for Your Site'}
             </Link>
-            <button className="px-6 py-3 border-2 border-border rounded-lg text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-all flex items-center gap-2">
-              <FileDown size={16} />
-              Generate Risk Report PDF
+            <button
+              onClick={generatePDF}
+              disabled={generatingPdf}
+              className="px-6 py-3 border-2 border-border rounded-lg text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-all flex items-center gap-2 disabled:opacity-50"
+            >
+              {generatingPdf ? <Loader2 size={16} className="animate-spin" /> : <FileDown size={16} />}
+              {generatingPdf ? 'Generating...' : 'Generate Risk Report PDF'}
             </button>
           </div>
         )}

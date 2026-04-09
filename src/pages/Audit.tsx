@@ -228,6 +228,7 @@ function stateToScore(state: TriState): number {
 export default function Audit() {
   const [searchParams] = useSearchParams();
   const { lang } = useParams<{ lang: string }>();
+  const { toast } = useToast();
   const backPath = `/${lang || 'de'}`;
   const [url, setUrl] = useState(searchParams.get("url") || "");
   const [scanning, setScanning] = useState(false);
@@ -240,6 +241,7 @@ export default function Audit() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoRan = useRef(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [pdfFallbackUrl, setPdfFallbackUrl] = useState<string | null>(null);
 
 
 

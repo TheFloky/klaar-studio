@@ -3,6 +3,13 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// EU/EEA country codes
+const EU_EEA_CODES = new Set([
+  "AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE",
+  "IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE",
+  "IS","LI","NO"
+]);
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -56,13 +63,20 @@ Deno.serve(async (req) => {
       fetch(`http://ip-api.com/json/${hostname}?fields=status,country,countryCode,query`),
     ]);
 
-    // Process IP geolocation
-    let dataResidency = false;
+    // Process IP geolocation — 3-state: "green" | "yellow" | "red"
+    let dataResidency: "green" | "yellow" | "red" = "red";
     let ipInfo: { country?: string; countryCode?: string; ip?: string } = {};
     try {
       const ipData = await ipRes.json();
       if (ipData.status === "success") {
-        dataResidency = ipData.countryCode === "CH";
+        const cc = ipData.countryCode;
+        if (cc === "CH") {
+          dataResidency = "green";
+        } else if (EU_EEA_CODES.has(cc)) {
+          dataResidency = "yellow";
+        } else {
+          dataResidency = "red";
+        }
         ipInfo = {
           country: ipData.country,
           countryCode: ipData.countryCode,
@@ -75,12 +89,29 @@ Deno.serve(async (req) => {
 
     // Process HTML scrape
     let fontLeakage = false;
-    let trackingTransparency = false;
-    let legalPresence = false;
     let fontsFound: string[] = [];
+    let trackingTransparency = false;
     let trackersFound: string[] = [];
     let siteTitle = "";
     let siteDescription = "";
+
+    // Legal presence — 3-state
+    let legalPresence: "green" | "yellow" | "red" = "red";
+    let legalDetails: {
+      hasImpressumLink: boolean;
+      impressumInFooter: boolean;
+      hasAddress: boolean;
+      hasEmail: boolean;
+      hasVatId: boolean;
+      hasCompanyName: boolean;
+    } = {
+      hasImpressumLink: false,
+      impressumInFooter: false,
+      hasAddress: false,
+      hasEmail: false,
+      hasVatId: false,
+      hasCompanyName: false,
+    };
 
     try {
       const scrapeData = await scrapeRes.json();
@@ -110,10 +141,56 @@ Deno.serve(async (req) => {
         if (htmlLower.includes("googletagmanager.com")) trackersFound.push("googletagmanager.com");
       }
 
-      // Check for Impressum
-      if (htmlLower.includes("impressum")) {
-        legalPresence = true;
+      // --- Legal Presence Analysis ---
+      // Check for any Impressum link
+      const impressumLinkRegex = /<a[^>]*href=["'][^"']*impressum[^"']*["'][^>]*>/i;
+      const hasImpressumLink = impressumLinkRegex.test(html) || htmlLower.includes(">impressum<");
+      legalDetails.hasImpressumLink = hasImpressumLink;
+
+      // Check if Impressum link is in the footer
+      const footerMatch = html.match(/<footer[\s\S]*?<\/footer>/i);
+      if (footerMatch) {
+        const footerLower = footerMatch[0].toLowerCase();
+        legalDetails.impressumInFooter = footerLower.includes("impressum");
       }
+
+      // Check for legal info indicators (address, email, VAT)
+      // Address: look for patterns like street numbers, postal codes
+      const addressPatterns = [
+        /\d{4,5}\s+\w/,  // postal code
+        /str(aße|asse|\.)\s/i,
+        /weg\s+\d/i,
+        /platz\s+\d/i,
+        /ulica|ul\./i,
+      ];
+      legalDetails.hasAddress = addressPatterns.some(p => p.test(html));
+
+      // Email
+      legalDetails.hasEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(html);
+
+      // VAT/UID
+      const vatPatterns = [
+        /CHE[-\s]?\d{3}[\.\s]?\d{3}[\.\s]?\d{3}/i,  // Swiss UID
+        /\b[A-Z]{2}\d{8,12}\b/,  // EU VAT
+        /uid|vat|mwst|ust-id|ust\.?-?id/i,
+      ];
+      legalDetails.hasVatId = vatPatterns.some(p => p.test(html));
+
+      // Company name (look for common legal forms)
+      const companyPatterns = [
+        /gmbh|ag\b|ltd|s\.r\.o|sp\.\s*z\s*o\.o|inc\b|corp\b|sarl|sàrl|sa\b/i,
+      ];
+      legalDetails.hasCompanyName = companyPatterns.some(p => p.test(html));
+
+      // Determine legal presence status
+      if (legalDetails.impressumInFooter && legalDetails.hasAddress && legalDetails.hasEmail) {
+        legalPresence = "green";
+      } else if (hasImpressumLink || (legalDetails.hasAddress && legalDetails.hasEmail)) {
+        legalPresence = "yellow";
+      } else {
+        legalPresence = "red";
+      }
+
     } catch (e) {
       console.error("HTML scan failed:", e);
     }
@@ -129,6 +206,7 @@ Deno.serve(async (req) => {
         trackersFound,
         siteTitle,
         siteDescription,
+        legalDetails,
       },
     };
 

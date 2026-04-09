@@ -27,6 +27,9 @@ interface Prospect {
   demo_site_password: string | null;
   status: string;
   created_at: string;
+  email_demo_sent: boolean;
+  email_sent: boolean;
+  meeting_done: boolean;
 }
 
 interface EmailVariant {

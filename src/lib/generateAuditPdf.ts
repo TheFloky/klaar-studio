@@ -1,5 +1,12 @@
 import jsPDF from "jspdf";
+import { INTER_REGULAR, INTER_BOLD } from "./interFontData";
 
+function registerFonts(doc: jsPDF) {
+  doc.addFileToVFS("Inter-Regular.ttf", INTER_REGULAR);
+  doc.addFont("Inter-Regular.ttf", "Inter", "normal");
+  doc.addFileToVFS("Inter-Bold.ttf", INTER_BOLD);
+  doc.addFont("Inter-Bold.ttf", "Inter", "bold");
+}
 interface AuditPdfData {
   targetUrl: string;
   siteTitle?: string;

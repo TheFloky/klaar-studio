@@ -27,6 +27,9 @@ interface Prospect {
   demo_site_password: string | null;
   status: string;
   created_at: string;
+  email_demo_sent: boolean;
+  email_sent: boolean;
+  meeting_done: boolean;
 }
 
 interface EmailVariant {
@@ -66,6 +69,9 @@ export default function ProspectingTab() {
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [uploadingPdf, setUploadingPdf] = useState<string | null>(null);
   const [auditPdfUrls, setAuditPdfUrls] = useState<Record<string, string>>({});
+  const [transferId, setTransferId] = useState<string | null>(null);
+  const [transferFee, setTransferFee] = useState("");
+  const [transferMaintenance, setTransferMaintenance] = useState("");
   const { toast } = useToast();
 
   const fetchProspects = async () => {
@@ -287,17 +293,44 @@ export default function ProspectingTab() {
     toast({ title: isMuted ? "Pain point will be mentioned in email" : "Pain point won't be mentioned in email" });
   };
 
-  const convertToClient = async (prospect: Prospect) => {
+  const toggleProspectCheckbox = async (id: string, field: "email_demo_sent" | "email_sent" | "meeting_done") => {
+    const prospect = prospects.find((p) => p.id === id);
+    if (!prospect) return;
+    const newVal = !prospect[field];
+    await supabase.from("prospects").update({ [field]: newVal } as any).eq("id", id);
+    setProspects((prev) => prev.map((p) => p.id === id ? { ...p, [field]: newVal } : p));
+  };
+
+  const openTransferModal = (id: string) => {
+    setTransferId(id);
+    setTransferFee("");
+    setTransferMaintenance("");
+  };
+
+  const executeTransfer = async () => {
+    const prospect = prospects.find((p) => p.id === transferId);
+    if (!prospect) return;
     const { error } = await supabase.from("clients").insert({
       website: prospect.website,
       name: prospect.company_name,
       niche: prospect.niche,
       compliance_score: prospect.compliance_score,
       compliance_details: prospect.compliance_details,
-    });
+      project_fee: parseFloat(transferFee) || 0,
+      maintenance_fee: parseFloat(transferMaintenance) || 0,
+    } as any);
     if (!error) {
-      toast({ title: "Client created", description: `${prospect.company_name} added to Clients.` });
+      await supabase.from("prospects").delete().eq("id", prospect.id);
+      setProspects((prev) => prev.filter((p) => p.id !== prospect.id));
+      toast({ title: "Client transferred", description: `${prospect.company_name} moved to Clients tab.` });
+    } else {
+      toast({ title: "Transfer failed", description: error.message, variant: "destructive" });
     }
+    setTransferId(null);
+  };
+
+  const convertToClient = async (prospect: Prospect) => {
+    openTransferModal(prospect.id);
   };
 
   const VARIANT_LABELS = ["Formal & Data-driven", "Warm & Personal", "Concise & Direct"];
@@ -390,6 +423,26 @@ export default function ProspectingTab() {
                         {prospect.niche && <span>• {prospect.niche}</span>}
                       </div>
                     </div>
+                    {/* Tracking Checkboxes */}
+                    {prospect.status === "completed" && (
+                      <div className="flex items-center gap-4 mt-2" onClick={(e) => e.stopPropagation()}>
+                        {([
+                          { field: "email_demo_sent" as const, label: "Email demo" },
+                          { field: "email_sent" as const, label: "Email sent" },
+                          { field: "meeting_done" as const, label: "Meeting done" },
+                        ]).map(({ field, label }) => (
+                          <label key={field} className="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={prospect[field]}
+                              onChange={() => toggleProspectCheckbox(prospect.id, field)}
+                              className="rounded border-gray-300 text-[#FF0000] focus:ring-[#FF0000]/20 h-3.5 w-3.5"
+                            />
+                            {label}
+                          </label>
+                        ))}
+                      </div>
+                    )}
                     <div className="flex items-center gap-2 shrink-0">
                       <button onClick={(e) => { e.stopPropagation(); deleteProspect(prospect.id); }} className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 transition-colors">
                         <Trash2 size={14} />
@@ -767,9 +820,9 @@ export default function ProspectingTab() {
                               )}
                               <button
                                 onClick={() => convertToClient(prospect)}
-                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-1.5 ml-auto"
+                                className="px-3 py-1.5 text-xs font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all flex items-center gap-1.5 ml-auto"
                               >
-                                <Building2 size={12} /> Add to Clients
+                                <Building2 size={12} /> Transfer to Client
                               </button>
                             </div>
                           </div>
@@ -781,6 +834,54 @@ export default function ProspectingTab() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Transfer to Client Modal */}
+      {transferId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onClick={() => setTransferId(null)}>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1">Transfer to Client</h3>
+            <p className="text-xs text-gray-400 mb-4">
+              Move <strong>{prospects.find(p => p.id === transferId)?.company_name}</strong> to the Clients tab with pricing details.
+            </p>
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold block mb-1">Project Fee (CHF)</label>
+                <input
+                  type="number"
+                  value={transferFee}
+                  onChange={(e) => setTransferFee(e.target.value)}
+                  placeholder="e.g. 2500"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm bg-gray-50 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#FF0000]/20 focus:border-[#FF0000]"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold block mb-1">Monthly Maintenance Fee (CHF)</label>
+                <input
+                  type="number"
+                  value={transferMaintenance}
+                  onChange={(e) => setTransferMaintenance(e.target.value)}
+                  placeholder="e.g. 150"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm bg-gray-50 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#FF0000]/20 focus:border-[#FF0000]"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 mt-5">
+              <button
+                onClick={() => setTransferId(null)}
+                className="flex-1 px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={executeTransfer}
+                className="flex-1 px-4 py-2 text-xs font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all flex items-center justify-center gap-1.5"
+              >
+                <Building2 size={14} /> Transfer
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

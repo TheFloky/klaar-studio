@@ -69,6 +69,9 @@ export default function ProspectingTab() {
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [uploadingPdf, setUploadingPdf] = useState<string | null>(null);
   const [auditPdfUrls, setAuditPdfUrls] = useState<Record<string, string>>({});
+  const [transferId, setTransferId] = useState<string | null>(null);
+  const [transferFee, setTransferFee] = useState("");
+  const [transferMaintenance, setTransferMaintenance] = useState("");
   const { toast } = useToast();
 
   const fetchProspects = async () => {

@@ -11,6 +11,7 @@ import Audit from "./pages/Audit.tsx";
 import Impressum from "./pages/Impressum.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import Maintenance from "./pages/Maintenance.tsx";
+import AuditReport from "./pages/AuditReport.tsx";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Navigate to="/de" replace />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/audits/:slug" element={<AuditReport />} />
             <Route path="/:lang/audit" element={<Audit />} />
             <Route path="/:lang/impressum" element={<Impressum />} />
             <Route path="/:lang/privacy" element={<Privacy />} />

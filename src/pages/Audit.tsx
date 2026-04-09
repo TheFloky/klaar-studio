@@ -354,7 +354,13 @@ export default function Audit() {
 
     try {
       const { jsPDF } = await import("jspdf");
+      const { INTER_REGULAR, INTER_BOLD } = await import("@/lib/interFontData");
       const pdf = new jsPDF("p", "mm", "a4");
+      pdf.addFileToVFS("Inter-Regular.ttf", INTER_REGULAR);
+      pdf.addFont("Inter-Regular.ttf", "Inter", "normal");
+      pdf.addFileToVFS("Inter-Bold.ttf", INTER_BOLD);
+      pdf.addFont("Inter-Bold.ttf", "Inter", "bold");
+      pdf.setFont("Inter", "normal");
       const w = 210;
       let y = 20;
 

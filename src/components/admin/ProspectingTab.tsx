@@ -148,12 +148,17 @@ export default function ProspectingTab() {
   const uploadAuditPdf = async (prospect: Prospect) => {
     setUploadingPdf(prospect.id);
     try {
+      const cd = prospect.compliance_details || {};
       const pdfBlob = generateAuditPdf({
-        companyName: prospect.company_name || "Unknown",
-        website: prospect.website,
+        targetUrl: prospect.website,
+        siteTitle: prospect.company_name || undefined,
         score: prospect.compliance_score,
-        details: prospect.compliance_details,
-      });
+        dataResidency: cd.dataResidency || "red",
+        fontLeakage: cd.fontLeakage || false,
+        trackingTransparency: cd.trackingTransparency || false,
+        legalPresence: cd.legalPresence || "red",
+        details: cd.details,
+      }, { returnBlob: true });
 
       const slug = generateSlug(prospect.company_name || prospect.website);
       const filePath = `${slug}.pdf`;

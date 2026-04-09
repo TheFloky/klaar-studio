@@ -67,11 +67,11 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
   doc.rect(0, 0, pw, 42, "F");
 
   doc.setTextColor(...WHITE);
-  doc.setFont("helvetica", "bold");
+  doc.setFont("Inter", "bold");
   doc.setFontSize(22);
   doc.text("KLAAR", margin, 18);
   doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
+  doc.setFont("Inter", "normal");
   doc.text("DIGITAL AGENCY", margin, 24);
 
   doc.setFontSize(10);
@@ -90,10 +90,10 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
   doc.setFillColor(...LIGHT_BG);
   doc.roundedRect(margin, y, contentW, 22, 3, 3, "F");
   doc.setTextColor(...DARK);
-  doc.setFont("helvetica", "bold");
+  doc.setFont("Inter", "bold");
   doc.setFontSize(10);
   doc.text("Geprüfte Webseite", margin + 6, y + 8);
-  doc.setFont("helvetica", "normal");
+  doc.setFont("Inter", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...GRAY);
   doc.text(data.targetUrl, margin + 6, y + 15);
@@ -112,14 +112,14 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
   
   // Score number
   doc.setTextColor(...scoreColor);
-  doc.setFont("helvetica", "bold");
+  doc.setFont("Inter", "bold");
   doc.setFontSize(36);
   doc.text(`${data.score}%`, margin + 14, y + 24);
   
   // Score label
   doc.setFontSize(9);
   doc.setTextColor(...GRAY);
-  doc.setFont("helvetica", "normal");
+  doc.setFont("Inter", "normal");
   doc.text("COMPLIANCE SCORE", margin + 14, y + 31);
 
   // Score bar
@@ -140,7 +140,7 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
 
   // ── Risk Cards ──
   doc.setTextColor(...DARK);
-  doc.setFont("helvetica", "bold");
+  doc.setFont("Inter", "bold");
   doc.setFontSize(11);
   doc.text("Ergebnisse im Detail", margin, y);
   y += 8;
@@ -213,7 +213,7 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
 
     // Title
     doc.setTextColor(...DARK);
-    doc.setFont("helvetica", "bold");
+    doc.setFont("Inter", "bold");
     doc.setFontSize(9);
     doc.text(check.title, margin + 14, y + 9);
 
@@ -221,13 +221,13 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
     const label = statusLabel(check.status);
     doc.setTextColor(...sc);
     doc.setFontSize(7);
-    doc.setFont("helvetica", "bold");
+    doc.setFont("Inter", "bold");
     doc.text(label.toUpperCase(), pw - margin - 6, y + 9, { align: "right" });
 
     // Why text
     const whyText = check.status === "green" ? check.whyGreen : check.status === "yellow" ? (check.whyYellow || check.whyRed) : check.whyRed;
     doc.setTextColor(...GRAY);
-    doc.setFont("helvetica", "normal");
+    doc.setFont("Inter", "normal");
     doc.setFontSize(7.5);
     const whyLines = doc.splitTextToSize(whyText, contentW - 20);
     doc.text(whyLines, margin + 14, y + 16);
@@ -259,10 +259,10 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
   doc.roundedRect(margin, y, contentW, 24, 3, 3, "FD");
   
   doc.setTextColor(...RED);
-  doc.setFont("helvetica", "bold");
+  doc.setFont("Inter", "bold");
   doc.setFontSize(8);
   doc.text("⚠ PERSÖNLICHE HAFTUNG – ART. 60 nDSG/nFADP", margin + 6, y + 8);
-  doc.setFont("helvetica", "normal");
+  doc.setFont("Inter", "normal");
   doc.setFontSize(7.5);
   doc.setTextColor(100, 50, 50);
   const liabilityText = "Natürliche Personen können mit Bussen bis zu CHF 250'000 bestraft werden. Das Schweizer Datenschutzgesetz richtet sich gegen natürliche Personen, nicht gegen Unternehmen.";
@@ -278,7 +278,7 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
   }
 
   doc.setTextColor(...DARK);
-  doc.setFont("helvetica", "bold");
+  doc.setFont("Inter", "bold");
   doc.setFontSize(9);
   doc.text("Relevante Gesetzesgrundlagen", margin, y);
   y += 6;
@@ -293,9 +293,9 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
   doc.setFontSize(7);
   for (const law of laws) {
     doc.setTextColor(...DARK);
-    doc.setFont("helvetica", "bold");
+    doc.setFont("Inter", "bold");
     doc.text(`• ${law.name}`, margin + 4, y);
-    doc.setFont("helvetica", "normal");
+    doc.setFont("Inter", "normal");
     doc.setTextColor(...GRAY);
     doc.text(` – ${law.desc}`, margin + 4 + doc.getTextWidth(`• ${law.name}`), y);
     y += 3.5;
@@ -314,10 +314,10 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
   doc.roundedRect(margin, y, 2, 8, 1, 1, "F");
 
   doc.setTextColor(...DARK);
-  doc.setFont("helvetica", "bold");
+  doc.setFont("Inter", "bold");
   doc.setFontSize(8);
   doc.text("KLAAR Digital Agency", margin + 6, y + 3.5);
-  doc.setFont("helvetica", "normal");
+  doc.setFont("Inter", "normal");
   doc.setFontSize(6.5);
   doc.setTextColor(...GRAY);
   doc.text("klaar-studio.ch · info@klaar-studio.ch · +41 79 750 83 50", margin + 6, y + 7);

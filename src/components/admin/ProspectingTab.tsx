@@ -664,9 +664,12 @@ export default function ProspectingTab() {
                               <h4 className="text-[10px] uppercase tracking-wider text-green-400 font-semibold mb-2">Strengths</h4>
                               <ul className="space-y-1">
                                 {reputation.strengths.map((s: string, i: number) => (
-                                  <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1.5">
-                                    <CheckCircle2 size={12} className="text-green-400 shrink-0 mt-0.5" /> {s}
+                                  <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1.5 group">
+                                    <CheckCircle2 size={12} className="text-green-400 shrink-0 mt-0.5" />
+                                    <span className="flex-1">{s}</span>
+                                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeReputationItem(prospect.id, "strengths", i); }} className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100" title="Remove"><Trash2 size={12} /></button>
                                   </li>
+                                ))}
                                 ))}
                               </ul>
                             </div>

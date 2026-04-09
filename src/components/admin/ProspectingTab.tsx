@@ -258,11 +258,28 @@ export default function ProspectingTab() {
     if (!prospect) return;
     const rep = prospect.reputation || {};
     const painPoints = [...(rep.pain_points || [])];
+    const muted = [...(rep.muted_pain_points || [])];
+    // Also remove from muted if it was muted
+    const removedPoint = painPoints[index];
     painPoints.splice(index, 1);
-    const updatedRep = { ...rep, pain_points: painPoints };
+    const newMuted = muted.filter((m: string) => m !== removedPoint);
+    const updatedRep = { ...rep, pain_points: painPoints, muted_pain_points: newMuted };
     await supabase.from("prospects").update({ reputation: updatedRep } as any).eq("id", prospectId);
     setProspects((prev) => prev.map((p) => p.id === prospectId ? { ...p, reputation: updatedRep } : p));
     toast({ title: "Pain point removed" });
+  };
+
+  const toggleMutePainPoint = async (prospectId: string, painPoint: string) => {
+    const prospect = prospects.find((p) => p.id === prospectId);
+    if (!prospect) return;
+    const rep = prospect.reputation || {};
+    const muted = [...(rep.muted_pain_points || [])];
+    const isMuted = muted.includes(painPoint);
+    const newMuted = isMuted ? muted.filter((m: string) => m !== painPoint) : [...muted, painPoint];
+    const updatedRep = { ...rep, muted_pain_points: newMuted };
+    await supabase.from("prospects").update({ reputation: updatedRep } as any).eq("id", prospectId);
+    setProspects((prev) => prev.map((p) => p.id === prospectId ? { ...p, reputation: updatedRep } : p));
+    toast({ title: isMuted ? "Pain point will be mentioned in email" : "Pain point won't be mentioned in email" });
   };
 
   const convertToClient = async (prospect: Prospect) => {

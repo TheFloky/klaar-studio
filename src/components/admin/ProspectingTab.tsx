@@ -546,20 +546,31 @@ export default function ProspectingTab() {
                             <div>
                               <h4 className="text-[10px] uppercase tracking-wider text-red-400 font-semibold mb-2">Pain Points</h4>
                               <ul className="space-y-1">
-                                {reputation.pain_points.map((p: string, i: number) => (
-                                  <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1.5 group">
-                                    <XCircle size={12} className="text-red-400 shrink-0 mt-0.5" />
-                                    <span className="flex-1">{p}</span>
-                                    <button
-                                      type="button"
-                                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); removePainPoint(prospect.id, i); }}
-                                      className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
-                                      title="Remove this pain point"
-                                    >
-                                      <Trash2 size={14} />
-                                    </button>
-                                  </li>
-                                ))}
+                                {reputation.pain_points.map((p: string, i: number) => {
+                                  const isMuted = (reputation.muted_pain_points || []).includes(p);
+                                  return (
+                                    <li key={i} className={`text-xs flex items-start gap-1.5 group ${isMuted ? 'text-gray-400 dark:text-gray-600 line-through' : 'text-gray-600 dark:text-gray-400'}`}>
+                                      <XCircle size={12} className={`shrink-0 mt-0.5 ${isMuted ? 'text-gray-300 dark:text-gray-600' : 'text-red-400'}`} />
+                                      <span className="flex-1">{p}</span>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleMutePainPoint(prospect.id, p); }}
+                                        className={`shrink-0 p-1 rounded transition-all ${isMuted ? 'text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20' : 'text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20'}`}
+                                        title={isMuted ? "Include in email" : "Don't mention in email"}
+                                      >
+                                        {isMuted ? <Eye size={14} /> : <EyeOff size={14} />}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); removePainPoint(prospect.id, i); }}
+                                        className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
+                                        title="Delete this pain point"
+                                      >
+                                        <Trash2 size={14} />
+                                      </button>
+                                    </li>
+                                  );
+                                })}
                               </ul>
                             </div>
                           )}

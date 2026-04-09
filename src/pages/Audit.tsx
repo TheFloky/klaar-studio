@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Shield, Globe, Type, BarChart3, FileText, AlertTriangle, CheckCircle, XCircle, Search, FileDown, ExternalLink, Loader2 } from "lucide-react";
+import { generateAuditPdf } from "@/lib/generateAuditPdf";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useSearchParams, useParams } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
@@ -353,113 +354,21 @@ export default function Audit() {
     });
 
     try {
-      const { jsPDF } = await import("jspdf");
-      const { INTER_REGULAR, INTER_BOLD } = await import("@/lib/interFontData");
-      const pdf = new jsPDF("p", "mm", "a4");
-      pdf.addFileToVFS("Inter-Regular.ttf", INTER_REGULAR);
-      pdf.addFont("Inter-Regular.ttf", "Inter", "normal");
-      pdf.addFileToVFS("Inter-Bold.ttf", INTER_BOLD);
-      pdf.addFont("Inter-Bold.ttf", "Inter", "bold");
-      pdf.setFont("Inter", "normal");
-      const w = 210;
-      let y = 20;
+      const blob = generateAuditPdf({
+        targetUrl: url,
+        siteTitle: results.details?.legalDetails?.hasCompanyName ? undefined : undefined,
+        score,
+        dataResidency: typeof results.dataResidency === "string" ? results.dataResidency : results.dataResidency ? "green" : "red",
+        fontLeakage: results.fontLeakage === "red",
+        trackingTransparency: results.trackingTransparency === "red",
+        legalPresence: typeof results.legalPresence === "string" ? results.legalPresence : results.legalPresence ? "green" : "red",
+        details: results.details,
+      }, { returnBlob: true });
 
-      const fileName = `compliance-report-${url.replace(/https?:\/\//, "").replace(/[^a-zA-Z0-9]/g, "-") || "website"}.pdf`;
-      const stateLabel = (s: TriState) => s === "green" ? "COMPLIANT" : s === "yellow" ? "WARNING" : s === "red" ? "CRITICAL RISK" : "N/A";
-      const stateColor = (s: TriState): [number, number, number] => s === "green" ? [34, 197, 94] : s === "yellow" ? [234, 179, 8] : [255, 0, 0];
-
-      pdf.setFillColor(15, 15, 15);
-      pdf.rect(0, 0, w, 40, "F");
-      pdf.setTextColor(255, 255, 255);
-      pdf.setFontSize(20);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("Compliance Risk Report", 15, 18);
-      pdf.setFontSize(10);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(`Website: ${url}`, 15, 26);
-      pdf.text(`Date: ${new Date().toLocaleDateString("de-CH")}`, 15, 32);
-      pdf.text(`Score: ${score}%`, w - 15, 26, { align: "right" });
-
-      y = 50;
-      pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(16);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("Overall Compliance Score", 15, y);
-      y += 8;
-      const [sr, sg, sb] = stateColor(score >= 75 ? "green" : score >= 50 ? "yellow" : "red");
-      pdf.setFillColor(sr, sg, sb);
-      pdf.roundedRect(15, y, 40, 12, 2, 2, "F");
-      pdf.setTextColor(255, 255, 255);
-      pdf.setFontSize(14);
-      pdf.setFont("helvetica", "bold");
-      pdf.text(`${score}%`, 35, y + 8.5, { align: "center" });
-      y += 22;
-
-      const cards: { title: string; status: TriState; detail?: string; desc: string }[] = [
-        { title: "Data Residency", status: results.dataResidency, detail: ipDetail, desc: results.dataResidency === "red" ? "Server hosted in USA - US Cloud Act risk." : results.dataResidency === "yellow" ? "Server in EU/EEA - adequate but not Swiss." : "Server in Switzerland." },
-        { title: "IP Leakage (Fonts)", status: results.fontLeakage, detail: fontsDetail, desc: "External font imports leak visitor IPs to third-party servers." },
-        { title: "Tracking Transparency", status: results.trackingTransparency, detail: trackersDetail, desc: "Third-party tracking scripts detected on the website." },
-        { title: "Legal Presence (Impressum)", status: results.legalPresence, detail: legalDetail, desc: results.legalPresence === "red" ? "No Impressum link found." : results.legalPresence === "yellow" ? "Incomplete legal information." : "Full Impressum with required details." },
-      ];
-
-      for (const card of cards) {
-        if (y > 260) {
-          pdf.addPage();
-          y = 20;
-        }
-        const [cr, cg, cb] = stateColor(card.status);
-        pdf.setFillColor(cr, cg, cb);
-        pdf.roundedRect(15, y, 4, 20, 1, 1, "F");
-        pdf.setTextColor(0, 0, 0);
-        pdf.setFontSize(12);
-        pdf.setFont("helvetica", "bold");
-        pdf.text(card.title, 24, y + 6);
-        pdf.setFontSize(9);
-        pdf.setFont("helvetica", "normal");
-        const [lr, lg, lb] = stateColor(card.status);
-        pdf.setTextColor(lr, lg, lb);
-        pdf.text(stateLabel(card.status), 24, y + 12);
-        pdf.setTextColor(80, 80, 80);
-        pdf.text(card.desc, 24, y + 17, { maxWidth: w - 40 });
-        if (card.detail) {
-          pdf.setFontSize(7);
-          pdf.setTextColor(120, 120, 120);
-          pdf.text(card.detail, 24, y + 22, { maxWidth: w - 40 });
-          y += 28;
-        } else {
-          y += 24;
-        }
-      }
-
-      if (y > 240) {
-        pdf.addPage();
-        y = 20;
-      }
-      y += 6;
-      pdf.setFillColor(255, 240, 240);
-      pdf.roundedRect(15, y, w - 30, 24, 2, 2, "F");
-      pdf.setTextColor(200, 0, 0);
-      pdf.setFontSize(10);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("CEO Personal Liability Warning", 20, y + 8);
-      pdf.setFontSize(8);
-      pdf.setFont("helvetica", "normal");
-      pdf.text("Under Art. 60 nFADP/nDSG, individuals may face personal fines up to CHF 250'000.", 20, y + 14, { maxWidth: w - 40 });
-      pdf.text("Swiss law targets natural persons, not corporations.", 20, y + 19, { maxWidth: w - 40 });
-
-      const pageCount = pdf.getNumberOfPages();
-      for (let i = 1; i <= pageCount; i++) {
-        pdf.setPage(i);
-        pdf.setFontSize(7);
-        pdf.setTextColor(150, 150, 150);
-        pdf.text("Generated by klaar-Studio Compliance Audit Tool", 15, 290);
-        pdf.text(`Page ${i} of ${pageCount}`, w - 15, 290, { align: "right" });
-      }
-
-      const blob = pdf.output("blob");
       const objectUrl = URL.createObjectURL(blob);
       setPdfFallbackUrl(objectUrl);
 
+      const fileName = `compliance-report-${url.replace(/https?:\/\//, "").replace(/[^a-zA-Z0-9]/g, "-") || "website"}.pdf`;
       const link = document.createElement("a");
       link.href = objectUrl;
       link.download = fileName;
@@ -480,13 +389,13 @@ export default function Audit() {
       console.error("PDF generation failed:", e);
       toast({
         title: "PDF generation failed",
-        description: "Please try again. If it still fails, I can switch this to a server-generated PDF.",
+        description: "Please try again.",
         variant: "destructive",
       });
     } finally {
       setGeneratingPdf(false);
     }
-  }, [url, score, results, generatingPdf, ipDetail, fontsDetail, trackersDetail, legalDetail, toast]);
+  }, [url, score, results, generatingPdf, toast]);
 
   const dataResidencyDesc =
     results.dataResidency === "red"

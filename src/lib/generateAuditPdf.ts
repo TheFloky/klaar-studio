@@ -346,24 +346,31 @@ export function generateAuditPdf(data: AuditPdfData, options?: { returnBlob?: bo
     const whyText = check.whyItMatters[statusKey] || check.whyItMatters.red;
     const lawText = check.lawArticle[statusKey] || check.lawArticle.red;
 
-    // Split text into lines for width calculation
+    // Split text at correct font sizes for accurate line-wrap calculation
     const textInset = 10;
-    const textWidth = contentW - textInset - 12; // padding on both sides
+    const textWidth = contentW - textInset - 12;
+    
+    doc.setFont("Inter", "normal");
+    doc.setFontSize(7.5);
     const summaryLines = doc.splitTextToSize(summaryText, textWidth);
+    
+    doc.setFontSize(7);
     const whyLines = doc.splitTextToSize(whyText, textWidth);
-    const lawLines = doc.splitTextToSize(lawText, textWidth);
+    
+    doc.setFontSize(6.5);
+    const lawLines = doc.splitTextToSize(lawText, textWidth - 4); // law text has extra inset
+    
     const techDetailH = check.techDetail ? 5 : 0;
 
-    // Calculate exact card height by simulating the layout
-    let innerH = 16; // title area (dot + title + gap)
-    innerH += summaryLines.length * 3.5 + 2; // summary text
-    innerH += techDetailH; // tech detail
-    innerH += 6; // gap + "Warum" header
-    innerH += whyLines.length * 3.5 + 2; // why text
+    // Calculate exact card height matching render offsets
     const lawBoxH = lawLines.length * 3.5 + 8;
-    innerH += lawBoxH; // law box
-    innerH += 6; // law link + bottom padding
-    const cardH = innerH;
+    const cardH = 16                           // title area
+      + summaryLines.length * 3.5 + 2          // summary
+      + techDetailH                            // tech detail
+      + 6                                      // gap + "Warum" header
+      + whyLines.length * 3.5 + 2              // why text
+      + lawBoxH                                // law box
+      + 8;                                     // law link + bottom padding
 
     y = ensureSpace(doc, y, cardH + 5, 20);
 

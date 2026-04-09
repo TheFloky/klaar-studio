@@ -136,58 +136,86 @@ Deno.serve(async (req) => {
 
     try {
       const scrapeData = await scrapeRes.json();
-      const html = scrapeData?.data?.html || scrapeData?.html || "";
-      const htmlLower = html.toLowerCase();
+      const mainHtml = scrapeData?.data?.html || scrapeData?.html || "";
+      
+      // Collect HTML from subpages too
+      let allHtml = mainHtml;
+      const subpageHtmls: string[] = [];
+      for (const subRes of subpageResults) {
+        if (subRes && subRes.ok) {
+          try {
+            const subData = await subRes.json();
+            const subHtml = subData?.data?.html || subData?.html || "";
+            if (subHtml) {
+              subpageHtmls.push(subHtml);
+              allHtml += "\n" + subHtml;
+            }
+          } catch { /* ignore failed subpages */ }
+        }
+      }
+
+      const htmlLower = mainHtml.toLowerCase();
+      const allHtmlLower = allHtml.toLowerCase();
+
+      // Decode HTML entities for better detection (&#64; = @, &#46; = ., etc.)
+      const decodeEntities = (s: string) => s
+        .replace(/&#64;/g, "@").replace(/&#46;/g, ".")
+        .replace(/&#x40;/gi, "@").replace(/&#x2e;/gi, ".")
+        .replace(/\s*\[at\]\s*/gi, "@").replace(/\s*\(at\)\s*/gi, "@")
+        .replace(/\s*\[dot\]\s*/gi, ".").replace(/\s*\(dot\)\s*/gi, ".");
+      const allHtmlDecoded = decodeEntities(allHtml);
 
       // Extract title
-      const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+      const titleMatch = mainHtml.match(/<title[^>]*>([^<]*)<\/title>/i);
       if (titleMatch) siteTitle = titleMatch[1].trim();
 
       // Extract meta description
-      const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i)
-        || html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["']/i);
+      const descMatch = mainHtml.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i)
+        || mainHtml.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["']/i);
       if (descMatch) siteDescription = descMatch[1].trim();
 
       // Check for Google Fonts
-      if (htmlLower.includes("fonts.googleapis.com") || htmlLower.includes("fonts.gstatic.com")) {
+      if (allHtmlLower.includes("fonts.googleapis.com") || allHtmlLower.includes("fonts.gstatic.com")) {
         fontLeakage = true;
-        if (htmlLower.includes("fonts.googleapis.com")) fontsFound.push("fonts.googleapis.com");
-        if (htmlLower.includes("fonts.gstatic.com")) fontsFound.push("fonts.gstatic.com");
+        if (allHtmlLower.includes("fonts.googleapis.com")) fontsFound.push("fonts.googleapis.com");
+        if (allHtmlLower.includes("fonts.gstatic.com")) fontsFound.push("fonts.gstatic.com");
       }
 
       // Check for tracking scripts
-      if (htmlLower.includes("google-analytics.com") || htmlLower.includes("googletagmanager.com")) {
+      if (allHtmlLower.includes("google-analytics.com") || allHtmlLower.includes("googletagmanager.com")) {
         trackingTransparency = true;
-        if (htmlLower.includes("google-analytics.com")) trackersFound.push("google-analytics.com");
-        if (htmlLower.includes("googletagmanager.com")) trackersFound.push("googletagmanager.com");
+        if (allHtmlLower.includes("google-analytics.com")) trackersFound.push("google-analytics.com");
+        if (allHtmlLower.includes("googletagmanager.com")) trackersFound.push("googletagmanager.com");
       }
 
-      // --- Legal Presence Analysis ---
-      // Check for any Impressum link
+      // --- Legal Presence Analysis (search across ALL pages) ---
       const impressumLinkRegex = /<a[^>]*href=["'][^"']*impressum[^"']*["'][^>]*>/i;
-      const hasImpressumLink = impressumLinkRegex.test(html) || htmlLower.includes(">impressum<");
+      const hasImpressumLink = impressumLinkRegex.test(allHtml) || allHtmlLower.includes(">impressum<");
       legalDetails.hasImpressumLink = hasImpressumLink;
 
-      // Check if Impressum link is in the footer
-      const footerMatch = html.match(/<footer[\s\S]*?<\/footer>/i);
+      const footerMatch = mainHtml.match(/<footer[\s\S]*?<\/footer>/i);
       if (footerMatch) {
         const footerLower = footerMatch[0].toLowerCase();
         legalDetails.impressumInFooter = footerLower.includes("impressum");
       }
 
-      // Check for legal info indicators (address, email, VAT)
-      // Address: look for patterns like street numbers, postal codes
+      // Address patterns (check all pages)
       const addressPatterns = [
-        /\d{4,5}\s+\w/,  // postal code
+        /\d{4,5}\s+\w/,
         /str(aße|asse|\.)\s/i,
         /weg\s+\d/i,
         /platz\s+\d/i,
         /ulica|ul\./i,
       ];
-      legalDetails.hasAddress = addressPatterns.some(p => p.test(html));
+      legalDetails.hasAddress = addressPatterns.some(p => p.test(allHtml));
 
-      // Email
-      legalDetails.hasEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(html);
+      // Email detection (comprehensive, across all pages)
+      const emailPatterns = [
+        /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,  // plain email
+        /mailto:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i,  // mailto link
+      ];
+      legalDetails.hasEmail = emailPatterns.some(p => p.test(allHtmlDecoded))
+        || /mailto:/i.test(allHtml);  // any mailto: link at all
 
       // VAT/UID
       const vatPatterns = [

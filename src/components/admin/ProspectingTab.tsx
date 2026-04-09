@@ -423,6 +423,26 @@ export default function ProspectingTab() {
                         {prospect.niche && <span>• {prospect.niche}</span>}
                       </div>
                     </div>
+                    {/* Tracking Checkboxes */}
+                    {prospect.status === "completed" && (
+                      <div className="flex items-center gap-4 mt-2" onClick={(e) => e.stopPropagation()}>
+                        {([
+                          { field: "email_demo_sent" as const, label: "Email demo" },
+                          { field: "email_sent" as const, label: "Email sent" },
+                          { field: "meeting_done" as const, label: "Meeting done" },
+                        ]).map(({ field, label }) => (
+                          <label key={field} className="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={prospect[field]}
+                              onChange={() => toggleProspectCheckbox(prospect.id, field)}
+                              className="rounded border-gray-300 text-[#FF0000] focus:ring-[#FF0000]/20 h-3.5 w-3.5"
+                            />
+                            {label}
+                          </label>
+                        ))}
+                      </div>
+                    )}
                     <div className="flex items-center gap-2 shrink-0">
                       <button onClick={(e) => { e.stopPropagation(); deleteProspect(prospect.id); }} className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 transition-colors">
                         <Trash2 size={14} />

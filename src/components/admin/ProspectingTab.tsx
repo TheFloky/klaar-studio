@@ -293,17 +293,44 @@ export default function ProspectingTab() {
     toast({ title: isMuted ? "Pain point will be mentioned in email" : "Pain point won't be mentioned in email" });
   };
 
-  const convertToClient = async (prospect: Prospect) => {
+  const toggleProspectCheckbox = async (id: string, field: "email_demo_sent" | "email_sent" | "meeting_done") => {
+    const prospect = prospects.find((p) => p.id === id);
+    if (!prospect) return;
+    const newVal = !prospect[field];
+    await supabase.from("prospects").update({ [field]: newVal } as any).eq("id", id);
+    setProspects((prev) => prev.map((p) => p.id === id ? { ...p, [field]: newVal } : p));
+  };
+
+  const openTransferModal = (id: string) => {
+    setTransferId(id);
+    setTransferFee("");
+    setTransferMaintenance("");
+  };
+
+  const executeTransfer = async () => {
+    const prospect = prospects.find((p) => p.id === transferId);
+    if (!prospect) return;
     const { error } = await supabase.from("clients").insert({
       website: prospect.website,
       name: prospect.company_name,
       niche: prospect.niche,
       compliance_score: prospect.compliance_score,
       compliance_details: prospect.compliance_details,
-    });
+      project_fee: parseFloat(transferFee) || 0,
+      maintenance_fee: parseFloat(transferMaintenance) || 0,
+    } as any);
     if (!error) {
-      toast({ title: "Client created", description: `${prospect.company_name} added to Clients.` });
+      await supabase.from("prospects").delete().eq("id", prospect.id);
+      setProspects((prev) => prev.filter((p) => p.id !== prospect.id));
+      toast({ title: "Client transferred", description: `${prospect.company_name} moved to Clients tab.` });
+    } else {
+      toast({ title: "Transfer failed", description: error.message, variant: "destructive" });
     }
+    setTransferId(null);
+  };
+
+  const convertToClient = async (prospect: Prospect) => {
+    openTransferModal(prospect.id);
   };
 
   const VARIANT_LABELS = ["Formal & Data-driven", "Warm & Personal", "Concise & Direct"];

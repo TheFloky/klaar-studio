@@ -610,7 +610,6 @@ export default function ProspectingTab() {
                                           <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeReputationItem(prospect.id, "reputation_score.red_flags", i); }} className="text-gray-400 hover:text-red-500 transition-all shrink-0 p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100" title="Remove"><Trash2 size={10} /></button>
                                         </li>
                                       ))}
-                                      ))}
                                     </ul>
                                   </div>
                                 )}

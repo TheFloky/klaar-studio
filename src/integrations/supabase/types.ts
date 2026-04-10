@@ -106,6 +106,7 @@ export type Database = {
       }
       pageviews: {
         Row: {
+          country: string | null
           created_at: string
           device_type: string | null
           duration_ms: number | null
@@ -116,6 +117,7 @@ export type Database = {
           session_id: string
         }
         Insert: {
+          country?: string | null
           created_at?: string
           device_type?: string | null
           duration_ms?: number | null
@@ -126,6 +128,7 @@ export type Database = {
           session_id: string
         }
         Update: {
+          country?: string | null
           created_at?: string
           device_type?: string | null
           duration_ms?: number | null

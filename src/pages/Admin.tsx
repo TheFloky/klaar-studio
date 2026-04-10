@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Shield, Users, Settings, CalendarDays, LogOut, Moon, Sun, Crosshair } from "lucide-react";
+import { ArrowLeft, Shield, Users, Settings, CalendarDays, LogOut, Moon, Sun, Crosshair, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import AdminLogin from "@/components/admin/AdminLogin";
@@ -8,12 +8,14 @@ import SettingsTab from "@/components/admin/SettingsTab";
 import BookingsTab from "@/components/admin/BookingsTab";
 import AuditTab from "@/components/admin/AuditTab";
 import ProspectingTab from "@/components/admin/ProspectingTab";
+import AnalyticsTab from "@/components/admin/AnalyticsTab";
 
 const TABS = [
   { id: "prospecting", label: "Prospecting", icon: Crosshair },
   { id: "audit", label: "Compliance Audit", icon: Shield },
   { id: "clients", label: "Clients", icon: Users },
   { id: "bookings", label: "Bookings", icon: CalendarDays },
+  { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "settings", label: "Settings", icon: Settings },
 ] as const;
 
@@ -107,6 +109,7 @@ export default function Admin() {
         {activeTab === "audit" && <AuditTab />}
         {activeTab === "clients" && <ClientsTab />}
         {activeTab === "bookings" && <BookingsTab />}
+        {activeTab === "analytics" && <AnalyticsTab />}
         {activeTab === "settings" && <SettingsTab />}
       </main>
     </div>

@@ -1,0 +1,1 @@
+ALTER TABLE public.pageviews ADD COLUMN country TEXT;

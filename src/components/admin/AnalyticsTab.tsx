@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart3, Eye, Clock, Monitor, Smartphone, Tablet, Globe, ArrowRight } from "lucide-react";
+import { BarChart3, Eye, Clock, Monitor, Smartphone, Tablet, Globe, ArrowRight, MapPin } from "lucide-react";
 
 type Pageview = {
   id: string;
@@ -10,6 +10,7 @@ type Pageview = {
   device_type: string | null;
   language: string | null;
   duration_ms: number | null;
+  country: string | null;
   created_at: string;
 };
 
@@ -18,6 +19,7 @@ type SessionGroup = {
   pages: Pageview[];
   device: string;
   language: string;
+  country: string;
   started: string;
   totalDuration: number;
 };
@@ -61,6 +63,7 @@ export default function AnalyticsTab() {
       pages: sorted,
       device: sorted[0].device_type || "unknown",
       language: sorted[0].language || "unknown",
+      country: sorted[0].country || "—",
       started: sorted[0].created_at,
       totalDuration: sorted.reduce((sum, p) => sum + (p.duration_ms || 0), 0),
     });
@@ -84,6 +87,22 @@ export default function AnalyticsTab() {
   for (const s of sessions) {
     if (s.device in deviceCounts) deviceCounts[s.device as keyof typeof deviceCounts]++;
   }
+
+  // Country breakdown
+  const countryCounts = new Map<string, number>();
+  for (const s of sessions) {
+    const c = s.country || "Unknown";
+    countryCounts.set(c, (countryCounts.get(c) || 0) + 1);
+  }
+  const topCountries = [...countryCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+  const COUNTRY_NAMES: Record<string, string> = {
+    CH: "🇨🇭 Switzerland", DE: "🇩🇪 Germany", AT: "🇦🇹 Austria", FR: "🇫🇷 France",
+    IT: "🇮🇹 Italy", US: "🇺🇸 United States", GB: "🇬🇧 United Kingdom", NL: "🇳🇱 Netherlands",
+    PL: "🇵🇱 Poland", ES: "🇪🇸 Spain", BE: "🇧🇪 Belgium", SE: "🇸🇪 Sweden",
+    NO: "🇳🇴 Norway", DK: "🇩🇰 Denmark", CZ: "🇨🇿 Czechia", PT: "🇵🇹 Portugal",
+    "—": "Unknown",
+  };
 
   const DeviceIcon = ({ type }: { type: string }) => {
     if (type === "mobile") return <Smartphone size={14} />;
@@ -146,8 +165,8 @@ export default function AnalyticsTab() {
         </div>
       </div>
 
-      {/* Two columns */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Three columns */}
+      <div className="grid grid-cols-3 gap-4">
         {/* Top pages */}
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">Top Pages</h3>
@@ -159,6 +178,22 @@ export default function AnalyticsTab() {
               </div>
             ))}
             {topPages.length === 0 && <p className="text-gray-400 text-xs">No data yet</p>}
+          </div>
+        </div>
+
+        {/* Countries */}
+        <div className="bg-white border border-gray-200 rounded-xl p-4">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <MapPin size={14} /> Countries
+          </h3>
+          <div className="space-y-2">
+            {topCountries.map(([code, count]) => (
+              <div key={code} className="flex items-center justify-between text-sm">
+                <span className="text-gray-700 text-xs">{COUNTRY_NAMES[code] || code}</span>
+                <span className="text-gray-500 font-medium ml-2">{count}</span>
+              </div>
+            ))}
+            {topCountries.length === 0 && <p className="text-gray-400 text-xs">No data yet</p>}
           </div>
         </div>
 
@@ -192,6 +227,12 @@ export default function AnalyticsTab() {
                 <DeviceIcon type={s.device} />
                 <span className="text-xs text-gray-500">{formatTime(s.started)}</span>
                 <span className="text-xs text-gray-400">•</span>
+                {s.country !== "—" && (
+                  <>
+                    <span className="text-xs text-gray-600 font-medium">{COUNTRY_NAMES[s.country] || s.country}</span>
+                    <span className="text-xs text-gray-400">•</span>
+                  </>
+                )}
                 <Globe size={12} className="text-gray-400" />
                 <span className="text-xs text-gray-500">{s.language}</span>
                 {s.totalDuration > 0 && (
@@ -216,7 +257,7 @@ export default function AnalyticsTab() {
               </div>
               {s.pages[0]?.referrer && (
                 <p className="text-[10px] text-gray-400 mt-1">
-                  via {new URL(s.pages[0].referrer).hostname}
+                  via {(() => { try { return new URL(s.pages[0].referrer).hostname; } catch { return s.pages[0].referrer; } })()}
                 </p>
               )}
             </div>

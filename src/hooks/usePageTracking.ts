@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
  * Privacy-compliant pageview tracker.
  * - No cookies, no fingerprinting, no IP storage
  * - Session ID lives in sessionStorage (dies on tab close)
+ * - Country detected server-side via geo headers (no IP stored)
  * - Fully nDSG / GDPR compliant — no consent needed
  */
 
@@ -23,6 +24,22 @@ function getDeviceType(): string {
   if (w < 768) return "mobile";
   if (w < 1024) return "tablet";
   return "desktop";
+}
+
+async function getCountry(): Promise<string | null> {
+  // Cache per session
+  const cached = sessionStorage.getItem("_k_country");
+  if (cached) return cached === "null" ? null : cached;
+
+  try {
+    const { data } = await supabase.functions.invoke("geo-lookup");
+    const country = data?.country || null;
+    sessionStorage.setItem("_k_country", country || "null");
+    return country;
+  } catch {
+    sessionStorage.setItem("_k_country", "null");
+    return null;
+  }
 }
 
 export function usePageTracking() {
@@ -54,13 +71,16 @@ export function usePageTracking() {
     startTime.current = now;
     lastPath.current = location.pathname;
 
-    supabase.from("pageviews").insert({
-      session_id: sessionId,
-      path: location.pathname,
-      referrer: document.referrer || null,
-      device_type: getDeviceType(),
-      language: navigator.language || null,
-    }).then(() => {});
+    getCountry().then((country) => {
+      supabase.from("pageviews").insert({
+        session_id: sessionId,
+        path: location.pathname,
+        referrer: document.referrer || null,
+        device_type: getDeviceType(),
+        language: navigator.language || null,
+        country,
+      }).then(() => {});
+    });
 
     // Track duration on page unload
     const handleUnload = () => {
@@ -70,7 +90,6 @@ export function usePageTracking() {
         path: location.pathname,
         duration_ms: duration,
       });
-      // Use sendBeacon for reliable delivery on tab close
       const url = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1/pageviews?session_id=eq.${sessionId}&path=eq.${encodeURIComponent(location.pathname)}&order=created_at.desc&limit=1`;
       navigator.sendBeacon(
         url,

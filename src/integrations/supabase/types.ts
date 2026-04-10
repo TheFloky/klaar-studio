@@ -104,6 +104,39 @@ export type Database = {
         }
         Relationships: []
       }
+      pageviews: {
+        Row: {
+          created_at: string
+          device_type: string | null
+          duration_ms: number | null
+          id: string
+          language: string | null
+          path: string
+          referrer: string | null
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_type?: string | null
+          duration_ms?: number | null
+          id?: string
+          language?: string | null
+          path: string
+          referrer?: string | null
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          device_type?: string | null
+          duration_ms?: number | null
+          id?: string
+          language?: string | null
+          path?: string
+          referrer?: string | null
+          session_id?: string
+        }
+        Relationships: []
+      }
       prospects: {
         Row: {
           company_name: string | null

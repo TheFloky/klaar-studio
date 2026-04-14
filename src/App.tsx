@@ -13,6 +13,7 @@ import Impressum from "./pages/Impressum.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import Maintenance from "./pages/Maintenance.tsx";
 import AuditReport from "./pages/AuditReport.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to="/de" replace />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/audits/:slug" element={<AuditReport />} />
       <Route path="/:lang/audit" element={<Audit />} />
       <Route path="/:lang/impressum" element={<Impressum />} />

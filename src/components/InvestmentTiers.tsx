@@ -311,12 +311,29 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
             )}
           </div>
           
-          <p className="text-sm text-muted-foreground max-w-lg text-center leading-relaxed">
-            {isAbo ? labels.aboDesc : labels.einmaligDesc}
-          </p>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={isAbo ? 'abo-desc' : 'einmalig-desc'}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+              className="text-sm text-muted-foreground max-w-lg text-center leading-relaxed"
+            >
+              {isAbo ? labels.aboDesc : labels.einmaligDesc}
+            </motion.p>
+          </AnimatePresence>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={isAbo ? 'abo-grid' : 'einmalig-grid'}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.35, ease: 'easeInOut' }}
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"
+          >
           {isAbo
             ? aboTiers.map((tier, i) => {
                 const isPopular = i === 1;

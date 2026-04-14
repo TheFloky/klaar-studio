@@ -223,10 +223,10 @@ const translations = {
         {
           name: 'Starter Website',
           price: 'CHF 2\'500',
-          monthly: 'CHF 79/Mt. Wartung & Support',
+          monthly: 'CHF 79/Mt. Wartung & Support (optional)',
           description: 'Für Unternehmen, die eine klare, einfache Online-Präsenz brauchen — ohne unnötige Komplexität.',
           features: [
-            'One-Page-Website (Startseite + Impressum & Datenschutz)',
+            'One-Page-Expertdesign (Startseite + Impressum & Datenschutz)',
             'Vollständig individuell gestaltet (keine Templates)',
             'Perfekt auf Handy & Tablet',
             'Rechtskonform (nDSG)',
@@ -235,11 +235,12 @@ const translations = {
         {
           name: 'Business Website',
           price: 'CHF 4\'000',
-          monthly: 'CHF 150/Mt. Wartung & Support',
+          monthly: 'CHF 150/Mt. Wartung & Support (optional)',
           description: 'Für Unternehmen, die Kunden gewinnen, Inhalte verwalten und online wachsen wollen.',
           features: [
             'Alles aus Starter',
             'Admin-Bereich zur Verwaltung',
+            'SEO-Grundlagen für digitale Sichtbarkeit',
             'Buchungssystem oder Lagerverwaltung',
             'Mehrsprachig verfügbar',
             'Schweizer Server-Hosting inklusive',
@@ -248,7 +249,7 @@ const translations = {
         {
           name: 'Online-Shop',
           price: 'CHF 5\'000',
-          monthly: 'CHF 200/Mt. Wartung & Support',
+          monthly: 'CHF 200/Mt. Wartung & Support (optional)',
           description: 'Für Unternehmen, die online verkaufen möchten — mit einem voll integrierten, skalierbaren E-Commerce-System.',
           features: [
             'Alles aus Business',
@@ -260,12 +261,12 @@ const translations = {
         {
           name: 'klaar Elite',
           price: 'CHF 7\'500+',
-          monthly: 'CHF 400/Mt. Wartung & Support',
-          description: 'Für Unternehmen, die fortschrittliche Systeme, Automatisierung und eine leistungsstarke digitale Präsenz wollen.',
+          monthly: 'CHF 400/Mt. Wartung & Support (optional)',
+          description: 'Kaufen Sie sich Ihre Zeit zurück. Automatisierung, KI und eine leistungsstarke digitale Präsenz, die für Sie arbeitet — auch im Schlaf.',
           features: [
             'Alles aus Online-Shop',
-            'Individuelle KI-Tools für Ihre Arbeit',
-            'Erweiterte Integrationen & smarte Features',
+            'Individuelle KI-Tools zur Automatisierung repetitiver Aufgaben',
+            'Erweiterte Integrationen & Workflow-Automatisierung',
             'Umfassendes SEO & Performance-Audit',
           ],
         },

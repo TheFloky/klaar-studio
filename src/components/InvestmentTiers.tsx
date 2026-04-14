@@ -197,6 +197,34 @@ const subscriptionTiers: Record<string, SubscriptionTier[]> = {
   ],
 };
 
+const aboTermsContent = {
+  de: {
+    title: 'Unsere Abo-Konditionen: Fair & Transparent',
+    sections: [
+      {
+        heading: 'Mindestlaufzeit & Verlängerung',
+        content: 'Um Ihnen erstklassige Qualität ohne hohe Initialkosten bieten zu können, beträgt die Mindestvertragslaufzeit 24 Monate. Nach Ablauf dieser Zeit verlängert sich das Abo automatisch um jeweils 12 Monate, sofern es nicht mit einer Frist von 3 Monaten zum Ende der Laufzeit gekündigt wird.'
+      },
+      {
+        heading: 'Vorzeitige Kündigung (Exit-Option)',
+        content: 'Wir verstehen, dass sich Geschäftspläne ändern können. Bei einer vorzeitigen Kündigung vor Ablauf der 24 Monate wird eine einmalige Ablösesumme in Höhe von 60% der verbleibenden Monatsbeiträge fällig. Damit sind alle Ansprüche abgegolten und Sie sind sofort aus dem Vertrag entlassen.'
+      },
+      {
+        heading: 'Eigentum & Übergabe',
+        content: `Während der Abolaufzeit erhalten Sie eine exklusive Nutzungslizenz für das Design und die Funktionalität Ihrer Website.
+
+Nach 24 Monaten: Die Website geht vollständig in Ihr Eigentum über. Sie können das Abo zu reduzierten Wartungskonditionen fortführen oder die Seite (als statischen Export) auf Ihr eigenes Hosting umziehen.
+
+Bei vorzeitiger Kündigung: Nach Zahlung der Ablösesumme stellen wir Ihnen auf Wunsch die Daten (HTML/CSS/JS) zur Verfügung. Backend-Logiken und proprietäre AI-Integrationen bleiben Eigentum der Agentur.`
+      },
+      {
+        heading: 'Leistungsumfang',
+        content: 'In Ihrer monatlichen Rate sind das Schweizer Hosting, SSL-Zertifikate, regelmässige Sicherheits-Backups und die technische Anpassung an aktuelle nDSG-Vorschriften enthalten.'
+      }
+    ]
+  }
+};
+
 const toggleLabels = {
   en: {
     einmalig: 'One-Time',

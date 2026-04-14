@@ -385,10 +385,10 @@ const translations = {
         {
           name: 'Site Starter',
           price: 'CHF 2\'500',
-          monthly: 'CHF 79/mois Maintenance & Support',
+          monthly: 'CHF 79/mois Maintenance & Support (optionnel)',
           description: 'Conçu pour les entreprises qui ont besoin d\'une présence en ligne claire et simple — sans complexité inutile.',
           features: [
-            'Site one-page (page d\'accueil + Mentions & Protection des données)',
+            'Design expert one-page (page d\'accueil + Mentions & Protection des données)',
             'Design entièrement sur mesure (pas de templates)',
             'Parfait sur mobile & tablette',
             'Conforme juridiquement (nLPD)',
@@ -397,11 +397,12 @@ const translations = {
         {
           name: 'Site Business',
           price: 'CHF 4\'000',
-          monthly: 'CHF 150/mois Maintenance & Support',
+          monthly: 'CHF 150/mois Maintenance & Support (optionnel)',
           description: 'Pour les entreprises qui veulent attirer des clients, gérer du contenu et développer leur présence en ligne.',
           features: [
             'Tout dans Starter',
             'Tableau de bord pour gérer le contenu',
+            'Bases SEO pour la visibilité digitale',
             'Système de réservation ou d\'inventaire',
             'Disponible en plusieurs langues',
             'Hébergement sur serveurs suisses inclus',
@@ -410,7 +411,7 @@ const translations = {
         {
           name: 'Boutique en Ligne',
           price: 'CHF 5\'000',
-          monthly: 'CHF 200/mois Maintenance & Support',
+          monthly: 'CHF 200/mois Maintenance & Support (optionnel)',
           description: 'Pour les entreprises prêtes à vendre en ligne avec un système e-commerce intégré et évolutif.',
           features: [
             'Tout dans Business',
@@ -422,12 +423,12 @@ const translations = {
         {
           name: 'klaar Elite',
           price: 'CHF 7\'500+',
-          monthly: 'CHF 400/mois Maintenance & Support',
-          description: 'Pour les entreprises qui veulent des systèmes avancés, de l\'automatisation et une présence digitale haute performance.',
+          monthly: 'CHF 400/mois Maintenance & Support (optionnel)',
+          description: 'Rachetez votre temps. Automatisation, IA et une présence digitale haute performance qui travaille pendant que vous dormez.',
           features: [
             'Tout dans Boutique en Ligne',
-            'Outils IA personnalisés pour votre travail',
-            'Intégrations avancées & fonctionnalités intelligentes',
+            'Outils IA personnalisés pour automatiser les tâches répétitives',
+            'Intégrations avancées & automatisation de workflows',
             'Audit SEO & performance approfondi',
           ],
         },

@@ -61,10 +61,10 @@ const translations = {
         {
           name: 'Starter Website',
           price: 'CHF 2\'500',
-          monthly: 'CHF 79/mo Maintenance & Support',
+          monthly: 'CHF 79/mo Maintenance & Support (optional)',
           description: 'Designed for businesses that need a clear, simple online presence — without unnecessary complexity.',
           features: [
-            'One-page website (homepage + Impressum & Privacy Policy)',
+            'One-Page Expert Design (homepage + Impressum & Privacy Policy)',
             'Fully custom-designed (no templates)',
             'Perfect on phones & tablets',
             'Legally compliant (nDSG)',
@@ -73,11 +73,12 @@ const translations = {
         {
           name: 'Business Website',
           price: 'CHF 4\'000',
-          monthly: 'CHF 150/mo Maintenance & Support',
+          monthly: 'CHF 150/mo Maintenance & Support (optional)',
           description: 'Built for businesses that want to attract clients, manage content, and grow their online presence.',
           features: [
             'Everything in Starter',
             'Admin dashboard to manage content',
+            'SEO basics to increase digital visibility',
             'Booking system or inventory tracker',
             'Available in multiple languages',
             'Swiss server hosting included',
@@ -86,7 +87,7 @@ const translations = {
         {
           name: 'Online Shop',
           price: 'CHF 5\'000',
-          monthly: 'CHF 200/mo Maintenance & Support',
+          monthly: 'CHF 200/mo Maintenance & Support (optional)',
           description: 'Created for businesses ready to sell online with a fully integrated, scalable e-commerce system.',
           features: [
             'Everything in Business',
@@ -98,12 +99,12 @@ const translations = {
         {
           name: 'klaar Elite',
           price: 'CHF 7\'500+',
-          monthly: 'CHF 400/mo Maintenance & Support',
-          description: 'For companies that want advanced systems, automation, and a high-performance digital presence.',
+          monthly: 'CHF 400/mo Maintenance & Support (optional)',
+          description: 'Buy back your time. Automation, AI and a high-performance digital presence that works while you sleep.',
           features: [
             'Everything in Online Shop',
-            'Custom AI tools to automate your work',
-            'Advanced integrations & smart features',
+            'Custom AI tools to automate repetitive tasks',
+            'Advanced integrations & workflow automation',
             'In-depth SEO & performance audit',
           ],
         },

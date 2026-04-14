@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Check, Star, ShoppingBag, Crown, Globe, Zap, Brain, HelpCircle } from 'lucide-react';
+import { Check, Star, ShoppingBag, Crown, Globe, Zap, Brain, HelpCircle, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { Link, useParams } from 'react-router-dom';
 import type { Translations } from '@/lib/i18n';

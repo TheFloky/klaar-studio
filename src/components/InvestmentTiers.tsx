@@ -275,13 +275,15 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
             <span className={`text-sm font-semibold transition-colors ${isAbo ? 'text-foreground' : 'text-muted-foreground'}`}>
               {labels.abo}
             </span>
-            
-            {/* Pulsating speech bubble for Abo terms */}
+          </div>
+          
+          {/* Space for speech bubble - empty when einmalig, shows when abo */}
+          <div className="h-8 flex items-center justify-center">
             {isAbo && (
               <Dialog>
                 <DialogTrigger asChild>
                   <button 
-                    className="relative ml-2 group flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors cursor-pointer animate-pulse"
+                    className="relative group flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors cursor-pointer animate-pulse"
                     style={{ animationDuration: '2s' }}
                   >
                     <MessageCircle size={14} />
@@ -307,6 +309,7 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
               </Dialog>
             )}
           </div>
+          
           <p className="text-sm text-muted-foreground max-w-lg text-center leading-relaxed">
             {isAbo ? labels.aboDesc : labels.einmaligDesc}
           </p>

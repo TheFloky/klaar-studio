@@ -489,7 +489,8 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
                   </div>
                 );
               })}
-        </div>
+          </motion.div>
+        </AnimatePresence>
 
         <p className="text-center text-sm text-muted-foreground mt-8 max-w-xl mx-auto italic">
           {t.pricing.note}

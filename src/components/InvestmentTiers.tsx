@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Check, Star, ShoppingBag, Crown, Globe, Zap, Brain, HelpCircle } from 'lucide-react';
+import { Check, Star, ShoppingBag, Crown, Globe, Zap, Brain, HelpCircle, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { Link, useParams } from 'react-router-dom';
 import type { Translations } from '@/lib/i18n';
@@ -196,6 +197,34 @@ const subscriptionTiers: Record<string, SubscriptionTier[]> = {
   ],
 };
 
+const aboTermsContent = {
+  de: {
+    title: 'Unsere Abo-Konditionen: Fair & Transparent',
+    sections: [
+      {
+        heading: 'Mindestlaufzeit & Verlängerung',
+        content: 'Um Ihnen erstklassige Qualität ohne hohe Initialkosten bieten zu können, beträgt die Mindestvertragslaufzeit 24 Monate. Nach Ablauf dieser Zeit verlängert sich das Abo automatisch um jeweils 12 Monate, sofern es nicht mit einer Frist von 3 Monaten zum Ende der Laufzeit gekündigt wird.'
+      },
+      {
+        heading: 'Vorzeitige Kündigung (Exit-Option)',
+        content: 'Wir verstehen, dass sich Geschäftspläne ändern können. Bei einer vorzeitigen Kündigung vor Ablauf der 24 Monate wird eine einmalige Ablösesumme in Höhe von 60% der verbleibenden Monatsbeiträge fällig. Damit sind alle Ansprüche abgegolten und Sie sind sofort aus dem Vertrag entlassen.'
+      },
+      {
+        heading: 'Eigentum & Übergabe',
+        content: `Während der Abolaufzeit erhalten Sie eine exklusive Nutzungslizenz für das Design und die Funktionalität Ihrer Website.
+
+Nach 24 Monaten: Die Website geht vollständig in Ihr Eigentum über. Sie können das Abo zu reduzierten Wartungskonditionen fortführen oder die Seite (als statischen Export) auf Ihr eigenes Hosting umziehen.
+
+Bei vorzeitiger Kündigung: Nach Zahlung der Ablösesumme stellen wir Ihnen auf Wunsch die Daten (HTML/CSS/JS) zur Verfügung. Backend-Logiken und proprietäre AI-Integrationen bleiben Eigentum der Agentur.`
+      },
+      {
+        heading: 'Leistungsumfang',
+        content: 'In Ihrer monatlichen Rate sind das Schweizer Hosting, SSL-Zertifikate, regelmässige Sicherheits-Backups und die technische Anpassung an aktuelle nDSG-Vorschriften enthalten.'
+      }
+    ]
+  }
+};
+
 const toggleLabels = {
   en: {
     einmalig: 'One-Time',
@@ -246,6 +275,37 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
             <span className={`text-sm font-semibold transition-colors ${isAbo ? 'text-foreground' : 'text-muted-foreground'}`}>
               {labels.abo}
             </span>
+            
+            {/* Pulsating speech bubble for Abo terms */}
+            {isAbo && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button 
+                    className="relative ml-2 group flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors cursor-pointer animate-pulse"
+                    style={{ animationDuration: '2s' }}
+                  >
+                    <MessageCircle size={14} />
+                    <span>Abo Terms & Conditions</span>
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl">{aboTermsContent.de.title}</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-6 mt-4">
+                    {aboTermsContent.de.sections.map((section, idx) => (
+                      <div key={idx} className="space-y-2">
+                        <h4 className="font-semibold text-foreground">{section.heading}</h4>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                          {section.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
           <p className="text-sm text-muted-foreground max-w-lg text-center leading-relaxed">
             {isAbo ? labels.aboDesc : labels.einmaligDesc}

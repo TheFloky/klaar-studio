@@ -275,6 +275,37 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
             <span className={`text-sm font-semibold transition-colors ${isAbo ? 'text-foreground' : 'text-muted-foreground'}`}>
               {labels.abo}
             </span>
+            
+            {/* Pulsating speech bubble for Abo terms */}
+            {isAbo && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button 
+                    className="relative ml-2 group flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors cursor-pointer animate-pulse"
+                    style={{ animationDuration: '2s' }}
+                  >
+                    <MessageCircle size={14} />
+                    <span>Abo Terms & Conditions</span>
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl">{aboTermsContent.de.title}</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-6 mt-4">
+                    {aboTermsContent.de.sections.map((section, idx) => (
+                      <div key={idx} className="space-y-2">
+                        <h4 className="font-semibold text-foreground">{section.heading}</h4>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                          {section.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
           <p className="text-sm text-muted-foreground max-w-lg text-center leading-relaxed">
             {isAbo ? labels.aboDesc : labels.einmaligDesc}

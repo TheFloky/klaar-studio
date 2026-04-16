@@ -13,7 +13,7 @@ export default function Impressum() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-2">Service Provider</h2>
             <p>
-              Floky Julian Vidal<br />
+              Klaar Studio Julian Vidal<br />
               ul. Fryderyka Chopina 16<br />
               05-082 Blizne Jasińskiego<br />
               Poland

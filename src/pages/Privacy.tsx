@@ -1,12 +1,21 @@
 import { useParams } from 'react-router-dom';
 import PageHeader from '@/components/PageHeader';
+import SEO from '@/components/SEO';
+import type { Lang } from '@/lib/i18n';
 
 export default function Privacy() {
   const { lang } = useParams<{ lang: string }>();
-  const backPath = `/${lang || 'de'}`;
+  const safeLang = (['de', 'fr', 'en'].includes(lang ?? '') ? lang : 'de') as Lang;
+  const backPath = `/${safeLang}`;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title="Privacy Policy — klaar Studio"
+        description="How klaar Studio collects and processes personal data under GDPR and Swiss nFADP / nDSG."
+        lang={safeLang}
+        path={`${safeLang}/privacy`}
+      />
       <PageHeader title="Privacy Policy" backTo={backPath} />
       <div className="container max-w-3xl py-12 px-4">
         <p className="text-sm text-muted-foreground mb-8">

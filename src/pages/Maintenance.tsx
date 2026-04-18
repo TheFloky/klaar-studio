@@ -1,6 +1,8 @@
 import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
 import { Server, Scale, FileEdit, HeadsetIcon, Wrench, Cloud } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
+import SEO from '@/components/SEO';
+import type { Lang } from '@/lib/i18n';
 
 const items = [
   {
@@ -39,7 +41,8 @@ export default function Maintenance() {
   const { lang } = useParams<{ lang: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const backPath = `/${lang || 'de'}`;
+  const safeLang = (['de', 'fr', 'en'].includes(lang ?? '') ? lang : 'de') as Lang;
+  const backPath = `/${safeLang}`;
   const savedScrollY = (location.state as { scrollY?: number })?.scrollY;
 
   const handleBack = (e: React.MouseEvent) => {
@@ -52,6 +55,12 @@ export default function Maintenance() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title="Maintenance & Support — klaar Studio"
+        description="Hosting, uptime monitoring, ongoing legal compliance, content updates and priority support for your Swiss website."
+        lang={safeLang}
+        path={`${safeLang}/maintenance`}
+      />
       <PageHeader title="Maintenance & Support" backTo={backPath} />
       <div className="container max-w-3xl py-12 sm:py-16 px-4">
         <p className="text-muted-foreground mb-12 max-w-xl">

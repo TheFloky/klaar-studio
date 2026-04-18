@@ -1,12 +1,21 @@
 import { useParams } from 'react-router-dom';
 import PageHeader from '@/components/PageHeader';
+import SEO from '@/components/SEO';
+import type { Lang } from '@/lib/i18n';
 
 export default function Impressum() {
   const { lang } = useParams<{ lang: string }>();
-  const backPath = `/${lang || 'de'}`;
+  const safeLang = (['de', 'fr', 'en'].includes(lang ?? '') ? lang : 'de') as Lang;
+  const backPath = `/${safeLang}`;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title="Impressum — klaar Studio"
+        description="Rechtliche Angaben und Anbieterkennzeichnung von Klaar Studio Julian Vidal."
+        lang={safeLang}
+        path={`${safeLang}/impressum`}
+      />
       <PageHeader title="Legal Notice (Impressum)" backTo={backPath} />
       <div className="container max-w-3xl py-12 px-4">
         <div className="space-y-6 text-sm leading-relaxed text-muted-foreground">

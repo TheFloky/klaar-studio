@@ -4,6 +4,8 @@ import { generateAuditPdf } from "@/lib/generateAuditPdf";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useSearchParams, useParams } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
+import SEO from "@/components/SEO";
+import type { Lang } from "@/lib/i18n";
 import { useToast } from "@/hooks/use-toast";
 
 type TriState = "green" | "yellow" | "red" | null;
@@ -252,7 +254,8 @@ export default function Audit() {
   const [searchParams] = useSearchParams();
   const { lang } = useParams<{ lang: string }>();
   const { toast } = useToast();
-  const backPath = `/${lang || 'de'}`;
+  const safeLang = (['de', 'fr', 'en'].includes(lang ?? '') ? lang : 'de') as Lang;
+  const backPath = `/${safeLang}`;
   const [url, setUrl] = useState(searchParams.get("url") || "");
   const [scanning, setScanning] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -435,6 +438,12 @@ export default function Audit() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Free Swiss Compliance Audit — nFADP / nDSG Scanner | klaar Studio"
+        description="Free instant audit of your website for Swiss data protection compliance. Checks hosting location, Google Fonts leaks, US trackers and Impressum."
+        lang={safeLang}
+        path={`${safeLang}/audit`}
+      />
       <PageHeader title="Swiss Compliance Audit" subtitle="nFADP / nDSG Conformity Scanner" backTo={backPath} />
 
       <main className="max-w-5xl mx-auto px-4 py-8 space-y-8">

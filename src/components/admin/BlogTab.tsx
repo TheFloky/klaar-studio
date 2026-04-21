@@ -434,28 +434,31 @@ export default function BlogTab() {
               </div>
             </div>
 
+            {(() => {
+              const currentVersion = result.versions?.[activeLang] ?? { title: "", seo_title: "", seo_description: "", excerpt: "", content_md: "" };
+              return (
             <div className="p-6 space-y-4">
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 block">Title</label>
                 <input
-                  value={result.versions[activeLang].title}
+                  value={currentVersion.title ?? ""}
                   onChange={(e) => updateVersion(activeLang, "title", e.target.value)}
                   className="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF0000]/20 bg-gray-50"
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 block">SEO Title ({result.versions[activeLang].seo_title.length}/60)</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 block">SEO Title ({(currentVersion.seo_title ?? "").length}/60)</label>
                   <input
-                    value={result.versions[activeLang].seo_title}
+                    value={currentVersion.seo_title ?? ""}
                     onChange={(e) => updateVersion(activeLang, "seo_title", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 block">SEO Description ({result.versions[activeLang].seo_description.length}/160)</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 block">SEO Description ({(currentVersion.seo_description ?? "").length}/160)</label>
                   <input
-                    value={result.versions[activeLang].seo_description}
+                    value={currentVersion.seo_description ?? ""}
                     onChange={(e) => updateVersion(activeLang, "seo_description", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50"
                   />
@@ -464,7 +467,7 @@ export default function BlogTab() {
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 block">Excerpt</label>
                 <textarea
-                  value={result.versions[activeLang].excerpt}
+                  value={currentVersion.excerpt ?? ""}
                   onChange={(e) => updateVersion(activeLang, "excerpt", e.target.value)}
                   rows={2}
                   className="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50"
@@ -473,7 +476,7 @@ export default function BlogTab() {
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 block">Content (Markdown)</label>
                 <textarea
-                  value={result.versions[activeLang].content_md}
+                  value={currentVersion.content_md ?? ""}
                   onChange={(e) => updateVersion(activeLang, "content_md", e.target.value)}
                   rows={20}
                   className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm bg-gray-50 font-mono"

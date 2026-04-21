@@ -108,6 +108,7 @@ export default function BlogTab() {
   const [imageQueryOverride, setImageQueryOverride] = useState(initial.imageQueryOverride || "");
   const [reviseFeedback, setReviseFeedback] = useState("");
   const [publishing, setPublishing] = useState(false);
+  const [translateBaseLang, setTranslateBaseLang] = useState<Lang | "">("");
 
   // Existing posts list
   const [posts, setPosts] = useState<BlogPostRow[]>([]);

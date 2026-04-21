@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       blog_posts: {
         Row: {
+          alt_slugs: string[]
           content_md: string
           cover_attribution: string | null
           cover_image_url: string | null
@@ -39,6 +40,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          alt_slugs?: string[]
           content_md: string
           cover_attribution?: string | null
           cover_image_url?: string | null
@@ -62,6 +64,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          alt_slugs?: string[]
           content_md?: string
           cover_attribution?: string | null
           cover_image_url?: string | null

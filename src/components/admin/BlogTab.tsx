@@ -210,10 +210,11 @@ export default function BlogTab() {
   }
 
   async function handleTranslate(baseLang?: Lang) {
-    if (!result) return;
+    console.log("[translate] click", { baseLang, hasResult: !!result, sourceLang: result?.sourceLang, versions: result ? Object.keys(result.versions) : [] });
+    if (!result) { setError("No article loaded"); return; }
     const src = baseLang ?? result.sourceLang;
     const sourceVersion = result.versions[src];
-    if (!sourceVersion) return;
+    if (!sourceVersion?.content_md) { setError(`No content available for base language ${src.toUpperCase()}`); return; }
     const targets = (["de", "fr", "en"] as Lang[]).filter((l) => l !== src);
     setError(null);
     setTranslating(true);

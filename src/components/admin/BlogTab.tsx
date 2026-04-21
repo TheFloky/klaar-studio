@@ -598,7 +598,7 @@ export default function BlogTab() {
             </div>
 
             {(() => {
-              const currentVersion = result.versions?.[activeLang] ?? { title: "", seo_title: "", seo_description: "", excerpt: "", content_md: "" };
+              const currentVersion: BlogVersion = result.versions?.[activeLang] ?? { title: "", seo_title: "", seo_description: "", excerpt: "", content_md: "", alt_slugs: [] };
               return (
             <div className="p-6 space-y-4">
               <div>

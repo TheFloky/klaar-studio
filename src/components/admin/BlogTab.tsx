@@ -218,7 +218,7 @@ export default function BlogTab() {
     const availableBases = (["de", "fr", "en"] as Lang[]).filter(
       (lang) => !!result.versions[lang]?.content_md,
     );
-    const src = baseLang ?? translateBaseLang || result.sourceLang || availableBases[0];
+    const src = baseLang ?? translateBaseLang ?? result.sourceLang ?? availableBases[0];
 
     if (!src) {
       setError("No base language available for translation");

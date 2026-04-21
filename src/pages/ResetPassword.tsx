@@ -15,25 +15,38 @@ export default function ResetPassword() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for PASSWORD_RECOVERY event (fires when Supabase processes the recovery link)
+    // Listen for any auth event — recovery links fire PASSWORD_RECOVERY or SIGNED_IN
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
-        setReady(true);
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+        if (session) setReady(true);
       }
     });
 
-    // Fallback: if a session already exists (recovery link already processed),
-    // or if the URL contains the recovery hash/query params, allow the form.
+    // Immediate fallback: enable form as soon as we see recovery markers in URL
     const hash = window.location.hash;
     const search = window.location.search;
-    if (hash.includes("type=recovery") || search.includes("type=recovery") || hash.includes("access_token")) {
+    if (
+      hash.includes("type=recovery") ||
+      search.includes("type=recovery") ||
+      hash.includes("access_token") ||
+      search.includes("code=")
+    ) {
       setReady(true);
     }
+
+    // Check for an existing session (covers case where Supabase already processed the link)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setReady(true);
     });
 
-    return () => subscription.unsubscribe();
+    // Final safety net: after 1.5s, enable form anyway so the user is never stuck.
+    // updateUser will fail gracefully if there is truly no session.
+    const timeout = setTimeout(() => setReady(true), 1500);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -239,6 +239,7 @@ serve(async (req) => {
       }
       const content_md = await reviseArticleBody(current_md, feedback, lang as Lang, LOVABLE_API_KEY);
       const meta = await generateVersionMeta(content_md, lang as Lang, LOVABLE_API_KEY) as VersionMeta;
+      meta.alt_slugs = Array.from(new Set((meta.alt_slugs || []).map(sanitizeSlug).filter(Boolean))).slice(0, 8);
       return new Response(JSON.stringify({ ...meta, content_md }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }

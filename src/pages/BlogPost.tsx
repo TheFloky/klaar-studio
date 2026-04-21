@@ -23,6 +23,7 @@ interface PostFull {
   seo_title: string;
   seo_description: string;
   tags: string[];
+  alt_slugs: string[];
   external_links: { url: string; label: string; context: string }[];
   reading_time_min: number;
   published_at: string;
@@ -41,18 +42,39 @@ export default function BlogPost() {
   const [siblings, setSiblings] = useState<Record<Lang, string>>({} as Record<Lang, string>);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [redirectTo, setRedirectTo] = useState<string | null>(null);
 
   useEffect(() => {
     if (!slug) return;
     (async () => {
       setLoading(true);
-      const { data } = await supabase
+      // 1. Try canonical slug
+      const { data: canonical } = await supabase
         .from("blog_posts")
         .select("*")
         .eq("status", "published")
         .eq("lang", lang)
         .eq("slug", slug)
         .maybeSingle();
+
+      let data = canonical;
+
+      // 2. If not found, try alt_slugs
+      if (!data) {
+        const { data: altMatch } = await supabase
+          .from("blog_posts")
+          .select("slug")
+          .eq("status", "published")
+          .eq("lang", lang)
+          .contains("alt_slugs", [slug])
+          .maybeSingle();
+        if (altMatch?.slug) {
+          setRedirectTo(`/${lang}/blog/${altMatch.slug}`);
+          setLoading(false);
+          return;
+        }
+      }
+
       if (!data) {
         setNotFound(true);
         setLoading(false);
@@ -71,6 +93,10 @@ export default function BlogPost() {
       setLoading(false);
     })();
   }, [lang, slug]);
+
+  if (redirectTo) {
+    return <Navigate to={redirectTo} replace />;
+  }
 
   if (rawLang && !["de", "fr", "en"].includes(rawLang)) {
     return <Navigate to={`/de/blog/${slug || ""}`} replace />;

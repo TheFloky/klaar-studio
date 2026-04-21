@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          content_md: string
+          cover_attribution: string | null
+          cover_image_url: string | null
+          cover_source: string | null
+          created_at: string
+          excerpt: string
+          external_links: Json | null
+          fact_check_notes: Json | null
+          id: string
+          lang: string
+          published_at: string | null
+          reading_time_min: number | null
+          seo_description: string
+          seo_title: string
+          slug: string
+          source_input: string | null
+          status: string
+          tags: string[] | null
+          title: string
+          translation_group_id: string
+          updated_at: string
+        }
+        Insert: {
+          content_md: string
+          cover_attribution?: string | null
+          cover_image_url?: string | null
+          cover_source?: string | null
+          created_at?: string
+          excerpt: string
+          external_links?: Json | null
+          fact_check_notes?: Json | null
+          id?: string
+          lang: string
+          published_at?: string | null
+          reading_time_min?: number | null
+          seo_description: string
+          seo_title: string
+          slug: string
+          source_input?: string | null
+          status?: string
+          tags?: string[] | null
+          title: string
+          translation_group_id?: string
+          updated_at?: string
+        }
+        Update: {
+          content_md?: string
+          cover_attribution?: string | null
+          cover_image_url?: string | null
+          cover_source?: string | null
+          created_at?: string
+          excerpt?: string
+          external_links?: Json | null
+          fact_check_notes?: Json | null
+          id?: string
+          lang?: string
+          published_at?: string | null
+          reading_time_min?: number | null
+          seo_description?: string
+          seo_title?: string
+          slug?: string
+          source_input?: string | null
+          status?: string
+          tags?: string[] | null
+          title?: string
+          translation_group_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           business: string

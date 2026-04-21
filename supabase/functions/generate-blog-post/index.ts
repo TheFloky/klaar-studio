@@ -8,6 +8,18 @@ const corsHeaders = {
 const LANGS = ["de", "fr", "en"] as const;
 type Lang = typeof LANGS[number];
 
+type ExternalLink = { url: string; label: string; context: string };
+type VersionMeta = {
+  title: string;
+  seo_title: string;
+  seo_description: string;
+  excerpt: string;
+};
+
+type GeneratedVersion = VersionMeta & {
+  content_md: string;
+};
+
 const LANG_NAMES: Record<Lang, string> = {
   de: "German (Swiss conventions: ALWAYS 'ss' instead of 'ß', use 'Sie' form)",
   fr: "French (formal 'vous')",
@@ -35,41 +47,78 @@ Rules:
 - French: formal "vous".
 - Length: 800-1400 words.
 - Structure: clear H2/H3 markdown headings, short paragraphs, bullet lists.
+- Do NOT include JSON, frontmatter, or code fences.
+- Do NOT include a title line or H1 heading at the top.
 - End with a single short CTA paragraph pointing to klaar-studio.ch services.
-- title ≤ 80 chars, seo_title ≤ 60 chars, seo_description ≤ 155 chars, excerpt ≤ 220 chars.
-- content_md is the full body in markdown.
+- Return only the markdown article body.`;
 
-Return ONLY via the tool.`;
+const VERSION_META_SYSTEM = `You are a senior SEO editor for klaar Studio.
 
-async function callGateway(body: unknown, apiKey: string) {
-  const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+Given a completed markdown blog article in one language, return ONLY the metadata via the tool.
+
+Rules:
+- title ≤ 80 chars
+- seo_title ≤ 60 chars
+- seo_description ≤ 155 chars
+- excerpt ≤ 220 chars
+- Be specific, professional, and aligned with the article content.`;
+
+async function fetchGateway(body: unknown, apiKey: string) {
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(body),
   });
-  if (r.status === 429) throw new Error("RATE_LIMIT");
-  if (r.status === 402) throw new Error("CREDITS_EXHAUSTED");
-  if (!r.ok) {
-    const t = await r.text();
-    console.error("Gateway error", r.status, t);
-    throw new Error(`AI gateway error: ${r.status}`);
+
+  if (response.status === 429) throw new Error("RATE_LIMIT");
+  if (response.status === 402) throw new Error("CREDITS_EXHAUSTED");
+  if (!response.ok) {
+    const text = await response.text();
+    console.error("Gateway error", response.status, text);
+    throw new Error(`AI gateway error: ${response.status}`);
   }
-  const data = await r.json();
-  const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+
+  return response.json();
+}
+
+async function callGatewayTool(body: unknown, apiKey: string) {
+  const data = await fetchGateway(body, apiKey);
+  const message = data.choices?.[0]?.message;
+  const toolCall = message?.tool_calls?.[0];
+
   if (!toolCall) {
-    console.error("No tool call in response", JSON.stringify(data).slice(0, 500));
+    console.error("No tool call in response", JSON.stringify(data).slice(0, 1200));
     throw new Error("AI returned no tool call");
   }
+
   return JSON.parse(toolCall.function.arguments);
 }
 
+async function callGatewayText(body: unknown, apiKey: string) {
+  const data = await fetchGateway(body, apiKey);
+  const text = data.choices?.[0]?.message?.content;
+
+  if (typeof text !== "string" || !text.trim()) {
+    console.error("No text content in response", JSON.stringify(data).slice(0, 1200));
+    throw new Error("AI returned empty content");
+  }
+
+  return text.trim();
+}
+
 async function generateMetadata(sourceText: string, topic: string, sourceLang: Lang, apiKey: string) {
-  return callGateway({
+  return callGatewayTool({
     model: "google/gemini-2.5-pro",
     max_completion_tokens: 4000,
     messages: [
       { role: "system", content: META_SYSTEM },
-      { role: "user", content: `SOURCE LANG: ${sourceLang}\nTOPIC: ${topic || "(infer)"}\n\nNOTES:\n"""\n${sourceText}\n"""` },
+      {
+        role: "user",
+        content: `SOURCE LANGUAGE: ${sourceLang}\nTOPIC: ${topic || "(infer from notes)"}\n\nNOTES:\n"""\n${sourceText}\n"""`,
+      },
     ],
     tools: [{
       type: "function",
@@ -80,7 +129,7 @@ async function generateMetadata(sourceText: string, topic: string, sourceLang: L
           type: "object",
           properties: {
             slug: { type: "string", description: "kebab-case, ASCII only, max 60 chars" },
-            tags: { type: "array", items: { type: "string" } },
+            tags: { type: "array", items: { type: "string" }, minItems: 4, maxItems: 8 },
             stock_image_query: { type: "string" },
             reading_time_min: { type: "integer" },
             external_links: {
@@ -97,6 +146,7 @@ async function generateMetadata(sourceText: string, topic: string, sourceLang: L
             },
           },
           required: ["slug", "tags", "stock_image_query", "reading_time_min", "external_links"],
+          additionalProperties: false,
         },
       },
     }],
@@ -104,46 +154,63 @@ async function generateMetadata(sourceText: string, topic: string, sourceLang: L
   }, apiKey);
 }
 
-async function generateVersion(sourceText: string, topic: string, lang: Lang, sourceLang: Lang, slug: string, apiKey: string) {
+async function generateArticleBody(sourceText: string, topic: string, lang: Lang, sourceLang: Lang, slug: string, apiKey: string) {
   const isSource = lang === sourceLang;
-  const userPrompt = `TARGET LANGUAGE: ${LANG_NAMES[lang]}
-SLUG (must match across languages, do not change): ${slug}
-TOPIC HINT: ${topic || "(infer from notes)"}
 
-${isSource ? "Write the blog post" : `The source language is ${sourceLang}. Translate and adapt the post into ${lang}, keeping the same structure and meaning`} from the notes below.
-
-NOTES:
-"""
-${sourceText}
-"""`;
-
-  return callGateway({
+  return callGatewayText({
     model: "google/gemini-2.5-pro",
-    max_completion_tokens: 16000,
+    max_completion_tokens: 12000,
     messages: [
       { role: "system", content: POST_SYSTEM },
-      { role: "user", content: userPrompt },
+      {
+        role: "user",
+        content: `TARGET LANGUAGE: ${LANG_NAMES[lang]}\nSHARED SLUG (do not change): ${slug}\nTOPIC HINT: ${topic || "(infer from notes)"}\n\n${isSource ? `Write the article in ${lang}` : `Translate and adapt the article into ${lang} from the source notes`} using the notes below.\n\nNOTES:\n"""\n${sourceText}\n"""`,
+      },
+    ],
+  }, apiKey);
+}
+
+async function generateVersionMeta(content_md: string, lang: Lang, apiKey: string) {
+  return callGatewayTool({
+    model: "google/gemini-2.5-flash",
+    max_completion_tokens: 1500,
+    messages: [
+      { role: "system", content: VERSION_META_SYSTEM },
+      {
+        role: "user",
+        content: `LANGUAGE: ${LANG_NAMES[lang]}\n\nARTICLE:\n"""\n${content_md}\n"""`,
+      },
     ],
     tools: [{
       type: "function",
       function: {
-        name: "write_post_version",
-        description: "Returns the blog post in one language.",
+        name: "extract_version_meta",
+        description: "Returns the metadata fields for one blog post version.",
         parameters: {
           type: "object",
           properties: {
-            title: { type: "string" },
-            seo_title: { type: "string" },
-            seo_description: { type: "string" },
-            excerpt: { type: "string" },
-            content_md: { type: "string", description: "Full blog body in markdown, 800-1400 words" },
+            title: { type: "string", maxLength: 80 },
+            seo_title: { type: "string", maxLength: 60 },
+            seo_description: { type: "string", maxLength: 160 },
+            excerpt: { type: "string", maxLength: 220 },
           },
-          required: ["title", "seo_title", "seo_description", "excerpt", "content_md"],
+          required: ["title", "seo_title", "seo_description", "excerpt"],
+          additionalProperties: false,
         },
       },
     }],
-    tool_choice: { type: "function", function: { name: "write_post_version" } },
+    tool_choice: { type: "function", function: { name: "extract_version_meta" } },
   }, apiKey);
+}
+
+async function generateVersion(sourceText: string, topic: string, lang: Lang, sourceLang: Lang, slug: string, apiKey: string): Promise<GeneratedVersion> {
+  const content_md = await generateArticleBody(sourceText, topic, lang, sourceLang, slug, apiKey);
+  const meta = await generateVersionMeta(content_md, lang, apiKey) as VersionMeta;
+
+  return {
+    ...meta,
+    content_md,
+  };
 }
 
 serve(async (req) => {
@@ -151,45 +218,59 @@ serve(async (req) => {
 
   try {
     const { sourceText, topic, sourceLang = "de" } = await req.json();
+
     if (!sourceText || sourceText.length < 30) {
       return new Response(JSON.stringify({ error: "sourceText too short (min 30 chars)" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    // 1) Metadata
     const meta = await generateMetadata(sourceText, topic, sourceLang as Lang, LOVABLE_API_KEY);
-    console.log("Metadata generated, slug:", meta.slug);
+    console.log("Metadata generated", { slug: meta.slug, tags: meta.tags?.length, links: meta.external_links?.length });
 
-    // 2) Generate all 3 versions in parallel (each in its own request)
     const versionEntries = await Promise.all(
       LANGS.map(async (lang) => {
-        const v = await generateVersion(sourceText, topic, lang, sourceLang as Lang, meta.slug, LOVABLE_API_KEY);
-        console.log(`Version ${lang} done: title="${v.title?.slice(0, 50)}", body=${v.content_md?.length || 0} chars`);
-        return [lang, v] as const;
+        const version = await generateVersion(sourceText, topic, lang, sourceLang as Lang, meta.slug, LOVABLE_API_KEY);
+        console.log(`Version ${lang} generated`, {
+          titleLength: version.title.length,
+          bodyLength: version.content_md.length,
+          seoTitleLength: version.seo_title.length,
+        });
+        return [lang, version] as const;
       })
     );
 
-    const versions = Object.fromEntries(versionEntries) as Record<Lang, unknown>;
+    const versions = Object.fromEntries(versionEntries);
 
     return new Response(JSON.stringify({ ...meta, versions }), {
-      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    console.error("generate-blog-post error:", msg);
-    if (msg === "RATE_LIMIT") {
-      return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again in a minute." }),
-        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("generate-blog-post error:", message);
+
+    if (message === "RATE_LIMIT") {
+      return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again in a minute." }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
-    if (msg === "CREDITS_EXHAUSTED") {
-      return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Workspace settings." }),
-        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    if (message === "CREDITS_EXHAUSTED") {
+      return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Workspace settings." }), {
+        status: 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
-    return new Response(JSON.stringify({ error: msg }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    return new Response(JSON.stringify({ error: message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });

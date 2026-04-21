@@ -21,7 +21,8 @@ interface GenerationResult {
   stock_image_query: string;
   reading_time_min: number;
   external_links: { url: string; label: string; context: string }[];
-  versions: Record<Lang, BlogVersion>;
+  sourceLang: Lang;
+  versions: Partial<Record<Lang, BlogVersion>>;
 }
 
 interface FactCheck {

@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import PageHeader from "@/components/PageHeader";
 import Footer from "@/components/Footer";
-import { translations, type Lang } from "@/lib/i18n";
+import { getTranslations, type Lang } from "@/lib/i18n";
 import SEO from "@/components/SEO";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 
@@ -28,7 +28,7 @@ const BLOG_LABELS: Record<Lang, { title: string; sub: string; readMore: string; 
 export default function BlogIndex() {
   const { lang: rawLang } = useParams<{ lang: string }>();
   const lang = (["de", "fr", "en"].includes(rawLang || "") ? rawLang : "de") as Lang;
-  const t = translations[lang];
+  const t = getTranslations(lang);
   const labels = BLOG_LABELS[lang];
 
   const [posts, setPosts] = useState<PostListItem[]>([]);

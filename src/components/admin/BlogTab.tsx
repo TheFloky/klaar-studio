@@ -501,6 +501,8 @@ export default function BlogTab() {
                 </div>
               )}
             </div>
+              );
+            })()}
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">

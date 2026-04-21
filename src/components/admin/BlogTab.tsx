@@ -108,6 +108,7 @@ export default function BlogTab() {
   const [imageQueryOverride, setImageQueryOverride] = useState(initial.imageQueryOverride || "");
   const [reviseFeedback, setReviseFeedback] = useState("");
   const [publishing, setPublishing] = useState(false);
+  const [translateBaseLang, setTranslateBaseLang] = useState<Lang | "">("");
 
   // Existing posts list
   const [posts, setPosts] = useState<BlogPostRow[]>([]);
@@ -208,9 +209,9 @@ export default function BlogTab() {
     }
   }
 
-  async function handleTranslate() {
+  async function handleTranslate(baseLang?: Lang) {
     if (!result) return;
-    const src = result.sourceLang;
+    const src = baseLang ?? result.sourceLang;
     const sourceVersion = result.versions[src];
     if (!sourceVersion) return;
     const targets = (["de", "fr", "en"] as Lang[]).filter((l) => l !== src);
@@ -547,17 +548,8 @@ export default function BlogTab() {
                     </button>
                   );
                 })}
-                {(["de", "fr", "en"] as Lang[]).some((l) => !result.versions[l]) && (
-                  <button
-                    onClick={handleTranslate}
-                    disabled={translating}
-                    className="ml-2 flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-50"
-                  >
-                    {translating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
-                    Translate to other languages
-                  </button>
-                )}
               </div>
+
               <div className="flex items-center gap-3 text-xs text-gray-500">
                 <span>Slug: <code className="text-gray-700">{result.slug}</code></span>
                 <span>·</span>
@@ -777,7 +769,7 @@ export default function BlogTab() {
 
           {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
-          <div className="flex gap-3 justify-end">
+          <div className="flex gap-3 justify-end items-center flex-wrap">
             <button
               onClick={() => setStep("input")}
               className="px-5 py-2.5 border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:border-gray-300"
@@ -785,6 +777,35 @@ export default function BlogTab() {
             >
               Cancel
             </button>
+            {(() => {
+              const availableBases = (["de", "fr", "en"] as Lang[]).filter((l) => !!result.versions[l]);
+              const missing = (["de", "fr", "en"] as Lang[]).some((l) => !result.versions[l]);
+              if (!missing) return null;
+              return (
+                <div className="flex items-center gap-2 border-2 border-gray-200 rounded-lg pl-3 pr-1 py-1">
+                  <Languages size={14} className="text-gray-500" />
+                  <span className="text-xs font-semibold text-gray-600">Translate from</span>
+                  <select
+                    value={translateBaseLang || result.sourceLang}
+                    onChange={(e) => setTranslateBaseLang(e.target.value as Lang)}
+                    disabled={translating}
+                    className="text-xs font-semibold bg-gray-50 border border-gray-200 rounded px-2 py-1 focus:outline-none"
+                  >
+                    {availableBases.map((l) => (
+                      <option key={l} value={l}>{LANG_LABELS[l]}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => handleTranslate((translateBaseLang || result.sourceLang) as Lang)}
+                    disabled={translating}
+                    className="px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
+                  >
+                    {translating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
+                    Start translation
+                  </button>
+                </div>
+              );
+            })()}
             <button
               onClick={() => handlePublish(false)}
               disabled={publishing || !selectedCover}

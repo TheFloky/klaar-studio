@@ -17,7 +17,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { query, fallbackToAi = true } = await req.json();
+    const { query, fallbackToAi = true, forceAi = false } = await req.json();
     if (!query) {
       return new Response(JSON.stringify({ error: "query required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -27,7 +27,8 @@ serve(async (req) => {
     const PEXELS_KEY = Deno.env.get("PEXELS_API_KEY");
     let stockResults: any[] = [];
 
-    if (PEXELS_KEY) {
+    // Skip stock entirely if forceAi
+    if (PEXELS_KEY && !forceAi) {
       try {
         const pexResp = await fetch(
           `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=6&orientation=landscape`,
@@ -53,10 +54,13 @@ serve(async (req) => {
 
     let aiImage: { url: string; source: "ai" } | null = null;
 
-    // AI fallback only if no stock results AND fallback is requested
-    if (stockResults.length === 0 && fallbackToAi) {
+    // Generate AI image when explicitly forced, or as fallback when no stock results
+    const shouldGenerateAi = forceAi || (stockResults.length === 0 && fallbackToAi);
+    if (shouldGenerateAi) {
       const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-      if (LOVABLE_API_KEY) {
+      if (!LOVABLE_API_KEY) {
+        console.error("LOVABLE_API_KEY missing — cannot generate AI image");
+      } else {
         try {
           const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
             method: "POST",
@@ -70,13 +74,23 @@ serve(async (req) => {
               modalities: ["image", "text"],
             }),
           });
-          if (aiResp.ok) {
+          if (!aiResp.ok) {
+            const t = await aiResp.text();
+            console.error("AI image gen failed:", aiResp.status, t);
+            if (aiResp.status === 429 || aiResp.status === 402) {
+              return new Response(JSON.stringify({
+                error: aiResp.status === 429 ? "AI rate limit — try again in a minute" : "AI credits exhausted",
+                stock: stockResults,
+              }), { status: aiResp.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+            }
+          } else {
             const aiData = await aiResp.json();
             const imageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
             if (imageUrl) aiImage = { url: imageUrl, source: "ai" };
+            else console.error("AI image gen: no image in response", JSON.stringify(aiData).slice(0, 500));
           }
         } catch (e) {
-          console.warn("AI image fallback failed:", e);
+          console.error("AI image fetch threw:", e);
         }
       }
     }

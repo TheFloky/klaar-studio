@@ -90,6 +90,8 @@ export default function BlogTab() {
   const [topic, setTopic] = useState(initial.topic || "");
   const [sourceLang, setSourceLang] = useState<Lang>(initial.sourceLang || "de");
   const [generating, setGenerating] = useState(false);
+  const [revising, setRevising] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [factChecking, setFactChecking] = useState(false);
   const [findingCover, setFindingCover] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -104,6 +106,7 @@ export default function BlogTab() {
   const [aiCover, setAiCover] = useState<CoverOption | null>(initial.aiCover || null);
   const [selectedCover, setSelectedCover] = useState<CoverOption | null>(initial.selectedCover || null);
   const [imageQueryOverride, setImageQueryOverride] = useState(initial.imageQueryOverride || "");
+  const [reviseFeedback, setReviseFeedback] = useState("");
   const [publishing, setPublishing] = useState(false);
 
   // Existing posts list

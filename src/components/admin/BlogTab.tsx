@@ -438,7 +438,7 @@ export default function BlogTab() {
               disabled={generating || sourceText.trim().length < 30}
               className="w-full sm:w-auto px-6 py-3 bg-[#FF0000] text-white font-semibold text-sm rounded-lg hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-sm"
             >
-              {generating ? <><Loader2 size={16} className="animate-spin" /> Writing in DE / FR / EN…</> : <><Wand2 size={16} /> Generate Blog Post</>}
+              {generating ? <><Loader2 size={16} className="animate-spin" /> Writing in {LANG_LABELS[sourceLang]}…</> : <><Wand2 size={16} /> Generate ({LANG_LABELS[sourceLang]})</>}
             </button>
           </div>
 

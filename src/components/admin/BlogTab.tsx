@@ -797,7 +797,7 @@ export default function BlogTab() {
               disabled={publishing || !selectedCover}
               className="px-5 py-2.5 bg-[#FF0000] text-white font-semibold text-sm rounded-lg hover:bg-red-600 disabled:opacity-40 transition-all flex items-center gap-2 shadow-sm"
             >
-              {publishing ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Publish All Languages
+              {publishing ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Publish ({Object.keys(result.versions).length} lang)
             </button>
           </div>
         </>

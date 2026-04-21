@@ -86,10 +86,10 @@ async function generateVersionMeta(content_md: string, lang: Lang, apiKey: strin
         parameters: {
           type: "object",
           properties: {
-            title: { type: "string", maxLength: 80 },
-            seo_title: { type: "string", maxLength: 60 },
-            seo_description: { type: "string", maxLength: 160 },
-            excerpt: { type: "string", maxLength: 220 },
+            title: { type: "string", maxLength: 70 },
+            seo_title: { type: "string", maxLength: 58 },
+            seo_description: { type: "string", maxLength: 150 },
+            excerpt: { type: "string", maxLength: 200 },
           },
           required: ["title", "seo_title", "seo_description", "excerpt"],
           additionalProperties: false,

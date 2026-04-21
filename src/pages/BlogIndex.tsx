@@ -69,6 +69,7 @@ export default function BlogIndex() {
         alternates={{ de: "de/blog", fr: "fr/blog", en: "en/blog" }}
       />
       <Helmet>
+        <link rel="alternate" type="application/rss+xml" title={`${labels.title} (${lang.toUpperCase()})`} href={`https://vlarkrouidgnvgqmpugd.functions.supabase.co/rss?lang=${lang}`} />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -76,6 +77,13 @@ export default function BlogIndex() {
             name: "klaar Studio Journal",
             url: `https://klaar-studio.ch/${lang}/blog`,
             inLanguage: lang === "de" ? "de-CH" : lang === "fr" ? "fr-CH" : "en",
+            blogPost: posts.slice(0, 10).map((p) => ({
+              "@type": "BlogPosting",
+              headline: p.title,
+              url: `https://klaar-studio.ch/${lang}/blog/${p.slug}`,
+              datePublished: p.published_at,
+              image: p.cover_image_url || undefined,
+            })),
           })}
         </script>
       </Helmet>

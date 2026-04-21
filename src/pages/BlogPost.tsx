@@ -58,7 +58,7 @@ export default function BlogPost() {
         setLoading(false);
         return;
       }
-      setPost(data as PostFull);
+      setPost(data as unknown as PostFull);
       // Find translation siblings
       const { data: sibs } = await supabase
         .from("blog_posts")

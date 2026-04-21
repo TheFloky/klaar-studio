@@ -143,15 +143,17 @@ export default function BlogTab() {
     setGenerating(true);
     try {
       const { data, error: fnErr } = await supabase.functions.invoke("generate-blog-post", {
-        body: { sourceText, topic, sourceLang },
+        body: { mode: "generate", sourceText, topic, sourceLang },
       });
       if (fnErr) throw new Error(fnErr.message);
       if (data?.error) throw new Error(data.error);
       setResult(data as GenerationResult);
       setActiveLang(sourceLang);
       setImageQueryOverride(data.stock_image_query);
+      setFactChecks({ de: null, fr: null, en: null });
+      setReviseFeedback("");
       setStep("review");
-      // Auto-trigger fact-check + cover search in parallel
+      // Auto-trigger fact-check + cover search in parallel (source lang only)
       await Promise.all([
         runFactCheck(data, sourceLang),
         findCovers(data.stock_image_query),
@@ -163,7 +165,70 @@ export default function BlogTab() {
     }
   }
 
-  async function runFactCheck(r: GenerationResult, lang: Lang) {
+  function buildAutoFeedback(lang: Lang): string {
+    const fc = factChecks[lang];
+    if (!fc || fc.issues.length === 0) return "";
+    return fc.issues.map((i) => `[${i.severity.toUpperCase()} – ${i.category}] ${i.message}${i.suggestion ? ` → ${i.suggestion}` : ""}`).join("\n");
+  }
+
+  async function handleRevise() {
+    if (!result) return;
+    const lang = activeLang;
+    const current = result.versions[lang];
+    if (!current) return;
+    const userNotes = reviseFeedback.trim();
+    const autoNotes = buildAutoFeedback(lang);
+    const combined = [userNotes, autoNotes].filter(Boolean).join("\n\n");
+    if (!combined) {
+      setError("Add improvement points or run a fact-check first.");
+      return;
+    }
+    setError(null);
+    setRevising(true);
+    try {
+      const { data, error: fnErr } = await supabase.functions.invoke("generate-blog-post", {
+        body: { mode: "revise", current_md: current.content_md, feedback: combined, lang },
+      });
+      if (fnErr) throw new Error(fnErr.message);
+      if (data?.error) throw new Error(data.error);
+      setResult({
+        ...result,
+        versions: { ...result.versions, [lang]: { title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt, content_md: data.content_md } },
+      });
+      // Invalidate translations + fact-check for this lang since content changed
+      const invalidated: Record<Lang, FactCheck | null> = { ...factChecks, [lang]: null };
+      setFactChecks(invalidated);
+      setReviseFeedback("");
+      // Re-run fact check
+      await runFactCheck({ ...result, versions: { ...result.versions, [lang]: { ...current, content_md: data.content_md, title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt } } }, lang);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Revision failed");
+    } finally {
+      setRevising(false);
+    }
+  }
+
+  async function handleTranslate() {
+    if (!result) return;
+    const src = result.sourceLang;
+    const sourceVersion = result.versions[src];
+    if (!sourceVersion) return;
+    const targets = (["de", "fr", "en"] as Lang[]).filter((l) => l !== src);
+    setError(null);
+    setTranslating(true);
+    try {
+      const { data, error: fnErr } = await supabase.functions.invoke("translate-blog-post", {
+        body: { source_md: sourceVersion.content_md, sourceLang: src, targetLangs: targets },
+      });
+      if (fnErr) throw new Error(fnErr.message);
+      if (data?.error) throw new Error(data.error);
+      setResult({ ...result, versions: { ...result.versions, ...data.versions } });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Translation failed");
+    } finally {
+      setTranslating(false);
+    }
+  }
     setFactChecking(true);
     try {
       const v = r.versions[lang];

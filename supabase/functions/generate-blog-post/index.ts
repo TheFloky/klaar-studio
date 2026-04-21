@@ -261,6 +261,12 @@ serve(async (req) => {
     const content_md = await generateArticleBody(sourceText, topic, sourceLang as Lang, meta.slug, LOVABLE_API_KEY);
     const versionMeta = await generateVersionMeta(content_md, sourceLang as Lang, LOVABLE_API_KEY) as VersionMeta;
 
+    // Sanitize alt_slugs: kebab-case, strip canonical, dedupe
+    const cleanedAlt = Array.from(new Set(
+      (versionMeta.alt_slugs || []).map(sanitizeSlug).filter((s) => s && s !== meta.slug)
+    )).slice(0, 8);
+    versionMeta.alt_slugs = cleanedAlt;
+
     const versions: Record<string, VersionMeta & { content_md: string }> = {
       [sourceLang]: { ...versionMeta, content_md },
     };

@@ -13,7 +13,18 @@ type VersionMeta = {
   seo_title: string;
   seo_description: string;
   excerpt: string;
+  alt_slugs: string[];
 };
+
+function sanitizeSlug(s: string): string {
+  return String(s)
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 70);
+}
 
 const LANG_NAMES: Record<Lang, string> = {
   de: "German (Swiss conventions: ALWAYS 'ss' instead of 'ß', use 'Sie' form)",
@@ -60,7 +71,14 @@ CRITICAL TITLE RULES — write for how people actually Google, not corporate bro
 - seo_title ≤ 58 chars (HARD limit — Google truncates at 60). Match the conversational style of the title.
 - seo_description ≤ 150 chars (HARD limit — Google truncates at ~160). Include the primary keyword AND a benefit. Active voice.
 - excerpt ≤ 200 chars. Hook the reader.
-- Use the language's natural search vocabulary (German: "Brauche ich…", "Wie…", "Was…"; French: "Comment…", "Faut-il…", "Dois-je…"; English: "How to…", "Do I need…", "What is…").`;
+- Use the language's natural search vocabulary (German: "Brauche ich…", "Wie…", "Was…"; French: "Comment…", "Faut-il…", "Dois-je…"; English: "How to…", "Do I need…", "What is…").
+
+ALT SLUGS — keyword clustering for long-tail SEO:
+- Return 6 alt_slugs per language: kebab-case URL variants representing different real-world Google queries that should land on this same article.
+- Each slug should reflect a DIFFERENT phrasing or angle: question form ("brauche-ich-impressum"), how-to ("wie-website-rechtssicher"), problem ("cookie-banner-pflicht-schweiz"), comparison ("ndsg-vs-dsgvo"), specific entity ("impressumspflicht-schweiz"), action ("datenschutz-website-erstellen").
+- ASCII only, no diacritics, max 60 chars, no leading/trailing dashes.
+- Use the target language's natural keywords. Do NOT translate slugs — write fresh native-language slugs.
+- The canonical slug is provided separately — do NOT repeat it in alt_slugs.`;
 
 async function fetchGateway(body: unknown, apiKey: string) {
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -179,8 +197,9 @@ async function generateVersionMeta(content_md: string, lang: Lang, apiKey: strin
             seo_title: { type: "string", maxLength: 58 },
             seo_description: { type: "string", maxLength: 150 },
             excerpt: { type: "string", maxLength: 200 },
+            alt_slugs: { type: "array", items: { type: "string", maxLength: 60 }, minItems: 4, maxItems: 8 },
           },
-          required: ["title", "seo_title", "seo_description", "excerpt"],
+          required: ["title", "seo_title", "seo_description", "excerpt", "alt_slugs"],
           additionalProperties: false,
         },
       },
@@ -220,6 +239,7 @@ serve(async (req) => {
       }
       const content_md = await reviseArticleBody(current_md, feedback, lang as Lang, LOVABLE_API_KEY);
       const meta = await generateVersionMeta(content_md, lang as Lang, LOVABLE_API_KEY) as VersionMeta;
+      meta.alt_slugs = Array.from(new Set((meta.alt_slugs || []).map(sanitizeSlug).filter(Boolean))).slice(0, 8);
       return new Response(JSON.stringify({ ...meta, content_md }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -241,6 +261,12 @@ serve(async (req) => {
 
     const content_md = await generateArticleBody(sourceText, topic, sourceLang as Lang, meta.slug, LOVABLE_API_KEY);
     const versionMeta = await generateVersionMeta(content_md, sourceLang as Lang, LOVABLE_API_KEY) as VersionMeta;
+
+    // Sanitize alt_slugs: kebab-case, strip canonical, dedupe
+    const cleanedAlt = Array.from(new Set(
+      (versionMeta.alt_slugs || []).map(sanitizeSlug).filter((s) => s && s !== meta.slug)
+    )).slice(0, 8);
+    versionMeta.alt_slugs = cleanedAlt;
 
     const versions: Record<string, VersionMeta & { content_md: string }> = {
       [sourceLang]: { ...versionMeta, content_md },

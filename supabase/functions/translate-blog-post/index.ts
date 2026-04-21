@@ -39,7 +39,22 @@ CRITICAL TITLE RULES — write for how people actually Google:
 - seo_title ≤ 58 chars (HARD limit)
 - seo_description ≤ 150 chars (HARD limit). Include keyword + benefit. Active voice.
 - excerpt ≤ 200 chars. Hook the reader.
-- Use natural search vocabulary in the target language.`;
+- Use natural search vocabulary in the target language.
+
+ALT SLUGS — keyword clustering for long-tail SEO:
+- Return 6 alt_slugs per language: kebab-case URL variants representing different real-world Google queries that should land on this same article.
+- Each slug should reflect a DIFFERENT phrasing or angle: question form, how-to, problem statement, comparison, action.
+- ASCII only, no diacritics, max 60 chars. Write fresh native-language slugs — do NOT translate them literally.`;
+
+function sanitizeSlug(s: string): string {
+  return String(s)
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 70);
+}
 
 async function fetchGateway(body: unknown, apiKey: string) {
   const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -90,8 +105,9 @@ async function generateVersionMeta(content_md: string, lang: Lang, apiKey: strin
             seo_title: { type: "string", maxLength: 58 },
             seo_description: { type: "string", maxLength: 150 },
             excerpt: { type: "string", maxLength: 200 },
+            alt_slugs: { type: "array", items: { type: "string", maxLength: 60 }, minItems: 4, maxItems: 8 },
           },
-          required: ["title", "seo_title", "seo_description", "excerpt"],
+          required: ["title", "seo_title", "seo_description", "excerpt", "alt_slugs"],
           additionalProperties: false,
         },
       },
@@ -100,7 +116,9 @@ async function generateVersionMeta(content_md: string, lang: Lang, apiKey: strin
   }, apiKey);
   const tc = data.choices?.[0]?.message?.tool_calls?.[0];
   if (!tc) throw new Error("AI returned no tool call");
-  return JSON.parse(tc.function.arguments);
+  const parsed = JSON.parse(tc.function.arguments);
+  parsed.alt_slugs = Array.from(new Set((parsed.alt_slugs || []).map(sanitizeSlug).filter(Boolean))).slice(0, 8);
+  return parsed;
 }
 
 serve(async (req) => {

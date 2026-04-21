@@ -13,6 +13,17 @@ interface BlogVersion {
   seo_description: string;
   excerpt: string;
   content_md: string;
+  alt_slugs: string[];
+}
+
+function sanitizeSlug(s: string): string {
+  return String(s)
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
 }
 
 interface GenerationResult {
@@ -194,14 +205,14 @@ export default function BlogTab() {
       if (data?.error) throw new Error(data.error);
       setResult({
         ...result,
-        versions: { ...result.versions, [lang]: { title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt, content_md: data.content_md } },
+        versions: { ...result.versions, [lang]: { title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt, content_md: data.content_md, alt_slugs: data.alt_slugs || result.versions[lang]?.alt_slugs || [] } },
       });
       // Invalidate translations + fact-check for this lang since content changed
       const invalidated: Record<Lang, FactCheck | null> = { ...factChecks, [lang]: null };
       setFactChecks(invalidated);
       setReviseFeedback("");
       // Re-run fact check
-      await runFactCheck({ ...result, versions: { ...result.versions, [lang]: { ...current, content_md: data.content_md, title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt } } }, lang);
+      await runFactCheck({ ...result, versions: { ...result.versions, [lang]: { ...current, content_md: data.content_md, title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt, alt_slugs: data.alt_slugs || current.alt_slugs || [] } } }, lang);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Revision failed");
     } finally {
@@ -313,11 +324,12 @@ export default function BlogTab() {
     }
   }
 
-  function updateVersion(lang: Lang, field: keyof BlogVersion, value: string) {
+  function updateVersion(lang: Lang, field: keyof BlogVersion, value: string | string[]) {
     if (!result) return;
+    const existing: BlogVersion = result.versions[lang] ?? { title: "", seo_title: "", seo_description: "", excerpt: "", content_md: "", alt_slugs: [] };
     setResult({
       ...result,
-      versions: { ...result.versions, [lang]: { ...result.versions[lang], [field]: value } },
+      versions: { ...result.versions, [lang]: { ...existing, [field]: value } },
     });
   }
 
@@ -353,6 +365,7 @@ export default function BlogTab() {
         translation_group_id: groupId,
         lang,
         slug: result.slug,
+        alt_slugs: Array.from(new Set((result.versions[lang]?.alt_slugs ?? []).map(sanitizeSlug).filter((s) => s && s !== result.slug))),
         title: result.versions[lang].title,
         excerpt: result.versions[lang].excerpt,
         content_md: result.versions[lang].content_md,
@@ -587,7 +600,7 @@ export default function BlogTab() {
             </div>
 
             {(() => {
-              const currentVersion = result.versions?.[activeLang] ?? { title: "", seo_title: "", seo_description: "", excerpt: "", content_md: "" };
+              const currentVersion: BlogVersion = result.versions?.[activeLang] ?? { title: "", seo_title: "", seo_description: "", excerpt: "", content_md: "", alt_slugs: [] };
               return (
             <div className="p-6 space-y-4">
               <div>
@@ -624,6 +637,47 @@ export default function BlogTab() {
                   rows={2}
                   className="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50"
                 />
+              </div>
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 flex items-center gap-2">
+                  <Search size={12} />
+                  Alt Slugs — searchable URL variants ({(currentVersion.alt_slugs ?? []).length})
+                </label>
+                <p className="text-[11px] text-gray-400 mb-2">
+                  Each variant becomes a URL like <code>/{activeLang}/blog/&lt;slug&gt;</code> that redirects to the canonical post. Captures long-tail Google searches. Press Enter or comma to add.
+                </p>
+                <div className="flex flex-wrap gap-2 p-2 rounded-lg border border-gray-200 bg-gray-50 min-h-[44px]">
+                  {(currentVersion.alt_slugs ?? []).map((s) => (
+                    <span key={s} className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-gray-200 rounded text-xs font-mono text-gray-700">
+                      {s}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = (currentVersion.alt_slugs ?? []).filter((x) => x !== s);
+                          updateVersion(activeLang, "alt_slugs", next as unknown as string);
+                        }}
+                        className="text-gray-400 hover:text-red-500"
+                        aria-label={`Remove ${s}`}
+                      >×</button>
+                    </span>
+                  ))}
+                  <input
+                    placeholder="add-a-question-slug"
+                    onKeyDown={(e) => {
+                      const target = e.currentTarget;
+                      if (e.key === "Enter" || e.key === ",") {
+                        e.preventDefault();
+                        const cleaned = sanitizeSlug(target.value);
+                        if (!cleaned) return;
+                        const existing = currentVersion.alt_slugs ?? [];
+                        if (existing.includes(cleaned) || cleaned === result.slug) { target.value = ""; return; }
+                        updateVersion(activeLang, "alt_slugs", [...existing, cleaned] as unknown as string);
+                        target.value = "";
+                      }
+                    }}
+                    className="flex-1 min-w-[140px] px-2 py-1 text-xs bg-transparent focus:outline-none font-mono"
+                  />
+                </div>
               </div>
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 block">Content (Markdown)</label>

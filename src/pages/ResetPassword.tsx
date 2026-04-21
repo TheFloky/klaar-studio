@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Lock, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthReady } from "@/hooks/useAuthReady";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -11,54 +12,45 @@ export default function ResetPassword() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [ready, setReady] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Listen for any auth event — recovery links fire PASSWORD_RECOVERY or SIGNED_IN
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN" || event === "INITIAL_SESSION") {
-        if (session) setReady(true);
-      }
-    });
-
-    // Immediate fallback: enable form as soon as we see recovery markers in URL
+  const [hasRecoveryParams] = useState(() => {
     const hash = window.location.hash;
     const search = window.location.search;
-    if (
+    return (
       hash.includes("type=recovery") ||
       search.includes("type=recovery") ||
       hash.includes("access_token") ||
       search.includes("code=")
-    ) {
-      setReady(true);
-    }
+    );
+  });
+  const { isReady, session } = useAuthReady();
+  const navigate = useNavigate();
 
-    // Check for an existing session (covers case where Supabase already processed the link)
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setReady(true);
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("code");
+    if (!code) return;
+
+    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      if (error) setError(error.message);
     });
-
-    // Final safety net: after 1.5s, enable form anyway so the user is never stuck.
-    // updateUser will fail gracefully if there is truly no session.
-    const timeout = setTimeout(() => setReady(true), 1500);
-
-    return () => {
-      subscription.unsubscribe();
-      clearTimeout(timeout);
-    };
   }, []);
+
+  const ready = isReady && !!session;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!ready) {
+      setError("Die Sitzung fuer den Reset-Link ist noch nicht bereit.");
+      return;
+    }
 
     if (password.length < 8) {
       setError("Passwort muss mindestens 8 Zeichen lang sein.");
       return;
     }
     if (password !== confirm) {
-      setError("Passwörter stimmen nicht überein.");
+      setError("Passwoerter stimmen nicht ueberein.");
       return;
     }
 
@@ -79,7 +71,7 @@ export default function ResetPassword() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="w-full max-w-sm bg-white rounded-2xl border border-gray-200 p-8 text-center space-y-4">
           <CheckCircle size={40} className="text-green-600 mx-auto" />
-          <h1 className="text-xl font-bold text-gray-900">Passwort geändert</h1>
+          <h1 className="text-xl font-bold text-gray-900">Passwort geaendert</h1>
           <p className="text-sm text-gray-500">Sie werden zum Login weitergeleitet…</p>
         </div>
       </div>
@@ -95,7 +87,11 @@ export default function ResetPassword() {
           </div>
           <h1 className="text-xl font-bold text-gray-900">Neues Passwort setzen</h1>
           <p className="text-sm text-gray-500 mt-1">
-            {ready ? "Geben Sie Ihr neues Passwort ein." : "Bitte warten, Sitzung wird überprüft…"}
+            {ready
+              ? "Geben Sie Ihr neues Passwort ein."
+              : hasRecoveryParams
+                ? "Bitte warten, Sitzung wird ueberprueft…"
+                : "Reset-Link ist ungueltig oder abgelaufen."}
           </p>
         </div>
 
@@ -111,7 +107,7 @@ export default function ResetPassword() {
           />
           <Input
             type="password"
-            placeholder="Passwort bestätigen"
+            placeholder="Passwort bestaetigen"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             required

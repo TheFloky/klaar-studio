@@ -779,8 +779,7 @@ export default function BlogTab() {
             </button>
             {(() => {
               const availableBases = (["de", "fr", "en"] as Lang[]).filter((l) => !!result.versions[l]);
-              const missing = (["de", "fr", "en"] as Lang[]).some((l) => !result.versions[l]);
-              if (!missing) return null;
+              if (availableBases.length === 0) return null;
               return (
                 <div className="flex items-center gap-2 border-2 border-gray-200 rounded-lg pl-3 pr-1 py-1">
                   <Languages size={14} className="text-gray-500" />

@@ -21,7 +21,8 @@ interface GenerationResult {
   stock_image_query: string;
   reading_time_min: number;
   external_links: { url: string; label: string; context: string }[];
-  versions: Record<Lang, BlogVersion>;
+  sourceLang: Lang;
+  versions: Partial<Record<Lang, BlogVersion>>;
 }
 
 interface FactCheck {
@@ -89,6 +90,8 @@ export default function BlogTab() {
   const [topic, setTopic] = useState(initial.topic || "");
   const [sourceLang, setSourceLang] = useState<Lang>(initial.sourceLang || "de");
   const [generating, setGenerating] = useState(false);
+  const [revising, setRevising] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [factChecking, setFactChecking] = useState(false);
   const [findingCover, setFindingCover] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,6 +106,7 @@ export default function BlogTab() {
   const [aiCover, setAiCover] = useState<CoverOption | null>(initial.aiCover || null);
   const [selectedCover, setSelectedCover] = useState<CoverOption | null>(initial.selectedCover || null);
   const [imageQueryOverride, setImageQueryOverride] = useState(initial.imageQueryOverride || "");
+  const [reviseFeedback, setReviseFeedback] = useState("");
   const [publishing, setPublishing] = useState(false);
 
   // Existing posts list
@@ -139,15 +143,17 @@ export default function BlogTab() {
     setGenerating(true);
     try {
       const { data, error: fnErr } = await supabase.functions.invoke("generate-blog-post", {
-        body: { sourceText, topic, sourceLang },
+        body: { mode: "generate", sourceText, topic, sourceLang },
       });
       if (fnErr) throw new Error(fnErr.message);
       if (data?.error) throw new Error(data.error);
       setResult(data as GenerationResult);
       setActiveLang(sourceLang);
       setImageQueryOverride(data.stock_image_query);
+      setFactChecks({ de: null, fr: null, en: null });
+      setReviseFeedback("");
       setStep("review");
-      // Auto-trigger fact-check + cover search in parallel
+      // Auto-trigger fact-check + cover search in parallel (source lang only)
       await Promise.all([
         runFactCheck(data, sourceLang),
         findCovers(data.stock_image_query),
@@ -159,10 +165,77 @@ export default function BlogTab() {
     }
   }
 
+  function buildAutoFeedback(lang: Lang): string {
+    const fc = factChecks[lang];
+    if (!fc || fc.issues.length === 0) return "";
+    return fc.issues.map((i) => `[${i.severity.toUpperCase()} – ${i.category}] ${i.message}${i.suggestion ? ` → ${i.suggestion}` : ""}`).join("\n");
+  }
+
+  async function handleRevise() {
+    if (!result) return;
+    const lang = activeLang;
+    const current = result.versions[lang];
+    if (!current) return;
+    const userNotes = reviseFeedback.trim();
+    const autoNotes = buildAutoFeedback(lang);
+    const combined = [userNotes, autoNotes].filter(Boolean).join("\n\n");
+    if (!combined) {
+      setError("Add improvement points or run a fact-check first.");
+      return;
+    }
+    setError(null);
+    setRevising(true);
+    try {
+      const { data, error: fnErr } = await supabase.functions.invoke("generate-blog-post", {
+        body: { mode: "revise", current_md: current.content_md, feedback: combined, lang },
+      });
+      if (fnErr) throw new Error(fnErr.message);
+      if (data?.error) throw new Error(data.error);
+      setResult({
+        ...result,
+        versions: { ...result.versions, [lang]: { title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt, content_md: data.content_md } },
+      });
+      // Invalidate translations + fact-check for this lang since content changed
+      const invalidated: Record<Lang, FactCheck | null> = { ...factChecks, [lang]: null };
+      setFactChecks(invalidated);
+      setReviseFeedback("");
+      // Re-run fact check
+      await runFactCheck({ ...result, versions: { ...result.versions, [lang]: { ...current, content_md: data.content_md, title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt } } }, lang);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Revision failed");
+    } finally {
+      setRevising(false);
+    }
+  }
+
+  async function handleTranslate() {
+    if (!result) return;
+    const src = result.sourceLang;
+    const sourceVersion = result.versions[src];
+    if (!sourceVersion) return;
+    const targets = (["de", "fr", "en"] as Lang[]).filter((l) => l !== src);
+    setError(null);
+    setTranslating(true);
+    try {
+      const { data, error: fnErr } = await supabase.functions.invoke("translate-blog-post", {
+        body: { source_md: sourceVersion.content_md, sourceLang: src, targetLangs: targets },
+      });
+      if (fnErr) throw new Error(fnErr.message);
+      if (data?.error) throw new Error(data.error);
+      setResult({ ...result, versions: { ...result.versions, ...data.versions } });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Translation failed");
+    } finally {
+      setTranslating(false);
+    }
+  }
+
   async function runFactCheck(r: GenerationResult, lang: Lang) {
+    const v = r.versions[lang];
+    if (!v) return;
     setFactChecking(true);
     try {
-      const v = r.versions[lang];
+      
       const { data, error: fnErr } = await supabase.functions.invoke("fact-check-blog-post", {
         body: { title: v.title, content_md: v.content_md, lang, external_links: r.external_links },
       });
@@ -365,7 +438,7 @@ export default function BlogTab() {
               disabled={generating || sourceText.trim().length < 30}
               className="w-full sm:w-auto px-6 py-3 bg-[#FF0000] text-white font-semibold text-sm rounded-lg hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-sm"
             >
-              {generating ? <><Loader2 size={16} className="animate-spin" /> Writing in DE / FR / EN…</> : <><Wand2 size={16} /> Generate Blog Post</>}
+              {generating ? <><Loader2 size={16} className="animate-spin" /> Writing in {LANG_LABELS[sourceLang]}…</> : <><Wand2 size={16} /> Generate ({LANG_LABELS[sourceLang]})</>}
             </button>
           </div>
 
@@ -445,27 +518,45 @@ export default function BlogTab() {
       {step === "review" && result && (
         <>
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-              <div className="flex gap-1">
-                {(["de", "fr", "en"] as Lang[]).map((l) => (
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 flex-wrap gap-3">
+              <div className="flex gap-1 items-center">
+                {(["de", "fr", "en"] as Lang[]).map((l) => {
+                  const exists = !!result.versions[l];
+                  return (
+                    <button
+                      key={l}
+                      onClick={() => {
+                        if (!exists) return;
+                        setActiveLang(l);
+                        if (!factChecks[l]) runFactCheck(result, l);
+                      }}
+                      disabled={!exists}
+                      className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                        activeLang === l ? "bg-gray-900 text-white" :
+                        exists ? "text-gray-500 hover:bg-gray-100" : "text-gray-300 cursor-not-allowed"
+                      }`}
+                      title={exists ? "" : "Not generated yet — click Translate"}
+                    >
+                      <Languages size={12} /> {LANG_LABELS[l]}
+                      {exists && factChecks[l] && (
+                        factChecks[l]!.approved
+                          ? <CheckCircle2 size={12} className={activeLang === l ? "text-green-300" : "text-green-600"} />
+                          : <AlertTriangle size={12} className={activeLang === l ? "text-yellow-300" : "text-yellow-600"} />
+                      )}
+                      {!exists && <span className="text-[9px] uppercase tracking-wider opacity-60">pending</span>}
+                    </button>
+                  );
+                })}
+                {(["de", "fr", "en"] as Lang[]).some((l) => !result.versions[l]) && (
                   <button
-                    key={l}
-                    onClick={() => {
-                      setActiveLang(l);
-                      if (!factChecks[l]) runFactCheck(result, l);
-                    }}
-                    className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                      activeLang === l ? "bg-gray-900 text-white" : "text-gray-500 hover:bg-gray-100"
-                    }`}
+                    onClick={handleTranslate}
+                    disabled={translating}
+                    className="ml-2 flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-50"
                   >
-                    <Languages size={12} /> {LANG_LABELS[l]}
-                    {factChecks[l] && (
-                      factChecks[l]!.approved
-                        ? <CheckCircle2 size={12} className={activeLang === l ? "text-green-300" : "text-green-600"} />
-                        : <AlertTriangle size={12} className={activeLang === l ? "text-yellow-300" : "text-yellow-600"} />
-                    )}
+                    {translating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
+                    Translate to other languages
                   </button>
-                ))}
+                )}
               </div>
               <div className="flex items-center gap-3 text-xs text-gray-500">
                 <span>Slug: <code className="text-gray-700">{result.slug}</code></span>
@@ -589,6 +680,45 @@ export default function BlogTab() {
 
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-3">
+              <RefreshCw size={16} className="text-[#FF0000]" />
+              <h3 className="text-sm font-bold text-gray-900">Revise — {LANG_LABELS[activeLang]}</h3>
+              {revising && <Loader2 size={14} className="animate-spin text-gray-400" />}
+            </div>
+            <p className="text-xs text-gray-500 mb-2">
+              Add your own improvement notes. Fact-checker issues for this language will be appended automatically.
+            </p>
+            <textarea
+              value={reviseFeedback}
+              onChange={(e) => setReviseFeedback(e.target.value)}
+              rows={4}
+              placeholder="e.g. Add a section about TWINT integration. Tone is too formal — make paragraph 3 friendlier."
+              className="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50 font-mono"
+              disabled={revising}
+            />
+            <div className="flex items-center justify-between mt-3">
+              <span className="text-xs text-gray-400">
+                {factChecks[activeLang]?.issues.length
+                  ? `${factChecks[activeLang]!.issues.length} fact-check issue(s) will be included`
+                  : "No fact-check issues to include"}
+              </span>
+              <button
+                onClick={handleRevise}
+                disabled={revising || (!reviseFeedback.trim() && !factChecks[activeLang]?.issues.length) || !result.versions[activeLang]}
+                className="px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-black disabled:opacity-40 transition-all flex items-center gap-2"
+              >
+                {revising ? <Loader2 size={12} className="animate-spin" /> : <Wand2 size={12} />}
+                Rerun AI with Feedback
+              </button>
+            </div>
+            {(["de", "fr", "en"] as Lang[]).filter((l) => l !== activeLang && result.versions[l]).length > 0 && (
+              <p className="text-[11px] text-yellow-600 mt-2">
+                ⚠ Other language versions will become out of sync. Re-run translation after revising.
+              </p>
+            )}
+          </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <div className="flex items-center gap-2 mb-3">
               <ImageIcon size={16} className="text-[#FF0000]" />
               <h3 className="text-sm font-bold text-gray-900">Cover Image</h3>
               {findingCover && <Loader2 size={14} className="animate-spin text-gray-400" />}
@@ -667,7 +797,7 @@ export default function BlogTab() {
               disabled={publishing || !selectedCover}
               className="px-5 py-2.5 bg-[#FF0000] text-white font-semibold text-sm rounded-lg hover:bg-red-600 disabled:opacity-40 transition-all flex items-center gap-2 shadow-sm"
             >
-              {publishing ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Publish All Languages
+              {publishing ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Publish ({Object.keys(result.versions).length} lang)
             </button>
           </div>
         </>

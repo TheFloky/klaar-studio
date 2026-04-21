@@ -716,6 +716,10 @@ export default function BlogTab() {
               </p>
             )}
           </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <ImageIcon size={16} className="text-[#FF0000]" />
               <h3 className="text-sm font-bold text-gray-900">Cover Image</h3>
               {findingCover && <Loader2 size={14} className="animate-spin text-gray-400" />}
             </div>

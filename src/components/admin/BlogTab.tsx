@@ -205,14 +205,14 @@ export default function BlogTab() {
       if (data?.error) throw new Error(data.error);
       setResult({
         ...result,
-        versions: { ...result.versions, [lang]: { title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt, content_md: data.content_md } },
+        versions: { ...result.versions, [lang]: { title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt, content_md: data.content_md, alt_slugs: data.alt_slugs || result.versions[lang]?.alt_slugs || [] } },
       });
       // Invalidate translations + fact-check for this lang since content changed
       const invalidated: Record<Lang, FactCheck | null> = { ...factChecks, [lang]: null };
       setFactChecks(invalidated);
       setReviseFeedback("");
       // Re-run fact check
-      await runFactCheck({ ...result, versions: { ...result.versions, [lang]: { ...current, content_md: data.content_md, title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt } } }, lang);
+      await runFactCheck({ ...result, versions: { ...result.versions, [lang]: { ...current, content_md: data.content_md, title: data.title, seo_title: data.seo_title, seo_description: data.seo_description, excerpt: data.excerpt, alt_slugs: data.alt_slugs || current.alt_slugs || [] } } }, lang);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Revision failed");
     } finally {

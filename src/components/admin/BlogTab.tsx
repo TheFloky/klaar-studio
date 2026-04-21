@@ -365,6 +365,7 @@ export default function BlogTab() {
         translation_group_id: groupId,
         lang,
         slug: result.slug,
+        alt_slugs: Array.from(new Set((result.versions[lang]?.alt_slugs ?? []).map(sanitizeSlug).filter((s) => s && s !== result.slug))),
         title: result.versions[lang].title,
         excerpt: result.versions[lang].excerpt,
         content_md: result.versions[lang].content_md,

@@ -232,7 +232,12 @@ serve(async (req) => {
     }
 
     const meta = await generateMetadata(sourceText, topic, sourceLang as Lang, LOVABLE_API_KEY);
-    console.log("Metadata generated", { slug: meta.slug });
+    // Safety: split any accidentally-concatenated tags ("a b c" → ["a","b","c"]) and dedupe
+    if (Array.isArray(meta.tags)) {
+      const flat = meta.tags.flatMap((t: string) => String(t).split(/[,;|\n]/g).flatMap((s) => s.trim().split(/\s{2,}/g))).map((s: string) => s.trim()).filter(Boolean);
+      meta.tags = Array.from(new Set(flat)).slice(0, 8);
+    }
+    console.log("Metadata generated", { slug: meta.slug, tagCount: meta.tags?.length });
 
     const content_md = await generateArticleBody(sourceText, topic, sourceLang as Lang, meta.slug, LOVABLE_API_KEY);
     const versionMeta = await generateVersionMeta(content_md, sourceLang as Lang, LOVABLE_API_KEY) as VersionMeta;

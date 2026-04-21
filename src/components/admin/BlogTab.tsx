@@ -229,6 +229,10 @@ export default function BlogTab() {
       setTranslating(false);
     }
   }
+
+  async function runFactCheck(r: GenerationResult, lang: Lang) {
+    const v = r.versions[lang];
+    if (!v) return;
     setFactChecking(true);
     try {
       const v = r.versions[lang];

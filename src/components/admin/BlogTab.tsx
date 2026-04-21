@@ -324,11 +324,12 @@ export default function BlogTab() {
     }
   }
 
-  function updateVersion(lang: Lang, field: keyof BlogVersion, value: string) {
+  function updateVersion(lang: Lang, field: keyof BlogVersion, value: string | string[]) {
     if (!result) return;
+    const existing: BlogVersion = result.versions[lang] ?? { title: "", seo_title: "", seo_description: "", excerpt: "", content_md: "", alt_slugs: [] };
     setResult({
       ...result,
-      versions: { ...result.versions, [lang]: { ...result.versions[lang], [field]: value } },
+      versions: { ...result.versions, [lang]: { ...existing, [field]: value } },
     });
   }
 

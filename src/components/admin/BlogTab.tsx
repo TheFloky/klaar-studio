@@ -54,25 +54,55 @@ interface BlogPostRow {
 
 const LANG_LABELS: Record<Lang, string> = { de: "Deutsch", fr: "Français", en: "English" };
 
+const DRAFT_KEY = "klaar_blog_draft_v1";
+
+interface PersistedDraft {
+  step: "input" | "review" | "publish";
+  sourceText: string;
+  topic: string;
+  sourceLang: Lang;
+  result: GenerationResult | null;
+  activeLang: Lang;
+  factChecks: Record<Lang, FactCheck | null>;
+  coverOptions: CoverOption[];
+  aiCover: CoverOption | null;
+  selectedCover: CoverOption | null;
+  imageQueryOverride: string;
+}
+
+function loadDraft(): Partial<PersistedDraft> {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw) as PersistedDraft;
+  } catch {
+    return {};
+  }
+}
+
 export default function BlogTab() {
+  const initial = loadDraft();
+
   // Wizard state
-  const [step, setStep] = useState<"input" | "review" | "publish">("input");
-  const [sourceText, setSourceText] = useState("");
-  const [topic, setTopic] = useState("");
-  const [sourceLang, setSourceLang] = useState<Lang>("de");
+  const [step, setStep] = useState<"input" | "review" | "publish">(initial.step || "input");
+  const [sourceText, setSourceText] = useState(initial.sourceText || "");
+  const [topic, setTopic] = useState(initial.topic || "");
+  const [sourceLang, setSourceLang] = useState<Lang>(initial.sourceLang || "de");
   const [generating, setGenerating] = useState(false);
   const [factChecking, setFactChecking] = useState(false);
   const [findingCover, setFindingCover] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Generated content
-  const [result, setResult] = useState<GenerationResult | null>(null);
-  const [activeLang, setActiveLang] = useState<Lang>("de");
-  const [factChecks, setFactChecks] = useState<Record<Lang, FactCheck | null>>({ de: null, fr: null, en: null });
-  const [coverOptions, setCoverOptions] = useState<CoverOption[]>([]);
-  const [aiCover, setAiCover] = useState<CoverOption | null>(null);
-  const [selectedCover, setSelectedCover] = useState<CoverOption | null>(null);
-  const [imageQueryOverride, setImageQueryOverride] = useState("");
+  const [result, setResult] = useState<GenerationResult | null>(initial.result || null);
+  const [activeLang, setActiveLang] = useState<Lang>(initial.activeLang || "de");
+  const [factChecks, setFactChecks] = useState<Record<Lang, FactCheck | null>>(
+    initial.factChecks || { de: null, fr: null, en: null }
+  );
+  const [coverOptions, setCoverOptions] = useState<CoverOption[]>(initial.coverOptions || []);
+  const [aiCover, setAiCover] = useState<CoverOption | null>(initial.aiCover || null);
+  const [selectedCover, setSelectedCover] = useState<CoverOption | null>(initial.selectedCover || null);
+  const [imageQueryOverride, setImageQueryOverride] = useState(initial.imageQueryOverride || "");
   const [publishing, setPublishing] = useState(false);
 
   // Existing posts list
@@ -80,6 +110,15 @@ export default function BlogTab() {
   const [loadingPosts, setLoadingPosts] = useState(true);
 
   useEffect(() => { fetchPosts(); }, []);
+
+  // Persist wizard state across navigation/tab switches
+  useEffect(() => {
+    const draft: PersistedDraft = {
+      step, sourceText, topic, sourceLang, result, activeLang,
+      factChecks, coverOptions, aiCover, selectedCover, imageQueryOverride,
+    };
+    try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch { /* quota */ }
+  }, [step, sourceText, topic, sourceLang, result, activeLang, factChecks, coverOptions, aiCover, selectedCover, imageQueryOverride]);
 
   async function fetchPosts() {
     setLoadingPosts(true);

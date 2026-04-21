@@ -21,7 +21,7 @@ serve(async (req) => {
 
     const { data: posts } = await supabase
       .from("blog_posts")
-      .select("slug, alt_slugs, lang, published_at, updated_at")
+      .select("slug, alt_slugs, lang, tags, published_at, updated_at")
       .eq("status", "published")
       .order("published_at", { ascending: false });
 

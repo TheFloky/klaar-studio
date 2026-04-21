@@ -306,9 +306,18 @@ export default function BlogPost() {
             <ArrowLeft size={12} /> {BACK_LABELS[lang]}
           </Link>
           <div className="flex flex-wrap gap-2 mb-4">
-            {post.tags?.slice(0, 4).map((tag) => (
-              <span key={tag} className="text-[10px] uppercase tracking-widest font-semibold text-[hsl(var(--primary))] bg-[hsl(var(--primary))]/10 px-2 py-1 rounded">{tag}</span>
-            ))}
+            {post.tags?.slice(0, 4).map((tag) => {
+              const tagSlug = tag.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+              return (
+                <Link
+                  key={tag}
+                  to={`/${lang}/blog/topic/${tagSlug}`}
+                  className="text-[10px] uppercase tracking-widest font-semibold text-[hsl(var(--primary))] bg-[hsl(var(--primary))]/10 hover:bg-[hsl(var(--primary))]/20 px-2 py-1 rounded transition-colors"
+                >
+                  {tag}
+                </Link>
+              );
+            })}
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight mb-4">{post.title}</h1>
           <p className="text-lg text-muted-foreground mb-6">{post.excerpt}</p>

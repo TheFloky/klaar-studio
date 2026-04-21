@@ -218,7 +218,10 @@ export default function BlogTab() {
     const availableBases = (["de", "fr", "en"] as Lang[]).filter(
       (lang) => !!result.versions[lang]?.content_md,
     );
-    const src = baseLang ?? translateBaseLang ?? result.sourceLang ?? availableBases[0];
+    const dropdownBase = translateBaseLang || undefined;
+    const activeBase = result.versions[activeLang]?.content_md ? activeLang : undefined;
+    const sourceBase = result.versions[result.sourceLang]?.content_md ? result.sourceLang : undefined;
+    const src = baseLang ?? dropdownBase ?? activeBase ?? sourceBase ?? availableBases[0];
 
     if (!src) {
       setError("No base language available for translation");
@@ -232,6 +235,11 @@ export default function BlogTab() {
     }
 
     const targets = (["de", "fr", "en"] as Lang[]).filter((l) => l !== src);
+    if (targets.length === 0) {
+      setError("No target languages available");
+      return;
+    }
+
     setError(null);
     setTranslating(true);
     try {
@@ -795,14 +803,21 @@ export default function BlogTab() {
               Cancel
             </button>
             {(() => {
-              const availableBases = (["de", "fr", "en"] as Lang[]).filter((l) => !!result.versions[l]);
+              const availableBases = (["de", "fr", "en"] as Lang[]).filter((l) => !!result.versions[l]?.content_md);
               if (availableBases.length === 0) return null;
+              const selectedBase = (translateBaseLang && availableBases.includes(translateBaseLang as Lang)
+                ? translateBaseLang
+                : availableBases.includes(activeLang)
+                  ? activeLang
+                  : availableBases.includes(result.sourceLang)
+                    ? result.sourceLang
+                    : availableBases[0]) as Lang;
               return (
                 <div className="flex items-center gap-2 border-2 border-gray-200 rounded-lg pl-3 pr-1 py-1">
                   <Languages size={14} className="text-gray-500" />
                   <span className="text-xs font-semibold text-gray-600">Translate from</span>
                   <select
-                    value={translateBaseLang || result.sourceLang}
+                    value={selectedBase}
                     onChange={(e) => setTranslateBaseLang(e.target.value as Lang)}
                     disabled={translating}
                     className="text-xs font-semibold bg-gray-50 border border-gray-200 rounded px-2 py-1 focus:outline-none"
@@ -812,7 +827,7 @@ export default function BlogTab() {
                     ))}
                   </select>
                   <button
-                    onClick={() => handleTranslate((translateBaseLang || result.sourceLang) as Lang)}
+                    onClick={() => handleTranslate(selectedBase)}
                     disabled={translating}
                     className="px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
                   >

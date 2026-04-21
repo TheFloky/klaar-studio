@@ -16,6 +16,7 @@ import AuditReport from "./pages/AuditReport.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import BlogIndex from "./pages/BlogIndex.tsx";
 import BlogPost from "./pages/BlogPost.tsx";
+import BlogTopic from "./pages/BlogTopic.tsx";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ function AppRoutes() {
       <Route path="/:lang/privacy" element={<Privacy />} />
       <Route path="/:lang/maintenance" element={<Maintenance />} />
       <Route path="/:lang/blog" element={<BlogIndex />} />
+      <Route path="/:lang/blog/topic/:topic" element={<BlogTopic />} />
       <Route path="/:lang/blog/:slug" element={<BlogPost />} />
       <Route path="/:lang" element={<Index />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

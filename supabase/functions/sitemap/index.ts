@@ -21,7 +21,7 @@ serve(async (req) => {
 
     const { data: posts } = await supabase
       .from("blog_posts")
-      .select("slug, alt_slugs, lang, published_at, updated_at")
+      .select("slug, alt_slugs, lang, tags, published_at, updated_at")
       .eq("status", "published")
       .order("published_at", { ascending: false });
 
@@ -42,7 +42,9 @@ serve(async (req) => {
       }
     }
 
-    // Blog posts (canonical only — alt slugs redirect to canonical, no need to list)
+    // Blog posts (canonical) + topic hubs
+    const topicSet = new Set<string>(); // "lang|slug"
+    const tagSlug = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     for (const p of posts || []) {
       const lastmod = (p.updated_at || p.published_at || today).split("T")[0];
       urls += `  <url>
@@ -50,6 +52,20 @@ serve(async (req) => {
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+`;
+      for (const tag of (p.tags as string[] | null) || []) {
+        const ts = tagSlug(tag);
+        if (ts) topicSet.add(`${p.lang}|${ts}`);
+      }
+    }
+    for (const key of topicSet) {
+      const [l, s] = key.split("|");
+      urls += `  <url>
+    <loc>${SITE}/${l}/blog/topic/${s}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
 `;
     }

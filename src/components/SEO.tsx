@@ -15,6 +15,10 @@ interface SEOProps {
   alternates?: Partial<Record<Lang, string>>;
   noindex?: boolean;
   type?: 'website' | 'article';
+  /** Override the canonical URL (e.g. for alt-slug pages pointing back to the main post). Path without leading slash. */
+  canonicalPath?: string;
+  /** Optional cover/share image URL */
+  image?: string;
 }
 
 export default function SEO({
@@ -25,8 +29,11 @@ export default function SEO({
   alternates,
   noindex,
   type = 'website',
+  canonicalPath,
+  image,
 }: SEOProps) {
-  const canonical = `${SITE_URL}/${path}`.replace(/\/+$/, '');
+  const canonical = `${SITE_URL}/${canonicalPath ?? path}`.replace(/\/+$/, '');
+  const ogImage = image || OG_IMAGE;
   const htmlLang = lang === 'de' ? 'de-CH' : lang === 'fr' ? 'fr-CH' : 'en';
 
   return (
@@ -62,7 +69,7 @@ export default function SEO({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonical} />
-      <meta property="og:image" content={OG_IMAGE} />
+      <meta property="og:image" content={ogImage} />
       <meta property="og:locale" content={htmlLang.replace('-', '_')} />
 
       {/* Twitter */}
@@ -70,7 +77,7 @@ export default function SEO({
       <meta name="twitter:site" content="@klaarStudio" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={OG_IMAGE} />
+      <meta name="twitter:image" content={ogImage} />
     </Helmet>
   );
 }

@@ -208,9 +208,9 @@ export default function BlogTab() {
     }
   }
 
-  async function handleTranslate() {
+  async function handleTranslate(baseLang?: Lang) {
     if (!result) return;
-    const src = result.sourceLang;
+    const src = baseLang ?? result.sourceLang;
     const sourceVersion = result.versions[src];
     if (!sourceVersion) return;
     const targets = (["de", "fr", "en"] as Lang[]).filter((l) => l !== src);

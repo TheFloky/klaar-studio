@@ -518,27 +518,45 @@ export default function BlogTab() {
       {step === "review" && result && (
         <>
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-              <div className="flex gap-1">
-                {(["de", "fr", "en"] as Lang[]).map((l) => (
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 flex-wrap gap-3">
+              <div className="flex gap-1 items-center">
+                {(["de", "fr", "en"] as Lang[]).map((l) => {
+                  const exists = !!result.versions[l];
+                  return (
+                    <button
+                      key={l}
+                      onClick={() => {
+                        if (!exists) return;
+                        setActiveLang(l);
+                        if (!factChecks[l]) runFactCheck(result, l);
+                      }}
+                      disabled={!exists}
+                      className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                        activeLang === l ? "bg-gray-900 text-white" :
+                        exists ? "text-gray-500 hover:bg-gray-100" : "text-gray-300 cursor-not-allowed"
+                      }`}
+                      title={exists ? "" : "Not generated yet — click Translate"}
+                    >
+                      <Languages size={12} /> {LANG_LABELS[l]}
+                      {exists && factChecks[l] && (
+                        factChecks[l]!.approved
+                          ? <CheckCircle2 size={12} className={activeLang === l ? "text-green-300" : "text-green-600"} />
+                          : <AlertTriangle size={12} className={activeLang === l ? "text-yellow-300" : "text-yellow-600"} />
+                      )}
+                      {!exists && <span className="text-[9px] uppercase tracking-wider opacity-60">pending</span>}
+                    </button>
+                  );
+                })}
+                {(["de", "fr", "en"] as Lang[]).some((l) => !result.versions[l]) && (
                   <button
-                    key={l}
-                    onClick={() => {
-                      setActiveLang(l);
-                      if (!factChecks[l]) runFactCheck(result, l);
-                    }}
-                    className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                      activeLang === l ? "bg-gray-900 text-white" : "text-gray-500 hover:bg-gray-100"
-                    }`}
+                    onClick={handleTranslate}
+                    disabled={translating}
+                    className="ml-2 flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-50"
                   >
-                    <Languages size={12} /> {LANG_LABELS[l]}
-                    {factChecks[l] && (
-                      factChecks[l]!.approved
-                        ? <CheckCircle2 size={12} className={activeLang === l ? "text-green-300" : "text-green-600"} />
-                        : <AlertTriangle size={12} className={activeLang === l ? "text-yellow-300" : "text-yellow-600"} />
-                    )}
+                    {translating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
+                    Translate to other languages
                   </button>
-                ))}
+                )}
               </div>
               <div className="flex items-center gap-3 text-xs text-gray-500">
                 <span>Slug: <code className="text-gray-700">{result.slug}</code></span>

@@ -680,7 +680,42 @@ export default function BlogTab() {
 
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-3">
-              <ImageIcon size={16} className="text-[#FF0000]" />
+              <RefreshCw size={16} className="text-[#FF0000]" />
+              <h3 className="text-sm font-bold text-gray-900">Revise — {LANG_LABELS[activeLang]}</h3>
+              {revising && <Loader2 size={14} className="animate-spin text-gray-400" />}
+            </div>
+            <p className="text-xs text-gray-500 mb-2">
+              Add your own improvement notes. Fact-checker issues for this language will be appended automatically.
+            </p>
+            <textarea
+              value={reviseFeedback}
+              onChange={(e) => setReviseFeedback(e.target.value)}
+              rows={4}
+              placeholder="e.g. Add a section about TWINT integration. Tone is too formal — make paragraph 3 friendlier."
+              className="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50 font-mono"
+              disabled={revising}
+            />
+            <div className="flex items-center justify-between mt-3">
+              <span className="text-xs text-gray-400">
+                {factChecks[activeLang]?.issues.length
+                  ? `${factChecks[activeLang]!.issues.length} fact-check issue(s) will be included`
+                  : "No fact-check issues to include"}
+              </span>
+              <button
+                onClick={handleRevise}
+                disabled={revising || (!reviseFeedback.trim() && !factChecks[activeLang]?.issues.length) || !result.versions[activeLang]}
+                className="px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-black disabled:opacity-40 transition-all flex items-center gap-2"
+              >
+                {revising ? <Loader2 size={12} className="animate-spin" /> : <Wand2 size={12} />}
+                Rerun AI with Feedback
+              </button>
+            </div>
+            {(["de", "fr", "en"] as Lang[]).filter((l) => l !== activeLang && result.versions[l]).length > 0 && (
+              <p className="text-[11px] text-yellow-600 mt-2">
+                ⚠ Other language versions will become out of sync. Re-run translation after revising.
+              </p>
+            )}
+          </div>
               <h3 className="text-sm font-bold text-gray-900">Cover Image</h3>
               {findingCover && <Loader2 size={14} className="animate-spin text-gray-400" />}
             </div>

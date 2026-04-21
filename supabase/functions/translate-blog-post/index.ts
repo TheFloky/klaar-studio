@@ -33,12 +33,13 @@ const VERSION_META_SYSTEM = `You are a senior SEO editor for klaar Studio.
 
 Given a completed markdown blog article in one language, return ONLY the metadata via the tool.
 
-Rules:
-- title ≤ 80 chars
-- seo_title ≤ 60 chars
-- seo_description ≤ 155 chars
-- excerpt ≤ 220 chars
-- Be specific, professional, and aligned with the article content.`;
+CRITICAL TITLE RULES — write for how people actually Google:
+- title: prefer question-form ("Brauche ich…", "Comment…", "Do I need…") or how-to ("How to…", "5 Schritte…"). Avoid noun-stacked corporate titles.
+- title ≤ 70 chars
+- seo_title ≤ 58 chars (HARD limit)
+- seo_description ≤ 150 chars (HARD limit). Include keyword + benefit. Active voice.
+- excerpt ≤ 200 chars. Hook the reader.
+- Use natural search vocabulary in the target language.`;
 
 async function fetchGateway(body: unknown, apiKey: string) {
   const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -85,10 +86,10 @@ async function generateVersionMeta(content_md: string, lang: Lang, apiKey: strin
         parameters: {
           type: "object",
           properties: {
-            title: { type: "string", maxLength: 80 },
-            seo_title: { type: "string", maxLength: 60 },
-            seo_description: { type: "string", maxLength: 160 },
-            excerpt: { type: "string", maxLength: 220 },
+            title: { type: "string", maxLength: 70 },
+            seo_title: { type: "string", maxLength: 58 },
+            seo_description: { type: "string", maxLength: 150 },
+            excerpt: { type: "string", maxLength: 200 },
           },
           required: ["title", "seo_title", "seo_description", "excerpt"],
           additionalProperties: false,

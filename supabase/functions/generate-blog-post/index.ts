@@ -27,8 +27,8 @@ From the user's raw notes, extract shared metadata for a blog post (slug, tags, 
 
 Rules:
 - slug: kebab-case, ASCII only, no diacritics, max 60 chars, derived from the source-language topic
-- tags: 4-8 relevant
-- external_links: 1-3 MAX, only fedlex.admin.ch, edoeb.admin.ch, eur-lex.europa.eu — never invent URLs. Empty array is OK.
+- tags: 4-8 SEPARATE tags, each 1-3 words MAX. NEVER concatenate multiple tags into one string. Examples: ["nDSG", "Datenschutz", "Cookie Banner"] — NOT ["nDSG Datenschutz Cookie Banner"]
+- external_links: 2-4 authoritative sources. Allowed domains: fedlex.admin.ch, edoeb.admin.ch, eur-lex.europa.eu, bag.admin.ch, kmu.admin.ch, admin.ch, europa.eu. Never invent URLs — only use real, verifiable URLs you are confident exist.
 - stock_image_query: 3-5 English words for stock photo search
 - reading_time_min: integer (~200 words/min), assume 1000 words`;
 
@@ -42,6 +42,7 @@ Rules:
 - French: formal "vous".
 - Length: 800-1400 words.
 - Structure: clear H2/H3 markdown headings, short paragraphs, bullet lists.
+- Use H2 headings phrased as questions people actually search (e.g. "Brauche ich ein Impressum?", "Comment gérer les cookies ?", "What does FADP require?").
 - Do NOT include JSON, frontmatter, or code fences.
 - Do NOT include a title line or H1 heading at the top.
 - End with a single short CTA paragraph pointing to klaar-studio.ch services.
@@ -53,12 +54,13 @@ const VERSION_META_SYSTEM = `You are a senior SEO editor for klaar Studio.
 
 Given a completed markdown blog article in one language, return ONLY the metadata via the tool.
 
-Rules:
-- title ≤ 80 chars
-- seo_title ≤ 60 chars
-- seo_description ≤ 155 chars
-- excerpt ≤ 220 chars
-- Be specific, professional, and aligned with the article content.`;
+CRITICAL TITLE RULES — write for how people actually Google, not corporate brochures:
+- title: a natural, conversational headline. Prefer question-form ("Brauche ich für meine Website ein Impressum?", "Comment rendre mon site web conforme à la LPD ?", "Do I need a cookie banner in Switzerland?") or strong how-to/listicle ("5 Schritte zur nDSG-Konformität", "How to make your Swiss website legal in 2026"). Avoid noun-stacked corporate titles like "Schweizer Website: Impressum, Datenschutz & Cookies rechtlich korrekt".
+- title ≤ 70 chars
+- seo_title ≤ 58 chars (HARD limit — Google truncates at 60). Match the conversational style of the title.
+- seo_description ≤ 150 chars (HARD limit — Google truncates at ~160). Include the primary keyword AND a benefit. Active voice.
+- excerpt ≤ 200 chars. Hook the reader.
+- Use the language's natural search vocabulary (German: "Brauche ich…", "Wie…", "Was…"; French: "Comment…", "Faut-il…", "Dois-je…"; English: "How to…", "Do I need…", "What is…").`;
 
 async function fetchGateway(body: unknown, apiKey: string) {
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -173,10 +175,10 @@ async function generateVersionMeta(content_md: string, lang: Lang, apiKey: strin
         parameters: {
           type: "object",
           properties: {
-            title: { type: "string", maxLength: 80 },
-            seo_title: { type: "string", maxLength: 60 },
-            seo_description: { type: "string", maxLength: 160 },
-            excerpt: { type: "string", maxLength: 220 },
+            title: { type: "string", maxLength: 70 },
+            seo_title: { type: "string", maxLength: 58 },
+            seo_description: { type: "string", maxLength: 150 },
+            excerpt: { type: "string", maxLength: 200 },
           },
           required: ["title", "seo_title", "seo_description", "excerpt"],
           additionalProperties: false,
@@ -230,7 +232,12 @@ serve(async (req) => {
     }
 
     const meta = await generateMetadata(sourceText, topic, sourceLang as Lang, LOVABLE_API_KEY);
-    console.log("Metadata generated", { slug: meta.slug });
+    // Safety: split any accidentally-concatenated tags ("a b c" → ["a","b","c"]) and dedupe
+    if (Array.isArray(meta.tags)) {
+      const flat = meta.tags.flatMap((t: string) => String(t).split(/[,;|\n]/g).flatMap((s) => s.trim().split(/\s{2,}/g))).map((s: string) => s.trim()).filter(Boolean);
+      meta.tags = Array.from(new Set(flat)).slice(0, 8);
+    }
+    console.log("Metadata generated", { slug: meta.slug, tagCount: meta.tags?.length });
 
     const content_md = await generateArticleBody(sourceText, topic, sourceLang as Lang, meta.slug, LOVABLE_API_KEY);
     const versionMeta = await generateVersionMeta(content_md, sourceLang as Lang, LOVABLE_API_KEY) as VersionMeta;

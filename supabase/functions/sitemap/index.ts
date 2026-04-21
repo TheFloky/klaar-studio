@@ -21,7 +21,7 @@ serve(async (req) => {
 
     const { data: posts } = await supabase
       .from("blog_posts")
-      .select("slug, lang, published_at, updated_at")
+      .select("slug, alt_slugs, lang, published_at, updated_at")
       .eq("status", "published")
       .order("published_at", { ascending: false });
 
@@ -42,7 +42,7 @@ serve(async (req) => {
       }
     }
 
-    // Blog posts
+    // Blog posts (canonical only — alt slugs redirect to canonical, no need to list)
     for (const p of posts || []) {
       const lastmod = (p.updated_at || p.published_at || today).split("T")[0];
       urls += `  <url>

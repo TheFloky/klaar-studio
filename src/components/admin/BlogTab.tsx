@@ -13,6 +13,17 @@ interface BlogVersion {
   seo_description: string;
   excerpt: string;
   content_md: string;
+  alt_slugs: string[];
+}
+
+function sanitizeSlug(s: string): string {
+  return String(s)
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
 }
 
 interface GenerationResult {

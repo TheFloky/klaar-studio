@@ -277,6 +277,7 @@ export default function BlogTab() {
       setCoverOptions([]);
       setAiCover(null);
       setSelectedCover(null);
+      try { sessionStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
       await fetchPosts();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Publish failed");

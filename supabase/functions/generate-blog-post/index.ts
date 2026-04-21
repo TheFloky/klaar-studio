@@ -8,16 +8,11 @@ const corsHeaders = {
 const LANGS = ["de", "fr", "en"] as const;
 type Lang = typeof LANGS[number];
 
-type ExternalLink = { url: string; label: string; context: string };
 type VersionMeta = {
   title: string;
   seo_title: string;
   seo_description: string;
   excerpt: string;
-};
-
-type GeneratedVersion = VersionMeta & {
-  content_md: string;
 };
 
 const LANG_NAMES: Record<Lang, string> = {
@@ -52,6 +47,8 @@ Rules:
 - End with a single short CTA paragraph pointing to klaar-studio.ch services.
 - Return only the markdown article body.`;
 
+const REVISE_SYSTEM = `You are a senior editor for "klaar Studio". Revise the existing markdown blog article to address the feedback below. Keep the same language, tone, and structure rules (Swiss "ss", "Sie", H2/H3, 800-1400 words, no H1, no frontmatter, end with short CTA). Return ONLY the revised markdown article body.`;
+
 const VERSION_META_SYSTEM = `You are a senior SEO editor for klaar Studio.
 
 Given a completed markdown blog article in one language, return ONLY the metadata via the tool.
@@ -66,10 +63,7 @@ Rules:
 async function fetchGateway(body: unknown, apiKey: string) {
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
@@ -80,32 +74,26 @@ async function fetchGateway(body: unknown, apiKey: string) {
     console.error("Gateway error", response.status, text);
     throw new Error(`AI gateway error: ${response.status}`);
   }
-
   return response.json();
 }
 
 async function callGatewayTool(body: unknown, apiKey: string) {
   const data = await fetchGateway(body, apiKey);
-  const message = data.choices?.[0]?.message;
-  const toolCall = message?.tool_calls?.[0];
-
+  const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
   if (!toolCall) {
     console.error("No tool call in response", JSON.stringify(data).slice(0, 1200));
     throw new Error("AI returned no tool call");
   }
-
   return JSON.parse(toolCall.function.arguments);
 }
 
 async function callGatewayText(body: unknown, apiKey: string) {
   const data = await fetchGateway(body, apiKey);
   const text = data.choices?.[0]?.message?.content;
-
   if (typeof text !== "string" || !text.trim()) {
     console.error("No text content in response", JSON.stringify(data).slice(0, 1200));
     throw new Error("AI returned empty content");
   }
-
   return text.trim();
 }
 
@@ -115,10 +103,7 @@ async function generateMetadata(sourceText: string, topic: string, sourceLang: L
     max_completion_tokens: 4000,
     messages: [
       { role: "system", content: META_SYSTEM },
-      {
-        role: "user",
-        content: `SOURCE LANGUAGE: ${sourceLang}\nTOPIC: ${topic || "(infer from notes)"}\n\nNOTES:\n"""\n${sourceText}\n"""`,
-      },
+      { role: "user", content: `SOURCE LANGUAGE: ${sourceLang}\nTOPIC: ${topic || "(infer from notes)"}\n\nNOTES:\n"""\n${sourceText}\n"""` },
     ],
     tools: [{
       type: "function",
@@ -136,11 +121,7 @@ async function generateMetadata(sourceText: string, topic: string, sourceLang: L
               type: "array",
               items: {
                 type: "object",
-                properties: {
-                  url: { type: "string" },
-                  label: { type: "string" },
-                  context: { type: "string" },
-                },
+                properties: { url: { type: "string" }, label: { type: "string" }, context: { type: "string" } },
                 required: ["url", "label", "context"],
               },
             },
@@ -154,18 +135,24 @@ async function generateMetadata(sourceText: string, topic: string, sourceLang: L
   }, apiKey);
 }
 
-async function generateArticleBody(sourceText: string, topic: string, lang: Lang, sourceLang: Lang, slug: string, apiKey: string) {
-  const isSource = lang === sourceLang;
-
+async function generateArticleBody(sourceText: string, topic: string, lang: Lang, slug: string, apiKey: string) {
   return callGatewayText({
     model: "google/gemini-2.5-pro",
     max_completion_tokens: 12000,
     messages: [
       { role: "system", content: POST_SYSTEM },
-      {
-        role: "user",
-        content: `TARGET LANGUAGE: ${LANG_NAMES[lang]}\nSHARED SLUG (do not change): ${slug}\nTOPIC HINT: ${topic || "(infer from notes)"}\n\n${isSource ? `Write the article in ${lang}` : `Translate and adapt the article into ${lang} from the source notes`} using the notes below.\n\nNOTES:\n"""\n${sourceText}\n"""`,
-      },
+      { role: "user", content: `TARGET LANGUAGE: ${LANG_NAMES[lang]}\nSHARED SLUG (do not change): ${slug}\nTOPIC HINT: ${topic || "(infer from notes)"}\n\nWrite the article in ${lang} using the notes below.\n\nNOTES:\n"""\n${sourceText}\n"""` },
+    ],
+  }, apiKey);
+}
+
+async function reviseArticleBody(currentMd: string, feedback: string, lang: Lang, apiKey: string) {
+  return callGatewayText({
+    model: "google/gemini-2.5-pro",
+    max_completion_tokens: 12000,
+    messages: [
+      { role: "system", content: REVISE_SYSTEM },
+      { role: "user", content: `LANGUAGE: ${LANG_NAMES[lang]}\n\nFEEDBACK / IMPROVEMENT POINTS:\n"""\n${feedback}\n"""\n\nCURRENT ARTICLE:\n"""\n${currentMd}\n"""` },
     ],
   }, apiKey);
 }
@@ -176,10 +163,7 @@ async function generateVersionMeta(content_md: string, lang: Lang, apiKey: strin
     max_completion_tokens: 1500,
     messages: [
       { role: "system", content: VERSION_META_SYSTEM },
-      {
-        role: "user",
-        content: `LANGUAGE: ${LANG_NAMES[lang]}\n\nARTICLE:\n"""\n${content_md}\n"""`,
-      },
+      { role: "user", content: `LANGUAGE: ${LANG_NAMES[lang]}\n\nARTICLE:\n"""\n${content_md}\n"""` },
     ],
     tools: [{
       type: "function",
@@ -203,74 +187,63 @@ async function generateVersionMeta(content_md: string, lang: Lang, apiKey: strin
   }, apiKey);
 }
 
-async function generateVersion(sourceText: string, topic: string, lang: Lang, sourceLang: Lang, slug: string, apiKey: string): Promise<GeneratedVersion> {
-  const content_md = await generateArticleBody(sourceText, topic, lang, sourceLang, slug, apiKey);
-  const meta = await generateVersionMeta(content_md, lang, apiKey) as VersionMeta;
-
-  return {
-    ...meta,
-    content_md,
-  };
+function errorResponse(message: string) {
+  if (message === "RATE_LIMIT") {
+    return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again in a minute." }),
+      { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
+  if (message === "CREDITS_EXHAUSTED") {
+    return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Workspace settings." }),
+      { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
+  return new Response(JSON.stringify({ error: message }),
+    { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { sourceText, topic, sourceLang = "de" } = await req.json();
-
-    if (!sourceText || sourceText.length < 30) {
-      return new Response(JSON.stringify({ error: "sourceText too short (min 30 chars)" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const body = await req.json();
+    const mode: "generate" | "revise" = body.mode || "generate";
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
+    if (mode === "revise") {
+      const { current_md, feedback, lang } = body;
+      if (!current_md || !feedback || !lang) {
+        return new Response(JSON.stringify({ error: "current_md, feedback, lang required" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const content_md = await reviseArticleBody(current_md, feedback, lang as Lang, LOVABLE_API_KEY);
+      const meta = await generateVersionMeta(content_md, lang as Lang, LOVABLE_API_KEY) as VersionMeta;
+      return new Response(JSON.stringify({ ...meta, content_md }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // mode === "generate" — source language only
+    const { sourceText, topic, sourceLang = "de" } = body;
+    if (!sourceText || sourceText.length < 30) {
+      return new Response(JSON.stringify({ error: "sourceText too short (min 30 chars)" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const meta = await generateMetadata(sourceText, topic, sourceLang as Lang, LOVABLE_API_KEY);
-    console.log("Metadata generated", { slug: meta.slug, tags: meta.tags?.length, links: meta.external_links?.length });
+    console.log("Metadata generated", { slug: meta.slug });
 
-    const versionEntries = await Promise.all(
-      LANGS.map(async (lang) => {
-        const version = await generateVersion(sourceText, topic, lang, sourceLang as Lang, meta.slug, LOVABLE_API_KEY);
-        console.log(`Version ${lang} generated`, {
-          titleLength: version.title.length,
-          bodyLength: version.content_md.length,
-          seoTitleLength: version.seo_title.length,
-        });
-        return [lang, version] as const;
-      })
-    );
+    const content_md = await generateArticleBody(sourceText, topic, sourceLang as Lang, meta.slug, LOVABLE_API_KEY);
+    const versionMeta = await generateVersionMeta(content_md, sourceLang as Lang, LOVABLE_API_KEY) as VersionMeta;
 
-    const versions = Object.fromEntries(versionEntries);
+    const versions: Record<string, VersionMeta & { content_md: string }> = {
+      [sourceLang]: { ...versionMeta, content_md },
+    };
 
-    return new Response(JSON.stringify({ ...meta, versions }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify({ ...meta, versions, sourceLang }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("generate-blog-post error:", message);
-
-    if (message === "RATE_LIMIT") {
-      return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again in a minute." }), {
-        status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    if (message === "CREDITS_EXHAUSTED") {
-      return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Workspace settings." }), {
-        status: 402,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    return new Response(JSON.stringify({ error: message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(message);
   }
 });

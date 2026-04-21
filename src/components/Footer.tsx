@@ -14,7 +14,9 @@ export default function Footer({ t }: { t: Translations }) {
             <p className="text-[0.5rem] font-medium tracking-[0.25em] uppercase text-muted-foreground">Studio</p>
           </div>
           <p className="text-sm text-muted-foreground">info@klaar-studio.ch</p>
-          <div className="flex gap-4 mt-4">
+          <div className="flex flex-wrap justify-center gap-4 mt-4">
+            <Link to={`/${l}/blog`} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Journal</Link>
+            <span className="text-xs text-muted-foreground">·</span>
             <Link to={`/${l}/impressum`} className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t.footer.impressum}</Link>
             <span className="text-xs text-muted-foreground">·</span>
             <Link to={`/${l}/privacy`} className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t.footer.privacy}</Link>

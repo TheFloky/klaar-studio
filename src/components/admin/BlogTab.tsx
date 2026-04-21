@@ -547,17 +547,8 @@ export default function BlogTab() {
                     </button>
                   );
                 })}
-                {(["de", "fr", "en"] as Lang[]).some((l) => !result.versions[l]) && (
-                  <button
-                    onClick={handleTranslate}
-                    disabled={translating}
-                    className="ml-2 flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-50"
-                  >
-                    {translating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
-                    Translate to other languages
-                  </button>
-                )}
               </div>
+
               <div className="flex items-center gap-3 text-xs text-gray-500">
                 <span>Slug: <code className="text-gray-700">{result.slug}</code></span>
                 <span>·</span>

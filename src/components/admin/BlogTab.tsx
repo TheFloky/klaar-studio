@@ -235,7 +235,7 @@ export default function BlogTab() {
     if (!v) return;
     setFactChecking(true);
     try {
-      const v = r.versions[lang];
+      
       const { data, error: fnErr } = await supabase.functions.invoke("fact-check-blog-post", {
         body: { title: v.title, content_md: v.content_md, lang, external_links: r.external_links },
       });

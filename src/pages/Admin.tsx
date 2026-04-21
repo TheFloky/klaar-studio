@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Shield, Users, Settings, CalendarDays, LogOut, Moon, Sun, Crosshair, BarChart3, PenSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuthReady } from "@/hooks/useAuthReady";
 import AdminLogin from "@/components/admin/AdminLogin";
 import ClientsTab from "@/components/admin/ClientsTab";
 import SettingsTab from "@/components/admin/SettingsTab";
@@ -25,29 +26,14 @@ type TabId = typeof TABS[number]["id"];
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<TabId>("prospecting");
-  const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { isReady, session } = useAuthReady();
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
   }, [dark]);
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setLoading(false);
-    });
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  if (loading) {
+  if (!isReady) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-400">Loading…</div>;
   }
 

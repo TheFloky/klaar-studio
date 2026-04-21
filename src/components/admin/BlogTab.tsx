@@ -292,18 +292,22 @@ export default function BlogTab() {
   }
 
   async function generateAiCover() {
+    setError(null);
     setFindingCover(true);
     try {
       const { data, error: fnErr } = await supabase.functions.invoke("find-blog-cover", {
-        body: { query: imageQueryOverride || result?.stock_image_query, fallbackToAi: true },
+        body: { query: imageQueryOverride || result?.stock_image_query, forceAi: true, fallbackToAi: true },
       });
       if (fnErr) throw new Error(fnErr.message);
+      if (data?.error) throw new Error(data.error);
       if (data?.ai) {
         setAiCover(data.ai);
         setSelectedCover(data.ai);
+      } else {
+        setError("AI image generation returned no image. Try again or refine the prompt.");
       }
     } catch (e) {
-      console.error(e);
+      setError(e instanceof Error ? e.message : "AI image generation failed");
     } finally {
       setFindingCover(false);
     }

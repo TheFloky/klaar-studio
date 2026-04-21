@@ -637,6 +637,47 @@ export default function BlogTab() {
                 />
               </div>
               <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 flex items-center gap-2">
+                  <Search size={12} />
+                  Alt Slugs — searchable URL variants ({(currentVersion.alt_slugs ?? []).length})
+                </label>
+                <p className="text-[11px] text-gray-400 mb-2">
+                  Each variant becomes a URL like <code>/{activeLang}/blog/&lt;slug&gt;</code> that redirects to the canonical post. Captures long-tail Google searches. Press Enter or comma to add.
+                </p>
+                <div className="flex flex-wrap gap-2 p-2 rounded-lg border border-gray-200 bg-gray-50 min-h-[44px]">
+                  {(currentVersion.alt_slugs ?? []).map((s) => (
+                    <span key={s} className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-gray-200 rounded text-xs font-mono text-gray-700">
+                      {s}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = (currentVersion.alt_slugs ?? []).filter((x) => x !== s);
+                          updateVersion(activeLang, "alt_slugs", next as unknown as string);
+                        }}
+                        className="text-gray-400 hover:text-red-500"
+                        aria-label={`Remove ${s}`}
+                      >×</button>
+                    </span>
+                  ))}
+                  <input
+                    placeholder="add-a-question-slug"
+                    onKeyDown={(e) => {
+                      const target = e.currentTarget;
+                      if (e.key === "Enter" || e.key === ",") {
+                        e.preventDefault();
+                        const cleaned = sanitizeSlug(target.value);
+                        if (!cleaned) return;
+                        const existing = currentVersion.alt_slugs ?? [];
+                        if (existing.includes(cleaned) || cleaned === result.slug) { target.value = ""; return; }
+                        updateVersion(activeLang, "alt_slugs", [...existing, cleaned] as unknown as string);
+                        target.value = "";
+                      }
+                    }}
+                    className="flex-1 min-w-[140px] px-2 py-1 text-xs bg-transparent focus:outline-none font-mono"
+                  />
+                </div>
+              </div>
+              <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 block">Content (Markdown)</label>
                 <textarea
                   value={currentVersion.content_md ?? ""}

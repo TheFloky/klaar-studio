@@ -52,13 +52,19 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
 
   const parsed = useMemo(() => parseCalLink(calLinkRaw), [calLinkRaw]);
 
+  // Per-mount namespace so each open of step 3 gets a fresh embed instance
+  const namespace = useMemo(
+    () => (embedKey ? `klaar-booking-${embedKey}` : 'klaar-booking'),
+    [embedKey]
+  );
+
   // Theme + UI styling for the embed once we reach step 3
   useEffect(() => {
-    if (step !== 3 || !parsed) return;
+    if (step !== 3 || !parsed || !embedKey) return;
     let cancelled = false;
     (async () => {
       try {
-        const cal = await getCalApi({ namespace: 'klaar-booking' });
+        const cal = await getCalApi({ namespace });
         if (cancelled) return;
         const isDark = document.documentElement.classList.contains('dark');
         cal('ui', {
@@ -94,7 +100,7 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
       }
     })();
 
-    // Fallback: if embed never reports ready in 10s, show error state
+    // Fallback: if embed never reports ready in 12s, show error state
     const timeout = setTimeout(() => {
       if (!cancelled) {
         setEmbedReady((r) => {
@@ -108,7 +114,7 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
       cancelled = true;
       clearTimeout(timeout);
     };
-  }, [step, parsed, name, email, business, needs, phone, website, selectedTier]);
+  }, [step, parsed, embedKey, namespace, name, email, business, needs, phone, website, selectedTier]);
 
   const handleContinueToCalendar = () => {
     setEmbedReady(false);

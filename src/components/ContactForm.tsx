@@ -27,9 +27,24 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
       });
   }, []);
 
-  const handleBook = async () => {
-    // Log the lead to the database
-    await supabase.from('bookings').insert({
+  const handleBook = () => {
+    // Open Cal.com booking page SYNCHRONOUSLY first to avoid popup blockers
+    const url = calLink || 'https://cal.com';
+    const params = new URLSearchParams({
+      name,
+      email,
+      notes: `Business: ${business}\nNeeds: ${needs}${selectedTier ? `\nTier: ${selectedTier}` : ''}`,
+    });
+    const bookingUrl = `${url}?${params.toString()}`;
+    const popup = window.open(bookingUrl, '_blank', 'noopener,noreferrer');
+
+    // If popup was blocked, fall back to same-tab navigation
+    if (!popup) {
+      window.location.href = bookingUrl;
+    }
+
+    // Log the lead to the database in the background (fire-and-forget)
+    supabase.from('bookings').insert({
       name,
       email,
       business,
@@ -38,16 +53,10 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
       slot_start: new Date().toISOString(),
       slot_end: new Date().toISOString(),
       status: 'pending_scheduling',
+    }).then(({ error }) => {
+      if (error) console.error('Failed to log booking:', error);
     });
 
-    // Open Cal.com booking page
-    const url = calLink || 'https://cal.com';
-    const params = new URLSearchParams({
-      name,
-      email,
-      notes: `Business: ${business}\nNeeds: ${needs}${selectedTier ? `\nTier: ${selectedTier}` : ''}`,
-    });
-    window.open(`${url}?${params.toString()}`, '_blank');
     setStep(3); // show success
   };
 

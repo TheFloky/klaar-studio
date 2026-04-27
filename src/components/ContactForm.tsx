@@ -321,13 +321,13 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
 
             <div className="glass-card rounded-2xl p-2 sm:p-4 overflow-hidden relative min-h-[640px]">
               {!embedReady && !embedError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10 bg-card/80 backdrop-blur-sm rounded-2xl">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-20 bg-card/95 backdrop-blur-sm rounded-2xl">
                   <Loader2 className="animate-spin text-primary" size={28} />
                   <p className="text-sm text-muted-foreground">{t.contact.loading}</p>
                 </div>
               )}
               {embedError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10 bg-card/95 rounded-2xl text-center px-6">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-20 bg-card/95 rounded-2xl text-center px-6">
                   <p className="text-sm text-foreground">{t.contact.noSlots}</p>
                   {parsed && (
                     <a
@@ -342,19 +342,29 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
                 </div>
               )}
 
-              {parsed ? (
-                <Cal
-                  namespace="klaar-booking"
-                  calLink={parsed.calLink}
-                  calOrigin={parsed.origin}
-                  config={calConfig}
-                  style={{ width: '100%', height: '100%', minHeight: '640px', overflow: 'scroll' }}
-                />
-              ) : (
+              {parsed && embedKey ? (
+                <div
+                  className="w-full h-full min-h-[640px] transition-opacity duration-200"
+                  style={{
+                    opacity: embedReady ? 1 : 0,
+                    pointerEvents: embedReady ? 'auto' : 'none',
+                  }}
+                  aria-hidden={!embedReady}
+                >
+                  <Cal
+                    key={embedKey}
+                    namespace={namespace}
+                    calLink={parsed.calLink}
+                    calOrigin={parsed.origin}
+                    config={calConfig}
+                    style={{ width: '100%', height: '100%', minHeight: '640px', overflow: 'scroll' }}
+                  />
+                </div>
+              ) : !parsed ? (
                 <div className="flex items-center justify-center min-h-[640px]">
                   <p className="text-sm text-muted-foreground">{t.contact.noSlots}</p>
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         )}

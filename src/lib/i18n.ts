@@ -539,7 +539,7 @@ type TranslationMap = {
     ctaButton: string;
     projects: Project[];
   };
-  contact: { title: string; steps: string[]; namePlaceholder: string; emailPlaceholder: string; businessPlaceholder: string; needsPlaceholder: string; next: string; back: string; submit: string; success: string; pickDate: string; loading: string; noSlots: string };
+  contact: { title: string; steps: string[]; namePlaceholder: string; emailPlaceholder: string; phonePlaceholder: string; websitePlaceholder: string; businessPlaceholder: string; needsPlaceholder: string; next: string; back: string; submit: string; success: string; pickDate: string; loading: string; noSlots: string };
   footer: { address: string; phone: string; impressum: string; privacy: string; rights: string };
 };
 export type Translations = TranslationMap;

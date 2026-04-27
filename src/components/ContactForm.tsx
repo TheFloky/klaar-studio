@@ -113,6 +113,8 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
   const handleContinueToCalendar = () => {
     setEmbedReady(false);
     setEmbedError(false);
+    // Force a fully fresh embed instance (new namespace key + cache-buster)
+    setEmbedKey(Date.now());
     // Log the lead in the background
     supabase.from('bookings').insert({
       name,

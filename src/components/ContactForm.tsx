@@ -35,6 +35,7 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [embedReady, setEmbedReady] = useState(false);
   const [embedError, setEmbedError] = useState(false);
+  const [embedKey, setEmbedKey] = useState<number | null>(null);
   const calContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

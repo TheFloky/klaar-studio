@@ -162,8 +162,11 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
     if (business) cfg['metadata[company]'] = business;
     if (website) cfg['metadata[website]'] = website;
     if (selectedTier) cfg['metadata[tier]'] = selectedTier;
+    // Cache-buster: forces Cal.com to treat this as a fresh session and
+    // re-fetch availability instead of reusing a stale iframe payload.
+    if (embedKey) cfg['_cb'] = String(embedKey);
     return cfg;
-  }, [name, email, phone, website, business, needs, selectedTier]);
+  }, [name, email, phone, website, business, needs, selectedTier, embedKey]);
 
   return (
     <section

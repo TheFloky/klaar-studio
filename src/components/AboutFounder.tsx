@@ -11,21 +11,21 @@ const COPY: Record<Lang, { eyebrow: string; name: string; role: string; body: st
     eyebrow: 'Über uns',
     name: 'Julian Vidal',
     role: 'Gründer, klaar Studio',
-    body: 'Hinter klaar Studio steht ein kleines, eingespieltes Team. Kein Konzern, keine Zwischenhändler. Sie sprechen direkt mit der Person, die Ihr Projekt verantwortet. Wir arbeiten in Deutsch, Französisch und Englisch, halten uns kompromisslos an Schweizer Datenschutzstandards und liefern, was wir versprechen, termingerecht und transparent.',
+    body: 'klaar Studio ist ein Schweizer Studio mit einem kleinen, eingespielten Team. Kein Konzern, keine Zwischenhändler. Sie sprechen direkt mit der Person, die Ihr Projekt verantwortet. Wir arbeiten in Deutsch, Französisch und Englisch, hosten ausschliesslich in der Schweiz, halten uns kompromisslos an das revidierte Datenschutzgesetz (nDSG) und liefern, was wir versprechen, termingerecht und transparent.',
     signature: 'Persönlich. Diskret. Verbindlich.',
   },
   fr: {
     eyebrow: 'À propos',
     name: 'Julian Vidal',
     role: 'Fondateur, klaar Studio',
-    body: 'Derrière klaar Studio se trouve une petite équipe soudée. Pas de grand groupe, pas d\'intermédiaires. Vous échangez directement avec la personne qui pilote votre projet. Nous travaillons en allemand, français et anglais, respectons sans compromis les standards suisses de protection des données et tenons nos engagements, dans les délais et en toute transparence.',
+    body: 'klaar Studio est un studio suisse, porté par une petite équipe soudée. Pas de grand groupe, pas d\'intermédiaires. Vous échangez directement avec la personne qui pilote votre projet. Nous travaillons en allemand, français et anglais, hébergeons exclusivement en Suisse, respectons sans compromis la nLPD et tenons nos engagements, dans les délais et en toute transparence.',
     signature: 'Personnel. Discret. Engagé.',
   },
   en: {
     eyebrow: 'About',
     name: 'Julian Vidal',
     role: 'Founder, klaar Studio',
-    body: 'Behind klaar Studio is a small, tight-knit team. No corporation, no middlemen. You speak directly with the person responsible for your project. We work in German, French, and English, adhere uncompromisingly to Swiss data protection standards, and deliver what we promise, on time and transparently.',
+    body: 'klaar Studio is a Swiss studio run by a small, tight-knit team. No corporation, no middlemen. You speak directly with the person responsible for your project. We work in German, French, and English, host exclusively in Switzerland, adhere uncompromisingly to the revised Swiss data protection law (nFADP), and deliver what we promise, on time and transparently.',
     signature: 'Personal. Discreet. Accountable.',
   },
 };
@@ -46,7 +46,7 @@ export default function AboutFounder({ lang }: AboutFounderProps) {
             {/* Photo */}
             <div className="relative shrink-0">
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-transparent blur-2xl" />
-              <div className="relative h-36 w-36 sm:h-44 sm:w-44 rounded-full overflow-hidden ring-1 ring-border shadow-xl">
+              <div className="relative h-44 w-44 sm:h-56 sm:w-56 rounded-full overflow-hidden ring-1 ring-border shadow-xl">
                 <img
                   src={julianPhoto}
                   alt={`${c.name}, ${c.role}`}

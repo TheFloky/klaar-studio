@@ -11,21 +11,21 @@ const COPY: Record<Lang, { eyebrow: string; name: string; role: string; body: st
     eyebrow: 'Über uns',
     name: 'Julian Vidal',
     role: 'Gründer, klaar Studio',
-    body: 'Hinter klaar Studio steht ein kleines, eingespieltes Team — kein Konzern, keine Zwischenhändler. Sie sprechen direkt mit der Person, die Ihr Projekt verantwortet. Wir arbeiten in Deutsch, Französisch und Englisch, halten uns kompromisslos an Schweizer Datenschutzstandards und liefern, was wir versprechen — termingerecht und transparent.',
+    body: 'Hinter klaar Studio steht ein kleines, eingespieltes Team. Kein Konzern, keine Zwischenhändler. Sie sprechen direkt mit der Person, die Ihr Projekt verantwortet. Wir arbeiten in Deutsch, Französisch und Englisch, halten uns kompromisslos an Schweizer Datenschutzstandards und liefern, was wir versprechen, termingerecht und transparent.',
     signature: 'Persönlich. Diskret. Verbindlich.',
   },
   fr: {
     eyebrow: 'À propos',
     name: 'Julian Vidal',
     role: 'Fondateur, klaar Studio',
-    body: 'Derrière klaar Studio se trouve une petite équipe soudée — pas de grand groupe, pas d\'intermédiaires. Vous échangez directement avec la personne qui pilote votre projet. Nous travaillons en allemand, français et anglais, respectons sans compromis les standards suisses de protection des données et tenons nos engagements — dans les délais, en toute transparence.',
+    body: 'Derrière klaar Studio se trouve une petite équipe soudée. Pas de grand groupe, pas d\'intermédiaires. Vous échangez directement avec la personne qui pilote votre projet. Nous travaillons en allemand, français et anglais, respectons sans compromis les standards suisses de protection des données et tenons nos engagements, dans les délais et en toute transparence.',
     signature: 'Personnel. Discret. Engagé.',
   },
   en: {
     eyebrow: 'About',
     name: 'Julian Vidal',
     role: 'Founder, klaar Studio',
-    body: 'Behind klaar Studio is a small, tight-knit team — no corporation, no middlemen. You speak directly with the person responsible for your project. We work in German, French, and English, adhere uncompromisingly to Swiss data protection standards, and deliver what we promise — on time and transparently.',
+    body: 'Behind klaar Studio is a small, tight-knit team. No corporation, no middlemen. You speak directly with the person responsible for your project. We work in German, French, and English, adhere uncompromisingly to Swiss data protection standards, and deliver what we promise, on time and transparently.',
     signature: 'Personal. Discreet. Accountable.',
   },
 };
@@ -50,7 +50,8 @@ export default function AboutFounder({ lang }: AboutFounderProps) {
                 <img
                   src={julianPhoto}
                   alt={`${c.name}, ${c.role}`}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover scale-125"
+                  style={{ objectPosition: '50% 15%' }}
                   loading="lazy"
                 />
               </div>

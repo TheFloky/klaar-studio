@@ -24,7 +24,7 @@ export default function Hero({ t }: HeroProps) {
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             {t.hero.badge}
           </div>
-          <h1 className="text-3xl sm:text-5xl lg:text-7xl xl:text-8xl font-extrabold leading-[1] tracking-tight text-foreground mb-6">
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold leading-[1] tracking-tight text-foreground mb-6">
             {t.hero.headline.split('\n').map((line, i) => (
               <span key={i} className="block">{line}</span>
             ))}

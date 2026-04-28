@@ -8,7 +8,7 @@ export default function Advantages({ t }: { t: Translations }) {
   const { ref, isVisible } = useScrollReveal();
 
   return (
-    <section ref={ref} className="py-24 sm:py-32" aria-label="Why choose klaar Studio">
+    <section ref={ref} className="py-16 sm:py-20" aria-label="Why choose klaar Studio">
       <div className="container">
         <h2 className="text-3xl sm:text-5xl font-extrabold text-center text-foreground mb-16">
           {t.advantage.title}

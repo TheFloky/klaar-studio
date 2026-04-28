@@ -16,7 +16,7 @@ export default function ComplianceChecker({ t }: { t: Translations }) {
   };
 
   return (
-    <section id="compliance" className="py-20 sm:py-28 relative z-10">
+    <section id="compliance" className="py-14 sm:py-16 relative z-10">
       <div className="container max-w-3xl text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
           <Shield size={16} />

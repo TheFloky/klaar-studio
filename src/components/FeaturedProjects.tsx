@@ -13,7 +13,7 @@ export default function FeaturedProjects({ t }: { t: Translations }) {
   const { ref, isVisible } = useScrollReveal();
 
   return (
-    <section ref={ref} className="py-24 sm:py-32 bg-secondary/30" aria-label="Portfolio and case studies">
+    <section ref={ref} className="py-16 sm:py-20 bg-secondary/30" aria-label="Portfolio and case studies">
       <div className="container">
         <h2 className="text-3xl sm:text-5xl font-extrabold text-center text-foreground mb-4">
           {t.portfolio.title}

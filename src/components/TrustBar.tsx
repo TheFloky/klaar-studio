@@ -9,7 +9,7 @@ export default function TrustBar() {
   const { ref, isVisible } = useScrollReveal();
 
   return (
-    <section ref={ref} className={`py-16 overflow-hidden transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <section ref={ref} className={`py-10 overflow-hidden transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
       <div className="flex animate-trust-scroll whitespace-nowrap">
         {items.map((item, i) => (
           <div

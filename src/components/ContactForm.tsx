@@ -172,7 +172,7 @@ export default function ContactForm({ t, selectedTier }: { t: Translations; sele
     <section
       id="contact"
       ref={ref}
-      className={`py-24 sm:py-32 transition-all duration-700 ${
+      className={`py-16 sm:py-20 transition-all duration-700 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
     >

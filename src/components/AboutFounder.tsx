@@ -50,8 +50,8 @@ export default function AboutFounder({ lang }: AboutFounderProps) {
                 <img
                   src={julianPhoto}
                   alt={`${c.name}, ${c.role}`}
-                  className="h-full w-full object-cover scale-125"
-                  style={{ objectPosition: '50% 15%' }}
+                  className="h-full w-full object-cover scale-110"
+                  style={{ objectPosition: '50% 0%' }}
                   loading="lazy"
                 />
               </div>

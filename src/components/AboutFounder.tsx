@@ -10,22 +10,22 @@ const COPY: Record<Lang, { eyebrow: string; name: string; role: string; body: st
   de: {
     eyebrow: 'Über uns',
     name: 'Julian Vidal',
-    role: 'Gründer, klaar Studio',
-    body: 'Hinter klaar Studio steht ein kleines, eingespieltes Team mit Schweizer Wurzeln. Kein Konzern, keine Zwischenhändler. Sie sprechen direkt mit der Person, die Ihr Projekt verantwortet. Wir arbeiten in Deutsch, Französisch und Englisch, kennen den Schweizer Markt aus erster Hand und halten uns kompromisslos an das revidierte Datenschutzgesetz (nDSG). Was wir versprechen, liefern wir, termingerecht und transparent.',
+    role: 'Gründer, Klaar Studio',
+    body: 'Hinter Klaar Studio steht ein kleines, eingespieltes Team mit Schweizer Wurzeln. Wir arbeiten in Deutsch, Französisch und Englisch, kennen den Schweizer Markt aus erster Hand und halten uns kompromisslos an das revidierte Datenschutzgesetz (nDSG). Was wir versprechen, liefern wir, termingerecht und transparent.',
     signature: 'Persönlich. Diskret. Verbindlich.',
   },
   fr: {
     eyebrow: 'À propos',
     name: 'Julian Vidal',
-    role: 'Fondateur, klaar Studio',
-    body: 'Derrière klaar Studio se trouve une petite équipe soudée, aux racines suisses. Pas de grand groupe, pas d\'intermédiaires. Vous échangez directement avec la personne qui pilote votre projet. Nous travaillons en allemand, français et anglais, connaissons le marché suisse de l\'intérieur et respectons sans compromis la nLPD. Ce que nous promettons, nous le livrons, dans les délais et en toute transparence.',
+    role: 'Fondateur, Klaar Studio',
+    body: 'Derrière Klaar Studio se trouve une petite équipe soudée, aux racines suisses. Nous travaillons en allemand, français et anglais, connaissons le marché suisse de l\'intérieur et respectons sans compromis la nLPD. Ce que nous promettons, nous le livrons, dans les délais et en toute transparence.',
     signature: 'Personnel. Discret. Engagé.',
   },
   en: {
     eyebrow: 'About',
     name: 'Julian Vidal',
-    role: 'Founder, klaar Studio',
-    body: 'Behind klaar Studio is a small, tight-knit team with Swiss roots. No corporation, no middlemen. You speak directly with the person responsible for your project. We work in German, French, and English, know the Swiss market firsthand, and adhere uncompromisingly to the revised Swiss data protection law (nFADP). What we promise, we deliver, on time and transparently.',
+    role: 'Founder, Klaar Studio',
+    body: 'Behind Klaar Studio is a small, tight-knit team with Swiss roots. We work in German, French, and English, know the Swiss market firsthand, and adhere uncompromisingly to the revised Swiss data protection law (nFADP). What we promise, we deliver, on time and transparently.',
     signature: 'Personal. Discreet. Accountable.',
   },
 };

@@ -41,7 +41,7 @@ export default function AboutFounder({ lang }: AboutFounderProps) {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >
-        <div className="glass-panel rounded-2xl p-8 sm:p-12 md:p-16">
+        <div className="glass-card rounded-2xl p-8 sm:p-12 md:p-16">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
             {/* Photo */}
             <div className="relative shrink-0">

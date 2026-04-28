@@ -11,6 +11,7 @@ import InvestmentTiers from '@/components/InvestmentTiers';
 import FeaturedProjects from '@/components/FeaturedProjects';
 import TrustBar from '@/components/TrustBar';
 import ContactForm from '@/components/ContactForm';
+import AboutFounder from '@/components/AboutFounder';
 import Footer from '@/components/Footer';
 import ComplianceChecker from '@/components/ComplianceChecker';
 import SEO from '@/components/SEO';
@@ -66,6 +67,7 @@ export default function Index() {
       <InvestmentTiers t={t} onSelectTier={setSelectedTier} />
       
       <TrustBar />
+      <AboutFounder lang={lang} />
       <ContactForm t={t} selectedTier={selectedTier} />
       <Footer t={t} />
     </div>

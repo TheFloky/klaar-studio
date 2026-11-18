@@ -22,69 +22,55 @@ export default function FeaturedProjects({ t }: { t: Translations }) {
           {t.portfolio.subtitle}
         </p>
 
-        {/* Bento Grid */}
         <div
-          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto auto-rows-[280px] transition-all duration-700 ${
+          className={`grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto transition-all duration-700 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          {t.portfolio.projects.map((project, i) => {
-            // Large card for first, medium for second, small for third
-            const sizeClass =
-              i === 0
-                ? 'md:col-span-2 md:row-span-2 auto-rows-[280px]'
-                : '';
-
-            return (
-              <a
-                key={i}
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`group relative overflow-hidden rounded-xl bg-card border border-border cursor-pointer block ${sizeClass}`}
-                style={{ transitionDelay: `${i * 100}ms` }}
-              >
-                {/* Image */}
+          {t.portfolio.projects.map((project, i) => (
+            <a
+              key={i}
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col overflow-hidden rounded-xl bg-card border border-border transition-all duration-300 hover:border-foreground/20 hover:shadow-lg"
+              style={{ transitionDelay: `${i * 100}ms` }}
+            >
+              {/* Image */}
+              <div className="aspect-[16/10] overflow-hidden border-b border-border">
                 <img
                   src={images[i]}
                   alt={project.title}
                   loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
                 />
+              </div>
 
-                {/* Dark gradient — always visible, concentrated at bottom */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/10" />
-
-                {/* Hover overlay — centered result + CTA */}
-                <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 p-6 z-20">
-                  <p className="text-white text-sm font-medium text-center">{project.result}</p>
-                  <Button size="sm" variant="outline" className="border-white/30 text-white hover:bg-white/10">
-                    {t.portfolio.viewCase} <ArrowUpRight size={14} />
-                  </Button>
+              {/* Content */}
+              <div className="flex flex-col flex-1 p-5">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+                  {project.client}
+                </p>
+                <h3 className="font-bold text-foreground text-lg flex items-center gap-1.5">
+                  {project.title}
+                  <ArrowUpRight
+                    size={16}
+                    className="text-muted-foreground transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+                  />
+                </h3>
+                <p className="text-muted-foreground text-sm mt-2 line-clamp-2 flex-1">
+                  {project.desc}
+                </p>
+                <div className="flex gap-2 mt-4 flex-wrap">
+                  {project.tags.map((tag, ti) => (
+                    <Badge key={ti} variant="secondary" className="text-[10px]">
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
-
-                {/* Content — sits on top of gradient */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 z-10 transition-opacity duration-300 group-hover:opacity-0">
-                  <div className="flex gap-2 mb-2 flex-wrap">
-                    {project.tags.map((tag, ti) => (
-                      <Badge
-                        key={ti}
-                        variant="secondary"
-                        className="bg-white/10 text-white border-white/20 text-[10px]"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{project.client}</p>
-                  <h3 className={`font-bold text-white ${i === 0 ? 'text-xl' : 'text-base'}`}>
-                    {project.title}
-                  </h3>
-                  <p className="text-white/70 text-sm mt-1 line-clamp-2">{project.desc}</p>
-                </div>
-              </a>
-            );
-          })}
+              </div>
+            </a>
+          ))}
         </div>
 
         {/* CTA */}

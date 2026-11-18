@@ -3,11 +3,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Translations } from '@/lib/i18n';
-import jabeerwockyImg from '@/assets/portfolio-jabeerwocky.png';
-import ckSolutionsImg from '@/assets/portfolio-ck-solutions.jpg';
-import gearflowImg from '@/assets/portfolio-gearflow.jpg';
+import ventureImg from '@/assets/portfolio-venture.jpg.asset.json';
+import jabeerImg from '@/assets/portfolio-jabeer.jpg.asset.json';
+import stockImg from '@/assets/portfolio-stock.jpg.asset.json';
 
-const images = [jabeerwockyImg, ckSolutionsImg, gearflowImg];
+const images = [ventureImg.url, jabeerImg.url, stockImg.url];
 
 export default function FeaturedProjects({ t }: { t: Translations }) {
   const { ref, isVisible } = useScrollReveal();
@@ -36,9 +36,12 @@ export default function FeaturedProjects({ t }: { t: Translations }) {
                 : '';
 
             return (
-              <div
+              <a
                 key={i}
-                className={`group relative overflow-hidden rounded-xl bg-card border border-border cursor-pointer ${sizeClass}`}
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group relative overflow-hidden rounded-xl bg-card border border-border cursor-pointer block ${sizeClass}`}
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
                 {/* Image */}
@@ -50,7 +53,7 @@ export default function FeaturedProjects({ t }: { t: Translations }) {
                 />
 
                 {/* Dark gradient — always visible, concentrated at bottom */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/10" />
 
                 {/* Hover overlay — centered result + CTA */}
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 p-6 z-20">
@@ -79,7 +82,7 @@ export default function FeaturedProjects({ t }: { t: Translations }) {
                   </h3>
                   <p className="text-white/70 text-sm mt-1 line-clamp-2">{project.desc}</p>
                 </div>
-              </div>
+              </a>
             );
           })}
         </div>

@@ -57,58 +57,6 @@ const translations = {
       cta: 'Get Started',
       addons: 'Optional Add-ons → SEO (CHF 500/mo) · Ads Management (CHF 900/mo)',
       note: 'Not sure which package is right? Book a free 15-minute call and we\'ll help you decide.',
-      tiers: [
-        {
-          name: 'Starter Website',
-          price: 'CHF 2\'500',
-          monthly: 'CHF 79/mo Maintenance & Support (optional)',
-          description: 'Designed for businesses that need a clear, simple online presence — without unnecessary complexity.',
-          features: [
-            'One-Page Expert Design (homepage + Impressum & Privacy Policy)',
-            'Fully custom-designed (no templates)',
-            'Perfect on phones & tablets',
-            'Legally compliant (nDSG)',
-          ],
-        },
-        {
-          name: 'Business Website',
-          price: 'CHF 4\'000',
-          monthly: 'CHF 150/mo Maintenance & Support (optional)',
-          description: 'Built for businesses that want to attract clients, manage content, and grow their online presence.',
-          features: [
-            'Everything in Starter',
-            'Admin dashboard to manage content',
-            'SEO basics to increase digital visibility',
-            'Booking system or inventory tracker',
-            'Available in multiple languages',
-            'Swiss server hosting included',
-          ],
-        },
-        {
-          name: 'Online Shop',
-          price: 'CHF 5\'000',
-          monthly: 'CHF 200/mo Maintenance & Support (optional)',
-          description: 'Created for businesses ready to sell online with a fully integrated, scalable e-commerce system.',
-          features: [
-            'Everything in Business',
-            'Full Shopify or WooCommerce store',
-            'All Swiss payment methods included',
-            'Product catalog & stock management',
-          ],
-        },
-        {
-          name: 'klaar Elite',
-          price: 'CHF 7\'500+',
-          monthly: 'CHF 400/mo Maintenance & Support (optional)',
-          description: 'Buy back your time. Automation, AI and a high-performance digital presence that works while you sleep.',
-          features: [
-            'Everything in Online Shop',
-            'Custom AI tools to automate repetitive tasks',
-            'Advanced integrations & workflow automation',
-            'In-depth SEO & performance audit',
-          ],
-        },
-      ],
     },
     portfolio: {
       title: 'Our Work',
@@ -224,58 +172,6 @@ const translations = {
       cta: 'Jetzt starten',
       addons: 'Optionale Add-ons → SEO (CHF 500/Mt.) · Ads Management (CHF 900/Mt.)',
       note: 'Nicht sicher, welches Paket passt? Buchen Sie ein kostenloses 15-Minuten-Gespräch.',
-      tiers: [
-        {
-          name: 'Starter Website',
-          price: 'CHF 2\'500',
-          monthly: 'CHF 79/Mt. Wartung & Support (optional)',
-          description: 'Für Unternehmen, die eine klare, einfache Online-Präsenz brauchen — ohne unnötige Komplexität.',
-          features: [
-            'One-Page-Expertdesign (Startseite + Impressum & Datenschutz)',
-            'Vollständig individuell gestaltet (keine Templates)',
-            'Perfekt auf Handy & Tablet',
-            'Rechtskonform (nDSG)',
-          ],
-        },
-        {
-          name: 'Business Website',
-          price: 'CHF 4\'000',
-          monthly: 'CHF 150/Mt. Wartung & Support (optional)',
-          description: 'Für Unternehmen, die Kunden gewinnen, Inhalte verwalten und online wachsen wollen.',
-          features: [
-            'Alles aus Starter',
-            'Admin-Bereich zur Verwaltung',
-            'SEO-Grundlagen für digitale Sichtbarkeit',
-            'Buchungssystem oder Lagerverwaltung',
-            'Mehrsprachig verfügbar',
-            'Schweizer Server-Hosting inklusive',
-          ],
-        },
-        {
-          name: 'Online-Shop',
-          price: 'CHF 5\'000',
-          monthly: 'CHF 200/Mt. Wartung & Support (optional)',
-          description: 'Für Unternehmen, die online verkaufen möchten — mit einem voll integrierten, skalierbaren E-Commerce-System.',
-          features: [
-            'Alles aus Business',
-            'Kompletter Shopify / WooCommerce Shop',
-            'Alle Schweizer Zahlungsmethoden',
-            'Produktkatalog & Lagerverwaltung',
-          ],
-        },
-        {
-          name: 'klaar Elite',
-          price: 'CHF 7\'500+',
-          monthly: 'CHF 400/Mt. Wartung & Support (optional)',
-          description: 'Kaufen Sie sich Ihre Zeit zurück. Automatisierung, KI und eine leistungsstarke digitale Präsenz, die für Sie arbeitet — auch im Schlaf.',
-          features: [
-            'Alles aus Online-Shop',
-            'Individuelle KI-Tools zur Automatisierung repetitiver Aufgaben',
-            'Erweiterte Integrationen & Workflow-Automatisierung',
-            'Umfassendes SEO & Performance-Audit',
-          ],
-        },
-      ],
     },
     portfolio: {
       title: 'Unsere Arbeit',
@@ -391,58 +287,6 @@ const translations = {
       cta: 'Commencer',
       addons: 'Add-ons optionnels → SEO (CHF 500/mois) · Gestion Ads (CHF 900/mois)',
       note: 'Pas sûr du forfait idéal ? Réservez un appel gratuit de 15 minutes.',
-      tiers: [
-        {
-          name: 'Site Starter',
-          price: 'CHF 2\'500',
-          monthly: 'CHF 79/mois Maintenance & Support (optionnel)',
-          description: 'Conçu pour les entreprises qui ont besoin d\'une présence en ligne claire et simple — sans complexité inutile.',
-          features: [
-            'Design expert one-page (page d\'accueil + Mentions & Protection des données)',
-            'Design entièrement sur mesure (pas de templates)',
-            'Parfait sur mobile & tablette',
-            'Conforme juridiquement (nLPD)',
-          ],
-        },
-        {
-          name: 'Site Business',
-          price: 'CHF 4\'000',
-          monthly: 'CHF 150/mois Maintenance & Support (optionnel)',
-          description: 'Pour les entreprises qui veulent attirer des clients, gérer du contenu et développer leur présence en ligne.',
-          features: [
-            'Tout dans Starter',
-            'Tableau de bord pour gérer le contenu',
-            'Bases SEO pour la visibilité digitale',
-            'Système de réservation ou d\'inventaire',
-            'Disponible en plusieurs langues',
-            'Hébergement sur serveurs suisses inclus',
-          ],
-        },
-        {
-          name: 'Boutique en Ligne',
-          price: 'CHF 5\'000',
-          monthly: 'CHF 200/mois Maintenance & Support (optionnel)',
-          description: 'Pour les entreprises prêtes à vendre en ligne avec un système e-commerce intégré et évolutif.',
-          features: [
-            'Tout dans Business',
-            'Boutique Shopify / WooCommerce complète',
-            'Tous les moyens de paiement suisses',
-            'Catalogue produits & gestion des stocks',
-          ],
-        },
-        {
-          name: 'klaar Elite',
-          price: 'CHF 7\'500+',
-          monthly: 'CHF 400/mois Maintenance & Support (optionnel)',
-          description: 'Rachetez votre temps. Automatisation, IA et une présence digitale haute performance qui travaille pendant que vous dormez.',
-          features: [
-            'Tout dans Boutique en Ligne',
-            'Outils IA personnalisés pour automatiser les tâches répétitives',
-            'Intégrations avancées & automatisation de workflows',
-            'Audit SEO & performance approfondi',
-          ],
-        },
-      ],
     },
     portfolio: {
       title: 'Nos Réalisations',
@@ -506,15 +350,6 @@ const translations = {
 
 type SovereigntyItem = { title: string; text: string };
 
-type PricingTier = {
-  name: string;
-  price: string;
-  monthly: string;
-  description?: string;
-  features: string[];
-  note?: string;
-};
-
 type Project = {
   client: string;
   title: string;
@@ -539,7 +374,6 @@ type TranslationMap = {
     cta: string;
     addons: string;
     note: string;
-    tiers: PricingTier[];
   };
   portfolio: {
     title: string;

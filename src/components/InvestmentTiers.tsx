@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Star, ShoppingBag, Crown, Globe, Zap, Brain, HelpCircle, MessageCircle } from 'lucide-react';
+import { Check, Star, Globe, Zap, Package, HelpCircle, MessageCircle, Server } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
@@ -8,301 +8,139 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { Link, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Translations } from '@/lib/i18n';
+import { packages, packageCopy, aboTotal, chf, ABO_SETUP, ABO_MONTHS, CARE_MONTHLY, CARE_HOURLY, type PriceLang } from '@/lib/pricing';
 
-type SubscriptionTier = {
-  name: string;
-  setup: string;
-  monthly: string;
-  features: string[];
-  description?: string;
-  note?: string;
-};
+const icons = [Globe, Zap, Package];
 
-const subscriptionTiers: Record<string, SubscriptionTier[]> = {
-  en: [
-    {
-      name: 'Starter Website',
-      setup: 'CHF 299',
-      monthly: 'CHF 189/mo',
-      description: 'Your expert-designed one-page presence — no upfront investment needed. Maintenance included.',
-      features: [
-        'One-Page Expert Design (homepage + Impressum & Privacy Policy)',
-        'Fully custom-designed (no templates)',
-        'Perfect on phones & tablets',
-        'Legally compliant (nDSG)',
-        'Maintenance & Support included',
-      ],
-      note: '24-month commitment · First month free with setup',
-    },
-    {
-      name: 'Business Website',
-      setup: 'CHF 499',
-      monthly: 'CHF 325/mo',
-      description: 'A professional multi-page site with SEO basics for digital visibility. Maintenance included.',
-      features: [
-        'Everything in Starter',
-        'Admin dashboard to manage content',
-        'SEO basics for digital visibility',
-        'Available in multiple languages',
-        'Swiss server hosting included',
-        'Maintenance & Support included',
-      ],
-      note: '24-month commitment · First month free with setup',
-    },
-    {
-      name: 'Online Shop',
-      setup: 'CHF 799',
-      monthly: 'CHF 420/mo',
-      description: 'A complete e-commerce system ready to sell — all-inclusive. Maintenance included.',
-      features: [
-        'Everything in Business',
-        'Full Shopify or WooCommerce store',
-        'All Swiss payment methods included',
-        'Product catalog & stock management',
-        'Maintenance & Support included',
-      ],
-      note: '24-month commitment · First month free with setup',
-    },
-    {
-      name: 'klaar Elite',
-      setup: 'CHF 999',
-      monthly: 'CHF 739/mo',
-      description: 'Automation, AI tools & a high-performance presence — buy back your time. Maintenance included.',
-      features: [
-        'Everything in Online Shop',
-        'Custom AI tools to automate your work',
-        'Advanced integrations & smart features',
-        'In-depth SEO & performance audit',
-        'Maintenance & Support included',
-      ],
-      note: '24-month commitment · First month free with setup',
-    },
-  ],
-  de: [
-    {
-      name: 'Starter Website',
-      setup: 'CHF 299',
-      monthly: 'CHF 189/Mt.',
-      description: 'Ihre professionell gestaltete One-Page-Präsenz — ohne grosse Vorabinvestition. Wartung inklusive.',
-      features: [
-        'One-Page-Expertdesign (Startseite + Impressum & Datenschutz)',
-        'Vollständig individuell gestaltet (keine Templates)',
-        'Perfekt auf Handy & Tablet',
-        'Rechtskonform (nDSG)',
-        'Wartung & Support inklusive',
-      ],
-      note: '24 Monate Laufzeit · Erster Monat gratis bei Einrichtung',
-    },
-    {
-      name: 'Business Website',
-      setup: 'CHF 499',
-      monthly: 'CHF 325/Mt.',
-      description: 'Eine professionelle Mehrseiten-Website mit SEO-Grundlagen für mehr digitale Sichtbarkeit. Wartung inklusive.',
-      features: [
-        'Alles aus Starter',
-        'Admin-Bereich zur Verwaltung',
-        'SEO-Grundlagen für digitale Sichtbarkeit',
-        'Mehrsprachig verfügbar',
-        'Schweizer Server-Hosting inklusive',
-        'Wartung & Support inklusive',
-      ],
-      note: '24 Monate Laufzeit · Erster Monat gratis bei Einrichtung',
-    },
-    {
-      name: 'Online-Shop',
-      setup: 'CHF 799',
-      monthly: 'CHF 420/Mt.',
-      description: 'Ein komplettes E-Commerce-System, verkaufsbereit — alles inklusive. Wartung inklusive.',
-      features: [
-        'Alles aus Business',
-        'Kompletter Shopify / WooCommerce Shop',
-        'Alle Schweizer Zahlungsmethoden',
-        'Produktkatalog & Lagerverwaltung',
-        'Wartung & Support inklusive',
-      ],
-      note: '24 Monate Laufzeit · Erster Monat gratis bei Einrichtung',
-    },
-    {
-      name: 'klaar Elite',
-      setup: 'CHF 999',
-      monthly: 'CHF 739/Mt.',
-      description: 'Automatisierung, KI-Tools & eine leistungsstarke Präsenz — kaufen Sie sich Ihre Zeit zurück. Wartung inklusive.',
-      features: [
-        'Alles aus Online-Shop',
-        'Individuelle KI-Tools zur Automatisierung Ihrer Arbeit',
-        'Erweiterte Integrationen & smarte Features',
-        'Umfassendes SEO & Performance-Audit',
-        'Wartung & Support inklusive',
-      ],
-      note: '24 Monate Laufzeit · Erster Monat gratis bei Einrichtung',
-    },
-  ],
-  fr: [
-    {
-      name: 'Site Starter',
-      setup: 'CHF 299',
-      monthly: 'CHF 189/mois',
-      description: 'Votre présence one-page conçue par des experts — sans investissement initial. Maintenance incluse.',
-      features: [
-        'Design expert one-page (accueil + Mentions & Protection des données)',
-        'Design entièrement sur mesure (pas de templates)',
-        'Parfait sur mobile & tablette',
-        'Conforme juridiquement (nLPD)',
-        'Maintenance & Support inclus',
-      ],
-      note: 'Engagement 24 mois · Premier mois offert avec l\'installation',
-    },
-    {
-      name: 'Site Business',
-      setup: 'CHF 499',
-      monthly: 'CHF 325/mois',
-      description: 'Un site professionnel multi-pages avec les bases SEO pour la visibilité digitale. Maintenance incluse.',
-      features: [
-        'Tout dans Starter',
-        'Tableau de bord pour gérer le contenu',
-        'Bases SEO pour la visibilité digitale',
-        'Disponible en plusieurs langues',
-        'Hébergement sur serveurs suisses inclus',
-        'Maintenance & Support inclus',
-      ],
-      note: 'Engagement 24 mois · Premier mois offert avec l\'installation',
-    },
-    {
-      name: 'Boutique en Ligne',
-      setup: 'CHF 799',
-      monthly: 'CHF 420/mois',
-      description: 'Un système e-commerce complet prêt à vendre — tout inclus. Maintenance incluse.',
-      features: [
-        'Tout dans Business',
-        'Boutique Shopify / WooCommerce complète',
-        'Tous les moyens de paiement suisses',
-        'Catalogue produits & gestion des stocks',
-        'Maintenance & Support inclus',
-      ],
-      note: 'Engagement 24 mois · Premier mois offert avec l\'installation',
-    },
-    {
-      name: 'klaar Elite',
-      setup: 'CHF 999',
-      monthly: 'CHF 739/mois',
-      description: 'Automatisation, outils IA & présence haute performance — rachetez votre temps. Maintenance incluse.',
-      features: [
-        'Tout dans Boutique en Ligne',
-        'Outils IA personnalisés pour automatiser votre travail',
-        'Intégrations avancées & fonctionnalités intelligentes',
-        'Audit SEO & performance approfondi',
-        'Maintenance & Support inclus',
-      ],
-      note: 'Engagement 24 mois · Premier mois offert avec l\'installation',
-    },
-  ],
-};
-
-const aboTermsContent = {
+const ui: Record<PriceLang, {
+  einmalig: string; abo: string; einmaligDesc: string; aboDesc: string;
+  oneTimeSuffix: string; perMonth: string; setup: (s: string) => string; forMonths: string;
+  total: (s: string) => string; carePlus: string; careOptional: string; termsBtn: string;
+  payoff: string; inclusionsTitle: string; inclusions: string[];
+  careTitle: string; careDesc: string; careLink: string;
+}> = {
   de: {
-    title: 'Unsere Abo-Konditionen: Fair & Transparent',
-    sections: [
-      {
-        heading: 'Mindestlaufzeit & Verlängerung',
-        content: 'Um Ihnen erstklassige Qualität ohne hohe Initialkosten bieten zu können, beträgt die Mindestvertragslaufzeit 24 Monate. Nach Ablauf dieser Zeit verlängert sich das Abo automatisch um jeweils 12 Monate, sofern es nicht mit einer Frist von 3 Monaten zum Ende der Laufzeit gekündigt wird.'
-      },
-      {
-        heading: 'Vorzeitige Kündigung (Exit-Option)',
-        content: 'Wir verstehen, dass sich Geschäftspläne ändern können. Bei einer vorzeitigen Kündigung vor Ablauf der 24 Monate wird eine einmalige Ablösesumme in Höhe von 60% der verbleibenden Monatsbeiträge fällig. Damit sind alle Ansprüche abgegolten und Sie sind sofort aus dem Vertrag entlassen.'
-      },
-      {
-        heading: 'Eigentum & Übergabe',
-        content: `Während der Abolaufzeit erhalten Sie eine exklusive Nutzungslizenz für das Design und die Funktionalität Ihrer Website.
-
-Nach 24 Monaten: Die Website geht vollständig in Ihr Eigentum über. Sie können das Abo zu reduzierten Wartungskonditionen fortführen oder die Seite (als statischen Export) auf Ihr eigenes Hosting umziehen.
-
-Bei vorzeitiger Kündigung: Nach Zahlung der Ablösesumme stellen wir Ihnen auf Wunsch die Daten (HTML/CSS/JS) zur Verfügung. Backend-Logiken und proprietäre AI-Integrationen bleiben Eigentum der Agentur.`
-      },
-      {
-        heading: 'Leistungsumfang',
-        content: 'In Ihrer monatlichen Rate sind das Schweizer Hosting, SSL-Zertifikate, regelmässige Sicherheits-Backups und die technische Anpassung an aktuelle nDSG-Vorschriften enthalten.'
-      }
-    ]
-  }
-};
-
-const toggleLabels = {
-  en: {
-    einmalig: 'One-Time',
-    abo: 'Subscription',
-    einmaligDesc: 'Invest in ownership. One-time payment for your bespoke, turnkey project. Ideal for full control from day one, with no long-term contracts and minimal optional running costs.',
-    aboDesc: 'Partnership without barriers. Your premium presence at a fixed monthly price. We handle technology, nDSG compliance and updates, while you protect your budget and benefit from ongoing support.',
-  },
-  de: {
-    einmalig: 'Einmalig',
-    abo: 'Abo',
-    einmaligDesc: 'Investition in Eigentum. Einmalige Zahlung für Ihr massgeschneidertes, schlüsselfertiges Projekt. Ideal für volle Kontrolle ab Tag eins, ohne langfristige Vertragsbindung und mit minimalen optionalen laufenden Fixkosten.',
-    aboDesc: 'Partnerschaft ohne Einstiegshürden. Ihre erstklassige Präsenz zum monatlichen Fixpreis. Wir übernehmen Technik, nDSG-Konformität und Updates, während Sie Ihr Budget schonen und von laufendem Support profitieren.',
+    einmalig: 'Einmalig', abo: 'Abo',
+    einmaligDesc: 'Einmal bezahlen, Website besitzen. Hosting & Care ist optional.',
+    aboDesc: 'Gleicher Website-Umfang, verteilt auf 24 Monatsraten. Hosting & Care inklusive.',
+    oneTimeSuffix: 'einmalig', perMonth: '/Mt.', setup: (s) => `${s} Einrichtung`, forMonths: `während ${ABO_MONTHS} Monaten`,
+    total: (s) => `Total erste 24 Monate: ${s}, inkl. Einrichtung`,
+    carePlus: 'Inkl. Hosting & Care mit 2 Std. Änderungen/Support pro Monat',
+    careOptional: `Hosting & Care optional: ${chf(CARE_MONTHLY)}/Mt.`,
+    termsBtn: 'Abo-Konditionen',
+    payoff: `Nach 24 Monaten ist Ihre Website abbezahlt. Ihr Monatspreis sinkt automatisch auf ${chf(CARE_MONTHLY)} für Hosting & Care, monatlich kündbar.`,
+    inclusionsTitle: 'In allen Paketen',
+    inclusions: ['Eine Sprache inklusive', 'Zwei Korrekturrunden', 'Launch und kurze Übergabe inklusive', 'Sie liefern fertige Texte und Bilder', 'Weitere Sprachen, Texterstellung, zusätzliche Produkterfassung und individuelle Funktionen werden separat offeriert', 'Hosting und laufende Betreuung sind nicht im einmaligen Preis enthalten'],
+    careTitle: `Hosting & Care, ${chf(CARE_MONTHLY)}/Mt.`,
+    careDesc: `Schweizer Standard-Hosting, Backups, technische Wartung und 2 Std. Änderungen oder Support pro Monat. Zusatzaufwand ${chf(CARE_HOURLY)}/Std. nach Freigabe. Bei Einmalkauf optional: Sie können auch eigenes Hosting nutzen, die Anforderungen klären wir vor dem Launch.`,
+    careLink: 'Details zu Hosting & Care',
   },
   fr: {
-    einmalig: 'Unique',
-    abo: 'Abonnement',
-    einmaligDesc: 'Investissement en propriété. Paiement unique pour votre projet sur mesure, clé en main. Idéal pour un contrôle total dès le premier jour, sans engagement à long terme et avec des coûts fixes optionnels minimaux.',
-    aboDesc: 'Partenariat sans obstacles. Votre présence premium à un prix mensuel fixe. Nous gérons la technologie, la conformité nLPD et les mises à jour, pendant que vous protégez votre budget et profitez d\'un support continu.',
+    einmalig: 'Unique', abo: 'Abonnement',
+    einmaligDesc: 'Payez une fois, le site vous appartient. Hébergement & Suivi en option.',
+    aboDesc: 'Même périmètre de site, réparti sur 24 mensualités. Hébergement & Suivi inclus.',
+    oneTimeSuffix: 'paiement unique', perMonth: '/mois', setup: (s) => `${s} de mise en place`, forMonths: `pendant ${ABO_MONTHS} mois`,
+    total: (s) => `Total des 24 premiers mois : ${s}, mise en place incluse`,
+    carePlus: 'Hébergement & Suivi inclus, avec 2 h de modifications/support par mois',
+    careOptional: `Hébergement & Suivi en option : ${chf(CARE_MONTHLY)}/mois`,
+    termsBtn: 'Conditions de l\'abonnement',
+    payoff: `Après 24 mois, votre site est payé. Votre mensualité passe automatiquement à ${chf(CARE_MONTHLY)} pour l'Hébergement & Suivi, résiliable chaque mois.`,
+    inclusionsTitle: 'Dans toutes les formules',
+    inclusions: ['Une langue incluse', 'Deux tours de corrections', 'Mise en ligne et courte prise en main incluses', 'Vous fournissez les textes et images finalisés', 'Langues supplémentaires, rédaction, saisie de produits au-delà du forfait et fonctions sur mesure sur devis', 'L\'hébergement et le suivi ne sont pas compris dans le prix unique'],
+    careTitle: `Hébergement & Suivi, ${chf(CARE_MONTHLY)}/mois`,
+    careDesc: `Hébergement standard en Suisse, sauvegardes, maintenance technique et 2 h de modifications ou de support par mois. Travail supplémentaire ${chf(CARE_HOURLY)}/h, validé au préalable. En option pour un achat unique : vous pouvez aussi utiliser votre propre hébergement, exigences convenues avant la mise en ligne.`,
+    careLink: 'Détails Hébergement & Suivi',
+  },
+  en: {
+    einmalig: 'One-Time', abo: 'Subscription',
+    einmaligDesc: 'Pay once and own your website. Hosting & Care is optional.',
+    aboDesc: 'The same website scope, spread over 24 monthly payments. Hosting & Care included.',
+    oneTimeSuffix: 'one-time', perMonth: '/mo', setup: (s) => `${s} setup`, forMonths: `for ${ABO_MONTHS} months`,
+    total: (s) => `Initial 24-month total: ${s}, including setup`,
+    carePlus: 'Includes Hosting & Care with 2 hours of changes/support monthly',
+    careOptional: `Optional Hosting & Care: ${chf(CARE_MONTHLY)}/mo`,
+    termsBtn: 'Subscription terms',
+    payoff: `After 24 months, your website is paid off. Your monthly price automatically drops to ${chf(CARE_MONTHLY)} for Hosting & Care, cancellable monthly.`,
+    inclusionsTitle: 'Included in every package',
+    inclusions: ['One language included', 'Two revision rounds', 'Launch and a short handover included', 'You supply finished text and images', 'Additional languages, copywriting, product entry beyond the allowance and custom features are quoted separately', 'Hosting and ongoing care are separate from the one-time build price'],
+    careTitle: `Hosting & Care, ${chf(CARE_MONTHLY)}/mo`,
+    careDesc: `Standard Swiss hosting, backups, routine technical maintenance and 2 hours of content changes or support each month. Additional work ${chf(CARE_HOURLY)}/hour, approved before starting. Optional for one-time purchases: you can arrange your own hosting, with requirements agreed before launch.`,
+    careLink: 'Hosting & Care details',
+  },
+};
+
+const terms: Record<PriceLang, { title: string; sections: { heading: string; content: string }[] }> = {
+  de: {
+    title: 'Abo-Konditionen',
+    sections: [
+      { heading: 'Laufzeit', content: `Die Mindestlaufzeit beträgt 24 Monate (${chf(ABO_SETUP)} Einrichtung plus 24 Monatsraten). Es gibt keinen Gratismonat; alle 24 Raten sind geschuldet.` },
+      { heading: 'Nach 24 Monaten', content: `Keine automatische Verlängerung um 12 Monate. Hosting & Care läuft monatlich zu ${chf(CARE_MONTHLY)}/Mt. weiter und kann jeweils vor der nächsten Abrechnungsperiode gekündigt werden.` },
+      { heading: 'Vorzeitige Kündigung', content: 'Bei einer vorzeitigen Kündigung vor Ablauf der 24 Monate wird eine einmalige Ablösesumme in Höhe von 60% der verbleibenden Monatsbeiträge fällig.' },
+      { heading: 'Eigentum & Übergabe', content: 'Nach Ablauf der Mindestlaufzeit gehören Ihnen die individuell erstellten Website-Leistungen, vorbehaltlich der Lizenzen von Drittanbietern. Eine Übergabe erhält die vereinbarte Funktionalität, inklusive bearbeitbarer Inhalte und Anfragesystem. Ein statischer Export gilt bei diesen Paketen nicht als vollständige Übergabe.' },
+      { heading: 'Leistungsumfang', content: `Schweizer Standard-Hosting, Backups, technische Wartung und 2 Std. Änderungen oder Support pro Monat (nicht übertragbar). Zusatzaufwand ${chf(CARE_HOURLY)}/Std. nach Freigabe. Antwort innert zwei Arbeitstagen (Reaktionsziel, keine garantierte Lösungszeit). Neue Funktionen, kostenpflichtige Drittanbieter-Abos und Hosting über die vereinbarten Standardanforderungen hinaus werden separat offeriert.` },
+    ],
+  },
+  fr: {
+    title: 'Conditions de l\'abonnement',
+    sections: [
+      { heading: 'Durée', content: `La durée minimale est de 24 mois (${chf(ABO_SETUP)} de mise en place plus 24 mensualités). Aucun mois offert ; les 24 mensualités sont dues.` },
+      { heading: 'Après 24 mois', content: `Pas de renouvellement automatique de 12 mois. L'Hébergement & Suivi continue mensuellement à ${chf(CARE_MONTHLY)}/mois et peut être résilié avant la période de facturation suivante.` },
+      { heading: 'Résiliation anticipée', content: 'En cas de résiliation avant la fin des 24 mois, une indemnité unique de 60% des mensualités restantes est due.' },
+      { heading: 'Propriété & transfert', content: 'Au terme de la durée minimale, les livrables sur mesure du site vous appartiennent, sous réserve des licences de tiers. Un transfert conserve les fonctionnalités convenues, y compris le contenu modifiable et le système de demandes. Un export statique ne constitue pas un transfert complet pour ces formules.' },
+      { heading: 'Prestations', content: `Hébergement standard en Suisse, sauvegardes, maintenance technique et 2 h de modifications ou de support par mois (non reportables). Travail supplémentaire ${chf(CARE_HOURLY)}/h, validé au préalable. Réponse sous deux jours ouvrables (objectif de réponse, pas un délai de résolution garanti). Nouvelles fonctions, abonnements tiers payants et hébergement au-delà des exigences standard convenues sur devis.` },
+    ],
+  },
+  en: {
+    title: 'Subscription terms',
+    sections: [
+      { heading: 'Term', content: `The initial term is 24 months (${chf(ABO_SETUP)} setup plus 24 monthly payments). There is no free month; all 24 monthly payments apply.` },
+      { heading: 'After 24 months', content: `No automatic 12-month renewal. Hosting & Care continues monthly at ${chf(CARE_MONTHLY)}/mo and can be cancelled before the next billing period.` },
+      { heading: 'Early cancellation', content: 'If cancelled before the end of the 24 months, a one-off fee of 60% of the remaining monthly payments is due.' },
+      { heading: 'Ownership & transfer', content: 'After completing the initial term, you own the custom website deliverables, subject to third-party licences. A transfer preserves the agreed functionality, including editable content and the enquiry system. A static export is not a complete handover for these packages.' },
+      { heading: 'What\'s included', content: `Standard Swiss hosting, backups, routine technical maintenance and 2 hours of content changes or support each month (unused hours do not roll over). Additional work ${chf(CARE_HOURLY)}/hour, approved before starting. Response within two business days (a response target, not a guaranteed resolution time). New features, paid third-party subscriptions and hosting beyond the agreed standard requirements are quoted separately.` },
+    ],
   },
 };
 
 export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; onSelectTier?: (tier: string) => void }) {
   const { ref, isVisible } = useScrollReveal();
   const { lang } = useParams<{ lang: string }>();
-  const currentLang = (lang || 'de') as 'en' | 'de' | 'fr';
+  const L = (['de', 'fr', 'en'].includes(lang ?? '') ? lang : 'de') as PriceLang;
   const [isAbo, setIsAbo] = useState(false);
-
-  const labels = toggleLabels[currentLang] || toggleLabels.de;
-  const aboTiers = subscriptionTiers[currentLang] || subscriptionTiers.de;
+  const u = ui[L];
+  const copy = packageCopy[L];
 
   return (
     <section ref={ref} id="pricing" className="py-16 sm:py-20" aria-label="Pricing packages">
       <div className="container">
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-center text-foreground mb-4">
-          {t.pricing.title}
-        </h2>
-        <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
-          {t.pricing.subtitle}
-        </p>
+        <h2 className="text-3xl sm:text-5xl font-extrabold text-center text-foreground mb-4">{t.pricing.title}</h2>
+        <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">{t.pricing.subtitle}</p>
 
-        {/* Toggle */}
         <div className="flex flex-col items-center gap-4 mb-6">
           <div className="flex items-center gap-3 bg-card border border-border rounded-full px-6 py-3 shadow-sm">
-            <span className={`text-sm font-semibold transition-colors ${!isAbo ? 'text-foreground' : 'text-muted-foreground'}`}>
-              {labels.einmalig}
-            </span>
-            <Switch checked={isAbo} onCheckedChange={setIsAbo} />
-            <span className={`text-sm font-semibold transition-colors ${isAbo ? 'text-foreground' : 'text-muted-foreground'}`}>
-              {labels.abo}
-            </span>
+            <span className={`text-sm font-semibold transition-colors ${!isAbo ? 'text-foreground' : 'text-muted-foreground'}`}>{u.einmalig}</span>
+            <Switch checked={isAbo} onCheckedChange={setIsAbo} aria-label={`${u.einmalig} / ${u.abo}`} />
+            <span className={`text-sm font-semibold transition-colors ${isAbo ? 'text-foreground' : 'text-muted-foreground'}`}>{u.abo}</span>
           </div>
-          
-          {/* Space for speech bubble - empty when einmalig, shows when abo */}
+
           <div className="h-8 flex items-center justify-center">
             {isAbo && (
               <Dialog>
                 <DialogTrigger asChild>
-                  <button 
-                    className="relative group flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors cursor-pointer animate-pulse"
-                    style={{ animationDuration: '2s' }}
-                  >
+                  <button className="flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors">
                     <MessageCircle size={14} />
-                    <span>Abo Terms & Conditions</span>
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+                    <span>{u.termsBtn}</span>
                   </button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle className="text-xl">{aboTermsContent.de.title}</DialogTitle>
+                    <DialogTitle className="text-xl">{terms[L].title}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-6 mt-4">
-                    {aboTermsContent.de.sections.map((section, idx) => (
+                    {terms[L].sections.map((s, idx) => (
                       <div key={idx} className="space-y-2">
-                        <h4 className="font-semibold text-foreground">{section.heading}</h4>
-                        <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
-                          {section.content}
-                        </p>
+                        <h4 className="font-semibold text-foreground">{s.heading}</h4>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{s.content}</p>
                       </div>
                     ))}
                   </div>
@@ -310,191 +148,131 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
               </Dialog>
             )}
           </div>
-          
+
           <AnimatePresence mode="wait">
             <motion.p
               key={isAbo ? 'abo-desc' : 'einmalig-desc'}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25 }}
               className="text-sm text-muted-foreground max-w-lg text-center leading-relaxed"
             >
-              {isAbo ? labels.aboDesc : labels.einmaligDesc}
+              {isAbo ? u.aboDesc : u.einmaligDesc}
             </motion.p>
           </AnimatePresence>
         </div>
 
+        {isAbo && (
+          <p className="max-w-2xl mx-auto mb-8 text-center text-sm font-medium text-foreground border border-primary/30 bg-primary/5 rounded-xl px-5 py-3">
+            {u.payoff}
+          </p>
+        )}
+
         <AnimatePresence mode="wait">
           <motion.div
             key={isAbo ? 'abo-grid' : 'einmalig-grid'}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.35, ease: 'easeInOut' }}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"
+            className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto"
           >
-          {isAbo
-            ? aboTiers.map((tier, i) => {
-                const isPopular = i === 1;
-                const isElite = i === 3;
-                return (
-                  <div
-                    key={i}
-                    className={`relative rounded-2xl p-8 transition-all duration-700 flex flex-col ${
-                      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                    } ${
-                      isElite
-                        ? 'border border-primary/30 bg-gradient-to-b from-card via-card to-primary/[0.04] shadow-[0_0_40px_-12px_hsl(var(--primary)/0.15)]'
-                        : isPopular
-                        ? 'border-2 border-primary bg-card shadow-lg scale-[1.02]'
-                        : i === 2
-                        ? 'border border-dashed border-primary/40 bg-card'
-                        : 'border border-border bg-card'
-                    }`}
-                    style={{ transitionDelay: `${i * 150}ms` }}
-                  >
-                    {isPopular && (
-                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1">
-                        <Star size={12} className="mr-1" />
-                        {t.pricing.popular}
-                      </Badge>
-                    )}
-                    {isElite && (
-                      <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg" title="Swiss Sovereign AI Included">
-                        <Brain size={18} className="text-primary-foreground" />
+            {packages.map((p, i) => {
+              const c = copy[p.id];
+              const isPopular = p.id === 'business';
+              const Icon = icons[i];
+              return (
+                <div
+                  key={p.id}
+                  className={`relative rounded-2xl p-8 transition-all duration-700 flex flex-col ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${isPopular ? 'border-2 border-primary bg-card shadow-lg md:scale-[1.02]' : 'border border-border bg-card'}`}
+                  style={{ transitionDelay: `${i * 150}ms` }}
+                >
+                  {isPopular && (
+                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1">
+                      <Star size={12} className="mr-1" />{t.pricing.popular}
+                    </Badge>
+                  )}
+                  <Icon size={20} className="text-primary mb-3" />
+                  <h3 className="text-lg font-bold text-foreground mb-2">{c.name}</h3>
+
+                  {isAbo ? (
+                    <>
+                      <div className="mb-1">
+                        <span className="text-3xl sm:text-4xl font-extrabold text-foreground">{chf(p.aboMonthly)}</span>
+                        <span className="text-sm text-muted-foreground">{u.perMonth}</span>
                       </div>
-                    )}
-
-                    {[Globe, Zap, ShoppingBag, Crown][i] && (() => {
-                      const Icon = [Globe, Zap, ShoppingBag, Crown][i];
-                      return <Icon size={20} className="text-primary mb-3" />;
-                    })()}
-
-                    <h3 className="text-lg font-bold text-foreground mb-2">{tier.name}</h3>
-                    <div className="mb-1">
-                      <span className="text-3xl sm:text-4xl font-extrabold text-foreground">{tier.monthly}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-1">
-                      {tier.setup} {currentLang === 'de' ? 'Einrichtungsgebühr' : currentLang === 'fr' ? 'frais d\'installation' : 'setup fee'}
-                    </p>
-                    {tier.description && (
-                      <p className="text-sm text-muted-foreground mb-6">{tier.description}</p>
-                    )}
-
-                    <div className="border-t border-border pt-6 mb-8 flex-1">
-                      <ul className="space-y-3">
-                        {tier.features.map((feature, fi) => (
-                          <li key={fi} className="flex items-start gap-3 text-sm">
-                            <Check size={16} className="text-primary mt-0.5 shrink-0" />
-                            <span className="text-muted-foreground">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      {tier.note && (
-                        <p className="text-xs text-muted-foreground mt-4 italic">{tier.note}</p>
-                      )}
-                    </div>
-
-                    <Button
-                      className={`w-full ${isElite ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
-                      variant={isPopular ? 'default' : isElite ? 'default' : 'outline'}
-                      onClick={() => {
-                        onSelectTier?.(tier.name);
-                        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                    >
-                      {t.pricing.cta}
-                    </Button>
-                  </div>
-                );
-              })
-            : t.pricing.tiers.map((tier, i) => {
-                const isPopular = i === 1;
-                const isEcommerce = i === 2;
-                const isElite = i === 3;
-                return (
-                  <div
-                    key={i}
-                    className={`relative rounded-2xl p-8 transition-all duration-700 flex flex-col ${
-                      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                    } ${
-                      isElite
-                        ? 'border border-primary/30 bg-gradient-to-b from-card via-card to-primary/[0.04] shadow-[0_0_40px_-12px_hsl(var(--primary)/0.15)]'
-                        : isPopular
-                        ? 'border-2 border-primary bg-card shadow-lg scale-[1.02]'
-                        : isEcommerce
-                        ? 'border border-dashed border-primary/40 bg-card'
-                        : 'border border-border bg-card'
-                    }`}
-                    style={{ transitionDelay: `${i * 150}ms` }}
-                  >
-                    {isPopular && (
-                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1">
-                        <Star size={12} className="mr-1" />
-                        {t.pricing.popular}
-                      </Badge>
-                    )}
-                    {isElite && (
-                      <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg" title="Swiss Sovereign AI Included">
-                        <Brain size={18} className="text-primary-foreground" />
+                      <p className="text-sm text-muted-foreground">{u.forMonths} · {u.setup(chf(ABO_SETUP))}</p>
+                      <p className="text-xs text-muted-foreground mt-1 mb-4">{u.total(chf(aboTotal(p.aboMonthly)))}</p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="mb-1">
+                        <span className="text-3xl sm:text-4xl font-extrabold text-foreground">{chf(p.oneTime)}</span>
                       </div>
-                    )}
+                      <p className="text-sm text-muted-foreground mb-1">{u.oneTimeSuffix}</p>
+                      <Link
+                        to={`/${L}/maintenance`}
+                        state={{ scrollY: window.scrollY }}
+                        className="text-xs text-muted-foreground mb-4 inline-flex items-center gap-1 hover:text-primary transition-colors underline decoration-dotted underline-offset-4 w-fit"
+                      >
+                        {u.careOptional}<HelpCircle size={12} className="opacity-60" />
+                      </Link>
+                    </>
+                  )}
 
-                    {[Globe, Zap, ShoppingBag, Crown][i] && (() => {
-                      const Icon = [Globe, Zap, ShoppingBag, Crown][i];
-                      return <Icon size={20} className="text-primary mb-3" />;
-                    })()}
+                  <p className="text-sm text-muted-foreground mb-6">{c.description}</p>
 
-                    <h3 className="text-lg font-bold text-foreground mb-2">{tier.name}</h3>
-                    <div className="mb-1">
-                      <span className="text-3xl sm:text-4xl font-extrabold text-foreground">{tier.price}</span>
-                    </div>
-                    <Link
-                      to={`/${lang || 'en'}/maintenance`}
-                      state={{ scrollY: window.scrollY }}
-                      className="text-sm text-muted-foreground mb-6 inline-flex items-center gap-1 hover:text-primary transition-colors underline decoration-dotted underline-offset-4"
-                    >
-                      {tier.monthly}
-                      <HelpCircle size={14} className="opacity-60" />
-                    </Link>
-                    {tier.description && (
-                      <p className="text-sm text-muted-foreground mb-6">{tier.description}</p>
-                    )}
-
-                    <div className="border-t border-border pt-6 mb-8 flex-1">
-                      <ul className="space-y-3">
-                        {tier.features.map((feature, fi) => (
-                          <li key={fi} className="flex items-start gap-3 text-sm">
-                            <Check size={16} className="text-primary mt-0.5 shrink-0" />
-                            <span className="text-muted-foreground">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      {tier.note && (
-                        <p className="text-xs text-muted-foreground mt-4 italic">{tier.note}</p>
+                  <div className="border-t border-border pt-6 mb-8 flex-1">
+                    <ul className="space-y-3">
+                      {c.features.map((f, fi) => (
+                        <li key={fi} className="flex items-start gap-3 text-sm">
+                          <Check size={16} className="text-primary mt-0.5 shrink-0" />
+                          <span className="text-muted-foreground">{f}</span>
+                        </li>
+                      ))}
+                      {isAbo && (
+                        <li className="flex items-start gap-3 text-sm">
+                          <Server size={16} className="text-primary mt-0.5 shrink-0" />
+                          <span className="text-foreground">{u.carePlus}</span>
+                        </li>
                       )}
-                    </div>
-
-                    <Button
-                      className={`w-full ${isElite ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
-                      variant={isPopular ? 'default' : isElite ? 'default' : 'outline'}
-                      onClick={() => {
-                        onSelectTier?.(tier.name);
-                        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                    >
-                      {t.pricing.cta}
-                    </Button>
+                    </ul>
                   </div>
-                );
-              })}
+
+                  <Button
+                    className="w-full"
+                    variant={isPopular ? 'default' : 'outline'}
+                    onClick={() => {
+                      onSelectTier?.(`${c.name} (${isAbo ? u.abo : u.einmalig})`);
+                      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    {t.pricing.cta}
+                  </Button>
+                </div>
+              );
+            })}
           </motion.div>
         </AnimatePresence>
 
-        <p className="text-center text-sm text-muted-foreground mt-8 max-w-xl mx-auto italic">
-          {t.pricing.note}
-        </p>
+        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mt-10">
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <h3 className="text-sm font-bold text-foreground mb-3">{u.inclusionsTitle}</h3>
+            <ul className="space-y-2">
+              {u.inclusions.map((x, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <Check size={14} className="text-primary mt-1 shrink-0" />{x}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-6 flex flex-col">
+            <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2"><Server size={16} className="text-primary" />{u.careTitle}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed flex-1">{u.careDesc}</p>
+            <Link to={`/${L}/maintenance`} state={{ scrollY: window.scrollY }} className="text-sm text-primary hover:underline mt-4 w-fit">
+              {u.careLink} →
+            </Link>
+          </div>
+        </div>
+
+        <p className="text-center text-sm text-muted-foreground mt-8 max-w-xl mx-auto italic">{t.pricing.note}</p>
       </div>
     </section>
   );

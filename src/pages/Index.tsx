@@ -19,15 +19,15 @@ import SEO from '@/components/SEO';
 const SEO_META: Record<Lang, { title: string; description: string }> = {
   de: {
     title: 'klaar Studio — Schweizer Webdesign, Online-Shops & KI-Tools',
-    description: 'Wir gestalten schnelle, schöne Websites und Online-Shops für Schweizer KMU. TWINT, Shopify, nDSG-konform, Hosting in der Schweiz. Ab CHF 2\'500.',
+    description: 'Wir gestalten schnelle, schöne Websites und Online-Shops für Schweizer KMU. TWINT, Shopify, nDSG-konform, Hosting in der Schweiz. Ab CHF 1\'200.',
   },
   fr: {
     title: 'klaar Studio — Sites web suisses, boutiques en ligne & IA',
-    description: 'Nous créons des sites web et boutiques en ligne rapides et élégants pour les PME suisses. TWINT, Shopify, conformité nFADP, hébergement en Suisse. Dès CHF 2\'500.',
+    description: 'Nous créons des sites web et boutiques en ligne rapides et élégants pour les PME suisses. TWINT, Shopify, conformité nFADP, hébergement en Suisse. Dès CHF 1\'200.',
   },
   en: {
     title: 'klaar Studio — Swiss Web Design, Online Shops & AI Tools',
-    description: 'We design fast, beautiful websites and online shops for Swiss businesses. TWINT, Shopify, nFADP compliant, Swiss hosting. Starting at CHF 2,500.',
+    description: 'We design fast, beautiful websites and online shops for Swiss businesses. TWINT, Shopify, nFADP compliant, Swiss hosting. Starting at CHF 1\'200.',
   },
 };
 

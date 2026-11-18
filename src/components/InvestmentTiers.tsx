@@ -8,14 +8,14 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { Link, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Translations } from '@/lib/i18n';
-import { packages, packageCopy, aboTotal, chf, ABO_SETUP, ABO_MONTHS, CARE_MONTHLY, CARE_HOURLY, type PriceLang } from '@/lib/pricing';
+import { packages, packageCopy, chf, ABO_SETUP, ABO_MONTHS, CARE_MONTHLY, CARE_HOURLY, type PriceLang } from '@/lib/pricing';
 
 const icons = [Globe, Zap, Package];
 
 const ui: Record<PriceLang, {
   einmalig: string; abo: string; einmaligDesc: string; aboDesc: string;
   oneTimeSuffix: string; perMonth: string; setup: (s: string) => string; forMonths: string;
-  total: (s: string) => string; carePlus: string; careOptional: string; termsBtn: string;
+  carePlus: string; careOptional: string; termsBtn: string;
   payoff: string; inclusionsTitle: string; inclusions: string[];
   careTitle: string; careDesc: string; careLink: string;
 }> = {
@@ -24,7 +24,6 @@ const ui: Record<PriceLang, {
     einmaligDesc: 'Einmal bezahlen, Website besitzen. Hosting & Care ist optional.',
     aboDesc: 'Gleicher Website-Umfang, verteilt auf 24 Monatsraten. Hosting & Care inklusive.',
     oneTimeSuffix: 'einmalig', perMonth: '/Mt.', setup: (s) => `${s} Einrichtung`, forMonths: `während ${ABO_MONTHS} Monaten`,
-    total: (s) => `Total erste 24 Monate: ${s}, inkl. Einrichtung`,
     carePlus: 'Inkl. Hosting & Care mit 2 Std. Änderungen/Support pro Monat',
     careOptional: `Hosting & Care optional: ${chf(CARE_MONTHLY)}/Mt.`,
     termsBtn: 'Abo-Konditionen',
@@ -40,7 +39,6 @@ const ui: Record<PriceLang, {
     einmaligDesc: 'Payez une fois, le site vous appartient. Hébergement & Suivi en option.',
     aboDesc: 'Même périmètre de site, réparti sur 24 mensualités. Hébergement & Suivi inclus.',
     oneTimeSuffix: 'paiement unique', perMonth: '/mois', setup: (s) => `${s} de mise en place`, forMonths: `pendant ${ABO_MONTHS} mois`,
-    total: (s) => `Total des 24 premiers mois : ${s}, mise en place incluse`,
     carePlus: 'Hébergement & Suivi inclus, avec 2 h de modifications/support par mois',
     careOptional: `Hébergement & Suivi en option : ${chf(CARE_MONTHLY)}/mois`,
     termsBtn: 'Conditions de l\'abonnement',
@@ -56,7 +54,6 @@ const ui: Record<PriceLang, {
     einmaligDesc: 'Pay once and own your website. Hosting & Care is optional.',
     aboDesc: 'The same website scope, spread over 24 monthly payments. Hosting & Care included.',
     oneTimeSuffix: 'one-time', perMonth: '/mo', setup: (s) => `${s} setup`, forMonths: `for ${ABO_MONTHS} months`,
-    total: (s) => `Initial 24-month total: ${s}, including setup`,
     carePlus: 'Includes Hosting & Care with 2 hours of changes/support monthly',
     careOptional: `Optional Hosting & Care: ${chf(CARE_MONTHLY)}/mo`,
     termsBtn: 'Subscription terms',
@@ -198,8 +195,7 @@ export default function InvestmentTiers({ t, onSelectTier }: { t: Translations; 
                         <span className="text-3xl sm:text-4xl font-extrabold text-foreground">{chf(p.aboMonthly)}</span>
                         <span className="text-sm text-muted-foreground">{u.perMonth}</span>
                       </div>
-                      <p className="text-sm text-muted-foreground">{u.forMonths} · {u.setup(chf(ABO_SETUP))}</p>
-                      <p className="text-xs text-muted-foreground mt-1 mb-4">{u.total(chf(aboTotal(p.aboMonthly)))}</p>
+                      <p className="text-sm text-muted-foreground mb-4">{u.forMonths} · {u.setup(chf(ABO_SETUP))}</p>
                     </>
                   ) : (
                     <>
